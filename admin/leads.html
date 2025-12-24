@@ -3,91 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demandes Clients | SIMEL S.E.S</title>
+    <title>Demandes de Contact | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        :root { --primary: #2D3748; --accent: #E53E3E; --bg: #F0F2F5; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        :root { --primary: #2D3748; --accent: #E53E3E; --bg-light: #F0F2F5; --white: #ffffff; --text-gray: #718096; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: var(--primary); }
+        .admin-layout { display: flex; min-height: 100vh; }
 
-        .sidebar { width: 250px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 20px 0; }
-        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; }
-        .sidebar-menu a.active { color: white; border-left: 4px solid var(--accent); background: rgba(255,255,255,0.05); }
+        /* SIDEBAR */
+        .sidebar { width: 250px; background-color: var(--primary); color: white; position: fixed; height: 100vh; padding: 20px 0; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; transition: 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.05); color: white; border-left: 4px solid var(--accent); }
+        
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 30px; margin-left: 250px; }
+        .leads-container { display: flex; flex-direction: column; gap: 15px; }
 
-        .main-content { flex: 1; margin-left: 250px; padding: 40px; width: calc(100% - 250px); }
-        .lead-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; display: grid; grid-template-columns: 200px 1fr 50px; gap: 20px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #CBD5E0; }
+        .lead-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 1fr 2fr 100px;
+            align-items: center;
+            border-left: 5px solid #E2E8F0;
+        }
         .lead-card.new { border-left-color: var(--accent); }
-        .btn-delete { color: #E53E3E; background: none; border: none; cursor: pointer; font-size: 1.2rem; }
-        #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        
+        .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        .badge-new { background: #FED7D7; color: #C53030; }
+        .badge-read { background: #E2E8F0; color: #4A5568; }
+
+        .btn-action { padding: 8px; border-radius: 5px; color: var(--text-gray); cursor: pointer; border: none; background: #F7FAFC; }
+        .btn-delete:hover { color: var(--accent); background: #FFF5F5; }
+
+        @media (max-width: 900px) { .lead-card { grid-template-columns: 1fr; gap: 10px; } }
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay">Chargement des messages...</div>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header"><h2>SIMEL Admin</h2></div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="leads.html" class="active"><i class="fas fa-envelope"></i> Demandes</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
+                <hr style="opacity: 0.1; margin: 10px;">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Voir le site</a>
+            </nav>
+        </aside>
 
-    <aside class="sidebar">
-        <div style="padding: 20px;"><h2>SIMEL Admin</h2></div>
-        <nav class="sidebar-menu">
-            <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a href="leads.html" class="active"><i class="fas fa-envelope"></i> Demandes</a>
-            <a href="agents.html"><i class="fas fa-users"></i> Agents</a>
-            <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
-        </nav>
-    </aside>
+        <main class="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h1>Demandes Reçues</h1>
+                <button onclick="loadLeads()" class="btn-action"><i class="fas fa-sync"></i> Actualiser</button>
+            </div>
 
-    <main class="main-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h1>Messages reçus</h1>
-            <button onclick="fetchLeads()" class="btn-add" style="background:var(--primary); color:white; padding:10px; border-radius:5px; border:none; cursor:pointer;"><i class="fas fa-sync"></i></button>
-        </div>
-        <div id="leadsList"></div>
-    </main>
+            <div id="leadsList" class="leads-container">
+                <p>Chargement des messages...</p>
+            </div>
+        </main>
+    </div>
 
     <script>
-        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
-        const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
+        // CONFIGURATION SUPABASE
+        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // LA CLÉ COMMENÇANT PAR eyJ
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function checkAuth() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) {
-                window.location.replace('login.html');
-            } else {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                fetchLeads();
-            }
-        }
+        async function loadLeads() {
+            const container = document.getElementById('leadsList');
+            
+            const { data: leads, error } = await _supabase
+                .from('leads')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        async function fetchLeads() {
-            const { data: leads } = await _supabase.from('leads').select('*').order('created_at', { ascending: false });
-            const list = document.getElementById('leadsList');
-            if (leads) {
-                list.innerHTML = leads.map(l => `
-                    <div class="lead-card ${l.status === 'nouveau' ? 'new' : ''}">
-                        <div>
-                            <strong style="display:block;">${l.client_name}</strong>
-                            <small>${l.client_phone}</small>
-                        </div>
-                        <div>
-                            <em style="color:var(--accent); font-weight:bold;">${l.subject}</em>
-                            <p style="margin-top:5px; font-size:0.9rem;">${l.message}</p>
-                        </div>
-                        <button onclick="deleteLead(${l.id})" class="btn-delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                `).join('');
+            if (error) {
+                container.innerHTML = `<p style="color:red">Erreur : ${error.message}</p>`;
+                return;
             }
+
+            if (leads.length === 0) {
+                container.innerHTML = '<p>Aucun message reçu pour le moment.</p>';
+                return;
+            }
+
+            container.innerHTML = leads.map(lead => `
+                <div class="lead-card ${lead.status === 'nouveau' ? 'new' : ''}">
+                    <div>
+                        <span class="badge ${lead.status === 'nouveau' ? 'badge-new' : 'badge-read'}">${lead.status}</span>
+                        <h3 style="margin-top:5px">${lead.client_name}</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-gray)">${lead.client_phone}</p>
+                    </div>
+                    <div style="border-left: 1px solid #EEE; padding-left: 15px;">
+                        <strong>${lead.subject}</strong>
+                        <p style="font-size: 0.9rem;">${lead.message}</p>
+                        <small style="color:#A0AEC0">${new Date(lead.created_at).toLocaleString()}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <button onclick="deleteLead(${lead.id})" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         async function deleteLead(id) {
-            if(confirm("Supprimer ce message ?")) {
-                await _supabase.from('leads').delete().eq('id', id);
-                fetchLeads();
+            if (confirm("Supprimer ce message définitivement ?")) {
+                const { error } = await _supabase.from('leads').delete().eq('id', id);
+                if (error) alert("Erreur lors de la suppression");
+                else loadLeads();
             }
         }
 
-        window.onload = checkAuth;
+        // Vérification session et chargement
+        async function init() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) window.location.href = 'login.html';
+            else loadLeads();
+        }
+
+        init();
     </script>
 </body>
 </html>
