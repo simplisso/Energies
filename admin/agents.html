@@ -3,193 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Agents | Admin SIMEL S.E.S</title>
+    <title>Gestion des Agents | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-        :root {
-            --primary: #2D3748;
-            --accent: #E53E3E;
-            --bg-light: #F0F2F5;
-            --white: #ffffff;
-            --text-gray: #718096;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        :root { --primary: #2D3748; --accent: #E53E3E; --bg: #F0F2F5; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: #2D3748; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; }
+
+        /* SIDEBAR identique aux autres pages */
+        .sidebar { width: 250px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 20px 0; }
+        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; }
+        .sidebar-menu a.active { color: white; border-left: 4px solid var(--accent); background: rgba(255,255,255,0.05); }
+
+        .main-content { flex: 1; margin-left: 250px; padding: 40px; }
         
-        .admin-layout { display: flex; min-height: 100vh; }
+        /* FORMULAIRE D'AJOUT */
+        .agent-form { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .btn-add { background: #38A169; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 250px;
-            background-color: var(--primary);
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            height: 100vh;
-        }
-        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: #A0AEC0;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background: rgba(255,255,255,0.05);
-            color: white;
-            border-left: 4px solid var(--accent);
-        }
-        .sidebar-menu i { margin-right: 10px; width: 20px; }
-
-        /* MAIN CONTENT */
-        .main-content { flex: 1; padding: 30px; margin-left: 250px; }
-        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        .btn-add {
-            background: var(--accent);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .btn-add:hover { background: #C53030; }
-
-        /* AGENTS GRID */
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .agent-card {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-        }
-        .agent-avatar {
-            width: 60px;
-            height: 60px;
-            background: #EDF2F7;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-        .agent-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
-        .role-tag {
-            font-size: 0.75rem;
-            background: #EBF8FF;
-            color: #3182CE;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-        .agent-contact {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-        .agent-actions {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-        }
-        .btn-delete { color: #E53E3E; cursor: pointer; opacity: 0.6; transition: 0.3s; }
-        .btn-delete:hover { opacity: 1; }
-
-        .admin-footer { margin-top: 40px; text-align: center; color: var(--text-gray); font-size: 0.8rem; }
+        /* LISTE DES AGENTS */
+        .agent-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .agent-card { background: white; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; position: relative; }
+        .agent-avatar { width: 50px; height: 50px; background: #E2E8F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); }
+        .btn-del { position: absolute; top: 10px; right: 10px; color: #E53E3E; cursor: pointer; border: none; background: none; }
     </style>
 </head>
 <body>
 
-    <div class="admin-layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fas fa-bolt" style="color:var(--accent)"></i> <span>SIMEL Admin</span></h2>
-            </div>
-            <nav class="sidebar-menu">
-                <a href="dashboard.html"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a>
-                <a href="annonces-list.html"><i class="fas fa-list"></i> <span>Nos Services</span></a>
-                <a href="leads.html"><i class="fas fa-envelope"></i> <span>Demandes</span></a>
-                <a href="agents.html" class="active"><i class="fas fa-users"></i> <span>Agents</span></a>
-                <a href="settings.html"><i class="fas fa-cog"></i> <span>Réglages</span></a>
-                <hr style="margin: 20px; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-                <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> <span>Voir le site</span></a>
-            </nav>
-        </aside>
+    <aside class="sidebar">
+        <div style="padding: 20px;"><h2>SIMEL Admin</h2></div>
+        <nav class="sidebar-menu">
+            <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
+            <a href="agents.html" class="active"><i class="fas fa-users"></i> Agents</a>
+            <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
+        </nav>
+    </aside>
 
-        <main class="main-content">
-            <div class="header-actions">
-                <h1>Gestion de l'Équipe</h1>
-                <a href="#" class="btn-add"><i class="fas fa-user-plus"></i> Ajouter un Agent</a>
-            </div>
+    <main class="main-content">
+        <h1>Gestion des Agents</h1>
+        <p style="margin-bottom: 25px; color: #718096;">Ajoutez les membres de votre équipe technique.</p>
 
-            <div class="agents-grid">
-                
-                <div class="agent-card">
-                    <div class="agent-avatar"><i class="fas fa-solar-panel"></i></div>
-                    <div class="agent-info">
-                        <h3>Marc Dossou</h3>
-                        <span class="role-tag">Installateur Solaire</span>
-                        <div class="agent-contact">
-                            <p><i class="fas fa-phone"></i> +229 90 00 00 01</p>
-                        </div>
-                    </div>
-                    <div class="agent-actions">
-                        <i class="fas fa-trash-alt btn-delete" title="Supprimer"></i>
-                    </div>
+        <div class="agent-form">
+            <h3>Nouvel Agent</h3>
+            <form id="addAgentForm">
+                <div class="form-grid" style="margin-top: 15px;">
+                    <input type="text" id="name" placeholder="Nom Complet" required>
+                    <input type="text" id="specialty" placeholder="Spécialité (ex: Solaire)" required>
+                    <input type="tel" id="phone" placeholder="Téléphone">
                 </div>
+                <button type="submit" class="btn-add">Ajouter l'agent</button>
+            </form>
+        </div>
 
-                <div class="agent-card">
-                    <div class="agent-avatar"><i class="fas fa-tools"></i></div>
-                    <div class="agent-info">
-                        <h3>Eric Loko</h3>
-                        <span class="role-tag">Frigoriste</span>
-                        <div class="agent-contact">
-                            <p><i class="fas fa-phone"></i> +229 90 00 00 02</p>
-                        </div>
-                    </div>
-                    <div class="agent-actions">
-                        <i class="fas fa-trash-alt btn-delete" title="Supprimer"></i>
-                    </div>
-                </div>
-
-                <div class="agent-card">
-                    <div class="agent-avatar"><i class="fas fa-bolt"></i></div>
-                    <div class="agent-info">
-                        <h3>Jean Gnonlonfoun</h3>
-                        <span class="role-tag">Électricien Industriel</span>
-                        <div class="agent-contact">
-                            <p><i class="fas fa-phone"></i> +229 90 00 00 03</p>
-                        </div>
-                    </div>
-                    <div class="agent-actions">
-                        <i class="fas fa-trash-alt btn-delete" title="Supprimer"></i>
-                    </div>
-                </div>
-
+        <div id="agentList" class="agent-list">
             </div>
+    </main>
 
-            <footer class="admin-footer">
-                &copy; 2025 SIMEL S.E.S - Gestion des ressources techniques.
-            </footer>
-        </main>
-    </div>
+    <script>
+        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
+        const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Charger les agents
+        async function loadAgents() {
+            const { data: agents } = await _supabase.from('agents').select('*').order('created_at', { ascending: false });
+            const list = document.getElementById('agentList');
+            list.innerHTML = agents.map(agent => `
+                <div class="agent-card">
+                    <div class="agent-avatar"><i class="fas fa-user"></i></div>
+                    <div>
+                        <strong>${agent.full_name}</strong>
+                        <p style="font-size: 0.8rem; color: #718096;">${agent.specialty}</p>
+                        <p style="font-size: 0.8rem;"><i class="fas fa-phone"></i> ${agent.phone || 'Non renseigné'}</p>
+                    </div>
+                    <button onclick="deleteAgent(${agent.id})" class="btn-del"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        // Ajouter un agent
+        document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newAgent = {
+                full_name: document.getElementById('name').value,
+                specialty: document.getElementById('specialty').value,
+                phone: document.getElementById('phone').value
+            };
+
+            const { error } = await _supabase.from('agents').insert([newAgent]);
+            if (!error) {
+                document.getElementById('addAgentForm').reset();
+                loadAgents();
+            }
+        });
+
+        // Supprimer
+        async function deleteAgent(id) {
+            if(confirm("Supprimer cet agent ?")) {
+                await _supabase.from('agents').delete().eq('id', id);
+                loadAgents();
+            }
+        }
+
+        // Vérifier auth
+        async function init() {
+            const { data } = await _supabase.auth.getSession();
+            if (!data.session) window.location.href = 'login.html';
+            else loadAgents();
+        }
+
+        init();
+    </script>
 </body>
 </html>
