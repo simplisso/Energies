@@ -1,0 +1,20 @@
+{
+  "name": "simel-ses-admin",
+  "version": "1.0.0",
+  "description": "Système de gestion pour SIMEL S.E.S",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "SIMEL S.E.S",
+  "license": "ISC"
+}
