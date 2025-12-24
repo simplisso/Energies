@@ -6,80 +6,159 @@
     <title>Connexion Admin | SIMEL S.E.S</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        body { font-family: 'Poppins', sans-serif; background: #2D3748; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .login-box { background: white; padding: 40px; border-radius: 12px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #E2E8F0; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #3182CE; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 10px; }
-        button:disabled { background: #A0AEC0; }
-        #error-msg { color: #E53E3E; font-size: 0.85rem; margin-top: 15px; display: none; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a202c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo-admin {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 30px;
+        }
+
+        .logo-admin span { color: #e53e3e; }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus { border-color: #e53e3e; }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover { background: #c53030; }
+
+        .error-msg {
+            background: #fff5f5;
+            color: #c53030;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none; /* Caché par défaut */
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2 style="color: #2D3748;">SIMEL Admin</h2>
-        <p style="color: #718096; font-size: 0.9rem;">Entrez vos accès pour gérer le site</p>
+    <div class="login-card">
+        <div class="logo-admin">SIMEL <span>Admin</span></div>
         
+        <div id="errorMessage" class="error-msg"></div>
+
         <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Mot de passe" required>
-            <button type="submit" id="btnSubmit">Se connecter</button>
+            <div class="form-group">
+                <label>Email professionnel</label>
+                <input type="email" id="email" placeholder="admin@simel-ses.com" required>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" id="submitBtn" class="login-btn">Se connecter</button>
         </form>
-        
-        <div id="error-msg"></div>
-        <a href="../index.html" style="display:block; margin-top:20px; font-size:0.8rem; color:#A0AEC0; text-decoration:none;">← Retour au site</a>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'sb_publishable_PcbOe0RSuZQffQ9zYhVO0w_xkuK44Nx');
+        // 1. CONFIGURATION SUPABASE
+        // Remplacez ces valeurs par vos vraies clés Supabase (Settings > API)
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_PcbOe0RSuZQffQ9zYhVO0w_xkuK44Nx'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const loginForm = document.getElementById('loginForm');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const errorMsg = document.getElementById('error-msg');
+        const errorMessage = document.getElementById('errorMessage');
+        const submitBtn = document.getElementById('submitBtn');
 
-        loginForm.onsubmit = async (e) => {
+        // 2. GESTION DE LA CONNEXION
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            btnSubmit.disabled = true;
-            btnSubmit.innerText = "Vérification...";
-            errorMsg.style.display = 'none';
+            
+            // Réinitialiser l'interface
+            errorMessage.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Vérification...";
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // 1. Tentative de connexion
-            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            // Appel à l'authentification Supabase
+            const { data, error } = await _supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
 
             if (error) {
-                errorMsg.innerText = "Identifiants invalides : " + error.message;
-                errorMsg.style.display = 'block';
-                btnSubmit.disabled = false;
-                btnSubmit.innerText = "Se connecter";
+                // Afficher l'erreur
+                errorMessage.innerText = "Échec : " + error.message;
+                errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Se connecter";
             } else {
-                // 2. IMPORTANT : On attend que Supabase confirme que la session est bien stockée
-                // sur GitHub Pages, le stockage local peut prendre quelques millisecondes
-                const { data: { session } } = await _supabase.auth.getSession();
-                
-                if (session) {
-                    console.log("Session enregistrée avec succès");
-                    // 3. Redirection vers le dashboard
-                    window.location.replace('dashboard.html');
-                } else {
-                    errorMsg.innerText = "Erreur de synchronisation. Réessayez.";
-                    errorMsg.style.display = 'block';
-                    btnSubmit.disabled = false;
-                }
+                // Succès : Redirection vers le dashboard
+                window.location.href = 'dashboard.html';
             }
-        };
+        });
 
-        // Si l'utilisateur est déjà connecté, on l'envoie direct au dashboard
-        async function checkStatus() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (session) window.location.replace('dashboard.html');
+        // 3. VÉRIFICATION : Si déjà connecté, redirection directe
+        async function checkSession() {
+            const { data } = await _supabase.auth.getSession();
+            if (data.session) {
+                window.location.href = 'dashboard.html';
+            }
         }
-        window.onload = checkStatus;
+        checkSession();
     </script>
 </body>
 </html>
+
