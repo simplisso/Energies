@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIMEL S.E.S - Énergie Solaire & Électricité au Bénin</title>
-    <meta name="description" id="meta-description" content="SIMEL S.E.S : Expert en énergie solaire, électricité industrielle et sécurité électronique au Bénin.">
-    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -15,119 +14,91 @@
     <nav class="navbar">
         <div class="logo">SIMEL <span>S.E.S</span></div>
         <ul class="nav-links">
-            <li><a href="#accueil">Accueil</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="admin/login.html" class="admin-link"><i class="fas fa-user-lock"></i></a></li>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="apropos.html">À Propos</a></li>
+            <li><a href="expertise.html">Notre Expertise</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="admin/login.html" class="admin-access"><i class="fas fa-user-lock"></i></a></li>
         </ul>
     </nav>
 
-    <header id="accueil" class="hero">
+    <header class="hero">
         <div class="hero-content">
             <h1>L'énergie de demain, dès aujourd'hui.</h1>
-            <p>Solutions photovoltaïques et expertise électrique pour particuliers et industries au Bénin.</p>
-            <a href="#contact" class="btn-primary">Demander un devis</a>
+            <p>Solutions photovoltaïques, Électricité industrielle et Bâtiment au Bénin.</p>
+            <div class="hero-btns">
+                <a href="contact.html" class="btn-primary">Demander un Devis</a>
+                <a href="expertise.html" class="btn-secondary">Nos Services</a>
+            </div>
         </div>
     </header>
 
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <h2>Contactez-nous</h2>
-            <div class="contact-grid">
-                
-                <div class="contact-info">
-                    <div class="info-item">
-                        <i class="fas fa-phone"></i>
-                        <p id="display-phone">Chargement...</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <p id="display-email">Chargement...</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p id="display-address">Chargement...</p>
-                    </div>
-                </div>
+    <section class="intro-section container">
+        <div class="intro-text">
+            <h2>Bienvenue chez SIMEL S.E.S</h2>
+            <p>Spécialiste de l'ingénierie électrique au Bénin.</p>
+            <a href="apropos.html" class="read-more">En savoir plus sur nous →</a>
+        </div>
+    </section>
 
-                <form id="contactForm" class="contact-form">
-                    <input type="text" id="client_name" placeholder="Votre Nom" required>
-                    <input type="text" id="client_phone" placeholder="Votre Téléphone" required>
-                    <select id="subject">
-                        <option value="Solaire">Énergie Solaire</option>
-                        <option value="Électricité">Électricité</option>
-                        <option value="Sécurité">Sécurité Électronique</option>
-                    </select>
-                    <textarea id="message" placeholder="Détaillez votre besoin..." rows="5" required></textarea>
-                    <button type="submit" id="submitBtn">Envoyer la demande</button>
-                    <p id="formStatus" style="display:none; margin-top:10px; font-weight:bold;"></p>
-                </form>
-
+    <section class="expertise-preview container">
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-solar-panel"></i>
+                <h3>Énergie Solaire</h3>
+                <p>Installation de kits solaires et pompage photovoltaïque.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Électricité</h3>
+                <p>Installation industrielle et maintenance électrique.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Sécurité</h3>
+                <p>Vidéosurveillance et alarmes connectées.</p>
             </div>
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2025 SIMEL S.E.S - Tous droits réservés.</p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <h3>SIMEL S.E.S</h3>
+                    <p>Votre partenaire énergétique de confiance.</p>
+                </div>
+                <div class="footer-contact">
+                    <p><i class="fas fa-phone"></i> <span id="display-phone">Chargement...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="display-email">Chargement...</span></p>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2025 SIMEL S.E.S - Tous droits réservés.</p>
+        </div>
     </footer>
 
     <script>
-        // 1. CONFIGURATION (Utilisez vos vraies clés ici)
         const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+        const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 2. CHARGEMENT DYNAMIQUE DES INFOS (Depuis table settings)
-        async function loadSiteSettings() {
+        // Cette fonction met à jour le téléphone et l'email partout sans changer ton design
+        async function loadDynamicContent() {
             const { data, error } = await _supabase
                 .from('settings')
-                .select('*')
+                .select('phone, email')
                 .eq('id', 1)
                 .single();
 
             if (data) {
-                document.getElementById('display-phone').innerText = data.phone;
-                document.getElementById('display-email').innerText = data.email;
-                document.getElementById('display-address').innerText = data.address;
-                document.getElementById('meta-description').content = data.seo_description;
+                if(document.getElementById('display-phone')) 
+                    document.getElementById('display-phone').innerText = data.phone;
+                if(document.getElementById('display-email')) 
+                    document.getElementById('display-email').innerText = data.email;
             }
         }
 
-        // 3. ENVOI DU FORMULAIRE (Vers table leads)
-        const contactForm = document.getElementById('contactForm');
-        const status = document.getElementById('formStatus');
-
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = "Envoi...";
-
-            const formData = {
-                client_name: document.getElementById('client_name').value,
-                client_phone: document.getElementById('client_phone').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value,
-                status: 'nouveau'
-            };
-
-            const { error } = await _supabase.from('leads').insert([formData]);
-
-            status.style.display = 'block';
-            if (error) {
-                status.innerText = "Erreur : " + error.message;
-                status.style.color = "red";
-                btn.disabled = false;
-            } else {
-                status.innerText = "Message bien reçu !";
-                status.style.color = "green";
-                contactForm.reset();
-                btn.innerText = "Envoyé ✓";
-            }
-        });
-
-        // Lancement au chargement de la page
-        loadSiteSettings();
+        window.onload = loadDynamicContent;
     </script>
 </body>
 </html>
