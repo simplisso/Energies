@@ -26,7 +26,7 @@
                     <li><a href="expertises.html">Nos Expertises</a></li>
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="/admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="/admin/login.html" class="admin-access" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-user-shield"></i> Admin</a></li>
                     <li><a href="tel:+22900000000" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
@@ -91,7 +91,7 @@
                         <li><a href="expertises.html">Nos Services</a></li>
                         <li><a href="a-propos.html">À Propos</a></li>
                         <li><a href="contact.html">Contact</a></li>
-                        <li><a href="/admin/login.html">Admin</a></li>
+                        <li><a href="/admin/login.html">Administration</a></li>
                     </ul>
                 </div>
                 <div>
@@ -108,30 +108,38 @@
     </footer>
 
     <script>
-        // Menu Mobile
+        // Gestion du Menu Mobile
         const toggle = document.querySelector('.menu-toggle');
         const menu = document.getElementById('main-menu');
-        toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
+        if(toggle) {
+            toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
+        }
 
-        // Synchronisation avec le Dashboard (Réglages)
+        // Fonction de synchronisation avec le fichier settings du Dashboard
         async function syncSettings() {
             try {
                 const response = await fetch('/api/settings');
+                if (!response.ok) throw new Error('Erreur API');
+                
                 const data = await response.json();
 
-                // Mise à jour des textes (Téléphone, Email, Adresse)
+                // Mise à jour des textes
                 document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
                 document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
                 document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
 
-                // Mise à jour des liens cliquables (Appel et WhatsApp)
-                const cleanNumber = data.phone.replace(/\D/g, ''); // Garde uniquement les chiffres
+                // Mise à jour des liens d'appel et WhatsApp
+                const cleanNumber = data.phone.replace(/\D/g, ''); 
                 document.querySelectorAll('.dyn-phone-link').forEach(link => {
                     if(link.href.includes('tel:')) link.href = `tel:${cleanNumber}`;
                     if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
                 });
-            } catch (err) { console.log("Erreur de synchro"); }
+            } catch (err) { 
+                console.error("Erreur de synchronisation des réglages :", err); 
+            }
         }
+
+        // Lancement au chargement de la page
         window.onload = syncSettings;
     </script>
 
