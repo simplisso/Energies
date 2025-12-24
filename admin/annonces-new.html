@@ -2,75 +2,113 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nouveau Service | Admin SIMEL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Service | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Même style que tes autres pages */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        body { font-family: 'Poppins', sans-serif; background-color: #E2E8F0; margin: 0; display: flex; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #E2E8F0; color: #4A4A4A; }
+        .admin-layout { display: flex; min-height: 100vh; }
         .sidebar { width: 250px; background-color: #2D3748; color: white; padding: 20px 0; position: fixed; height: 100vh; }
         .main-content { flex: 1; margin-left: 250px; padding: 30px; }
-        .form-card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; }
+        
+        .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 700px; }
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 6px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2D3748; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 6px; font-family: inherit; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn-save { background: #38A169; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-cancel { background: #718096; color: white; padding: 12px 25px; border: none; border-radius: 6px; text-decoration: none; text-align: center; }
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <div style="padding:20px;"><h2>SIMEL Admin</h2></div>
-        <nav class="sidebar-menu">
-            <a href="annonces-list.html" style="color:white; padding:15px; display:block;">← Retour à la liste</a>
-        </nav>
-    </aside>
 
-    <main class="main-content">
-        <h1>Ajouter un nouveau service</h1>
-        <div class="form-card">
-            <form id="addForm">
-                <div class="form-group">
-                    <label>Titre du Service</label>
-                    <input type="text" id="title" required placeholder="Ex: Installation Solaire">
-                </div>
-                <div class="form-group">
-                    <label>Catégorie</label>
-                    <select id="category">
-                        <option value="Photovoltaïque">Photovoltaïque</option>
-                        <option value="Froid & Clim">Froid & Clim</option>
-                        <option value="Électricité">Électricité</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Lien de l'image (URL)</label>
-                    <input type="text" id="image_url" placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="description" rows="4"></textarea>
-                </div>
-                <button type="submit" class="btn-save">Créer le service</button>
-            </form>
-        </div>
-    </main>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div style="padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
+                <h2><i class="fas fa-bolt" style="color:#E53E3E"></i> SIMEL Admin</h2>
+            </div>
+            <nav>
+                <a href="annonces-list.html" style="display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h1 style="margin-bottom: 30px;">Créer un Nouveau Service</h1>
+
+            <div class="form-container">
+                <form id="serviceForm">
+                    <div class="form-group">
+                        <label>Nom du Service / Expertise</label>
+                        <input type="text" id="title" required placeholder="Ex: Installation Panneaux Solaires 5KVA">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select id="category">
+                            <option value="Photovoltaïque">Photovoltaïque</option>
+                            <option value="Froid & Clim">Froid & Clim</option>
+                            <option value="Électricité Industrielle">Électricité Industrielle</option>
+                            <option value="Sécurité Électronique">Sécurité Électronique</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description courte</label>
+                        <textarea id="description" rows="4" placeholder="Décrivez brièvement le service..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL de l'image</label>
+                        <input type="text" id="image_url" placeholder="https://votre-site.com/image.jpg">
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn-save" id="submitBtn">Enregistrer le Service</button>
+                        <a href="annonces-list.html" class="btn-cancel">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
 
     <script>
-        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM');
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        document.getElementById('addForm').onsubmit = async (e) => {
+        document.getElementById('serviceForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const service = {
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Chargement...";
+            btn.disabled = true;
+
+            const serviceData = {
                 title: document.getElementById('title').value,
                 category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
                 image_url: document.getElementById('image_url').value,
-                description: document.getElementById('description').value
+                created_at: new Date()
             };
 
-            const { error } = await _supabase.from('portfolio_services').insert([service]);
-            if(error) alert(error.message);
-            else window.location.href = 'annonces-list.html';
-        };
+            const { error } = await _supabase
+                .from('portfolio_services')
+                .insert([serviceData]);
+
+            if (error) {
+                alert("Erreur : " + error.message);
+                btn.innerText = "Enregistrer le Service";
+                btn.disabled = false;
+            } else {
+                alert("Service ajouté avec succès !");
+                window.location.href = 'annonces-list.html';
+            }
+        });
     </script>
 </body>
 </html>
