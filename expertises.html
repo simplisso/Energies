@@ -21,7 +21,8 @@
                     <li><a href="expertises.html" class="active">Nos Expertises</a></li>
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="tel:+22900000000" class="cta-admin"><i class="fas fa-phone-alt"></i> Urgence 24h/7</a></li>
+                    <li><a href="/admin/login.html" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-lock"></i> Admin</a></li>
+                    <li><a href="tel:+22900000000" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
@@ -36,43 +37,24 @@
 
     <main class="container" style="padding: 40px 0;">
         <div class="annonces-grid">
-            
             <article class="annonce-card">
                 <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=500');"></div>
                 <div class="card-content">
                     <h3>Énergie Solaire</h3>
-                    <p>Étude et installation de systèmes photovoltaïques (On-grid, Off-grid et Hybride). Gagnez en autonomie énergétique.</p>
+                    <p>Étude et installation de systèmes photovoltaïques. Gagnez en autonomie énergétique.</p>
                 </div>
             </article>
-
             <article class="annonce-card">
                 <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1621905252507-b354bc2d18c4?w=500');"></div>
                 <div class="card-content">
                     <h3>Électricité Industrielle</h3>
-                    <p>Câblage d'armoires électriques, maintenance de machines et installation de TGBT aux normes internationales.</p>
+                    <p>Câblage d'armoires, maintenance de machines et installation de TGBT.</p>
                 </div>
             </article>
-
-            <article class="annonce-card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=500');"></div>
-                <div class="card-content">
-                    <h3>Sécurité Électronique</h3>
-                    <p>Vidéosurveillance IP, alarmes anti-intrusion et contrôle d'accès biométrique pour sécuriser vos biens.</p>
-                </div>
-            </article>
-
-            <article class="annonce-card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500');"></div>
-                <div class="card-content">
-                    <h3>Froid & Climatisation</h3>
-                    <p>Pose et entretien de climatisations et chambres froides. Solutions thermiques efficaces et durables.</p>
-                </div>
-            </article>
-
         </div>
     </main>
 
-    <a href="https://wa.me/22900000000" class="whatsapp-float" target="_blank">
+    <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
         <span>Un devis gratuit ?</span>
     </a>
@@ -86,8 +68,8 @@
                 </div>
                 <div>
                     <h3>Contact rapide</h3>
-                    <p><i class="fas fa-phone"></i> +229 XX XX XX XX</p>
-                    <p><i class="fas fa-envelope"></i> contact@simel-ses.com</p>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">...</span></p>
                 </div>
             </div>
             <div class="footer-bottom">&copy; 2025 SIMEL S.E.S</div>
@@ -95,10 +77,24 @@
     </footer>
 
     <script>
-        document.querySelector('.menu-toggle').addEventListener('click', () => {
-            document.getElementById('main-menu').classList.toggle('is-open');
-        });
-    </script>
+        const toggle = document.querySelector('.menu-toggle');
+        const menu = document.getElementById('main-menu');
+        toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
 
+        async function syncSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
+                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
+                const cleanNumber = data.phone.replace(/\D/g, '');
+                document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                    if(link.href.includes('tel:')) link.href = `tel:${cleanNumber}`;
+                    if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
+                });
+            } catch (err) { console.log("Erreur synchro"); }
+        }
+        window.onload = syncSettings;
+    </script>
 </body>
 </html>
