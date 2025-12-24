@@ -1,115 +1,146 @@
-/* ==================================== */
-/* STYLE DES ANNONCES (CARDS & ADMIN)   */
-/* ==================================== */
+/* ================================================= */
+/* STYLE D'ADMINISTRATION GÉNÉRAL & GESTION ANNONCES */
+/* ================================================= */
 
-/* 1. Grille d'affichage (Public) */
-.annonces-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    padding: 20px 0;
+/* 1. Layout Admin (Structure Sidebar + Content) */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
 }
 
-/* 2. Carte d'Annonce Individuelle */
-.annonce-item {
-    background: #ffffff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #edf2f7;
-}
-
-.annonce-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.annonce-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-bottom: 3px solid var(--accent); /* Rappel du rouge SIMEL */
-}
-
-.annonce-details {
-    padding: 20px;
-}
-
-.annonce-category {
-    display: inline-block;
-    background: #ebf8ff;
-    color: #3182ce;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-.annonce-title {
-    font-size: 1.25rem;
-    color: var(--primary);
-    margin-bottom: 10px;
-}
-
-/* 3. Style Tableau Admin (Annonces-list.html) */
+/* 2. Style Tableau Admin (Annonces-list.html / Leads.html) */
 .admin-table-container {
     background: white;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     overflow-x: auto;
+    margin-top: 20px;
 }
 
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
 }
 
 .admin-table th {
     background-color: #f8fafc;
     color: #4a5568;
     text-align: left;
-    padding: 12px 15px;
+    padding: 15px;
     font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
     border-bottom: 2px solid #e2e8f0;
 }
 
 .admin-table td {
-    padding: 12px 15px;
+    padding: 15px;
     border-bottom: 1px solid #edf2f7;
     vertical-align: middle;
+    color: #2d3748;
 }
 
-/* 4. Badges de Statut */
+/* 3. Badges de Statut (Annonces & Demandes) */
 .badge {
     padding: 5px 12px;
     border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+    text-transform: uppercase;
 }
 
-.badge-active { background: #c6f6d5; color: #22543d; }
-.badge-pending { background: #feebc8; color: #744210; }
-.badge-urgent { background: #fed7d7; color: #822727; }
+.badge-active { background: #c6f6d5; color: #22543d; } /* En ligne */
+.badge-pending { background: #feebc8; color: #744210; } /* En attente */
+.badge-urgent { background: #fed7d7; color: #822727; }  /* Urgent / Nouveau */
+.badge-read { background: #edf2f7; color: #4a5568; }    /* Déjà lu */
 
-/* 5. Boutons d'action */
+/* 4. Boutons d'Action Rapide */
 .btn-action {
-    padding: 6px;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     color: #718096;
     margin-right: 5px;
-    transition: 0.2s;
+    transition: all 0.2s;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
 }
 
 .btn-action:hover {
     background: #edf2f7;
-    color: var(--primary);
+    color: var(--primary); /* Bleu SIMEL */
+    transform: scale(1.1);
+}
+
+.btn-edit:hover {
+    color: #3182ce;
+    border-color: #3182ce;
 }
 
 .btn-delete:hover {
-    color: var(--accent);
+    color: var(--accent); /* Rouge SIMEL */
+    border-color: var(--accent);
+}
+
+/* 5. Cartes d'Annonce (Aperçu Public sur Admin) */
+.annonce-item {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    border: 1px solid #edf2f7;
+}
+
+.annonce-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--accent);
+}
+
+.annonce-details {
+    padding: 15px;
+}
+
+.annonce-category {
+    background: #ebf8ff;
+    color: #3182ce;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+/* 6. Formulaires de Réglages (Settings) */
+.admin-form-group {
+    margin-bottom: 20px;
+}
+
+.admin-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4a5568;
+}
+
+.admin-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+}
+
+.admin-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
 }
