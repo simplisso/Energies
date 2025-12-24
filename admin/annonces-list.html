@@ -1,171 +1,57 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Services | Admin SIMEL S.E.S</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+<div class="settings-container">
+    <h2><i class="fas fa-tools"></i> Ajouter un Service ou Chantier</h2>
+    <form id="serviceForm" style="margin-top: 20px;">
+        <div class="form-group">
+            <label>Titre du projet / Service</label>
+            <input type="text" id="serviceTitle" placeholder="Ex: Installation Solaire 5KW à Cotonou" required>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="serviceDesc" rows="3" placeholder="Détails du chantier..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Photo du chantier</label>
+            <input type="file" id="serviceImg" accept="image/*" required>
+        </div>
+        <button type="submit" id="addBtn" class="btn-save" style="background: #3182CE;">
+            <i class="fas fa-plus"></i> Publier sur le site
+        </button>
+    </form>
+</div>
 
-        :root {
-            --primary: #2D3748;
-            --accent: #E53E3E;
-            --bg-light: #F0F2F5;
-            --white: #ffffff;
+<script>
+    const _supabase = supabase.createClient('VOTRE_URL', 'VOTRE_KEY');
+
+    document.getElementById('serviceForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('addBtn');
+        const file = document.getElementById('serviceImg').files[0];
+        btn.disabled = true;
+
+        // 1. Upload de l'image dans le Storage
+        const fileName = `${Date.now()}_${file.name}`;
+        const { data: imgData, error: imgError } = await _supabase.storage
+            .from('services-images')
+            .upload(fileName, file);
+
+        if (imgError) return alert("Erreur image: " + imgError.message);
+
+        // 2. Récupérer l'URL publique de l'image
+        const { data: { publicUrl } } = _supabase.storage
+            .from('services-images')
+            .getPublicUrl(fileName);
+
+        // 3. Enregistrer les infos dans la table
+        const { error } = await _supabase.from('portfolio_services').insert([{
+            title: document.getElementById('serviceTitle').value,
+            description: document.getElementById('serviceDesc').value,
+            image_url: publicUrl
+        }]);
+
+        if (error) alert(error.message);
+        else {
+            alert("Chantier ajouté avec succès !");
+            location.reload();
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: #4A4A4A; }
-        
-        .admin-layout { display: flex; min-height: 100vh; }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 250px;
-            background-color: var(--primary);
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: #A0AEC0;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background: rgba(255,255,255,0.05);
-            color: white;
-            border-left: 4px solid var(--accent);
-        }
-        .sidebar-menu i { margin-right: 10px; width: 20px; }
-
-        /* MAIN CONTENT */
-        .main-content { flex: 1; padding: 30px; }
-        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        .btn-add {
-            background: var(--accent);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .btn-add:hover { background: #C53030; }
-
-        /* TABLE STYLES */
-        .table-container {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; color: #718096; text-transform: uppercase; font-size: 0.8rem; }
-        td { padding: 15px; border-bottom: 1px solid #edf2f7; vertical-align: middle; }
-        
-        .badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .badge-active { background: #C6F6D5; color: #22543D; }
-
-        .actions i {
-            margin-right: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .fa-edit { color: #3182CE; }
-        .fa-trash-alt { color: #E53E3E; }
-        .fa-edit:hover, .fa-trash-alt:hover { opacity: 0.7; }
-
-        .admin-footer { margin-top: 40px; text-align: center; color: #A0AEC0; font-size: 0.8rem; }
-    </style>
-</head>
-<body>
-
-    <div class="admin-layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2 style="font-size: 1.2rem;"><i class="fas fa-bolt" style="color:var(--accent)"></i> SIMEL Admin</h2>
-            </div>
-            <nav class="sidebar-menu">
-                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
-                <a href="annonces-list.html" class="active"><i class="fas fa-list"></i> Nos Services</a>
-                <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
-                <a href="agents.html"><i class="fas fa-users"></i> Agents</a>
-                <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
-                <hr style="margin: 10px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-                <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Voir le site</a>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <div class="header-actions">
-                <h1>Gestion des Services (Annonces)</h1>
-                <a href="#" class="btn-add"><i class="fas fa-plus"></i> Nouveau Service</a>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service / Annonce</th>
-                            <th>Catégorie</th>
-                            <th>Date Publiée</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Installation Solaire 5KVA</strong></td>
-                            <td>Photovoltaïque</td>
-                            <td>22/12/2025</td>
-                            <td><span class="badge badge-active">En ligne</span></td>
-                            <td class="actions">
-                                <a href="#"><i class="fas fa-edit"></i></a>
-                                <a href="#"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Maintenance Climatisation VRV</strong></td>
-                            <td>Froid & Clim</td>
-                            <td>20/12/2025</td>
-                            <td><span class="badge badge-active">En ligne</span></td>
-                            <td class="actions">
-                                <a href="#"><i class="fas fa-edit"></i></a>
-                                <a href="#"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sécurité Vidéosurveillance IP</strong></td>
-                            <td>Électronique</td>
-                            <td>15/12/2025</td>
-                            <td><span class="badge badge-active">En ligne</span></td>
-                            <td class="actions">
-                                <a href="#"><i class="fas fa-edit"></i></a>
-                                <a href="#"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <footer class="admin-footer">
-                &copy; 2025 SIMEL S.E.S - Système de Gestion de Contenu.
-            </footer>
-        </main>
-    </div>
-
-</body>
-</html>
+    });
+</script>
