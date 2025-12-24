@@ -3,112 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Annonces | Admin SIMEL S.E.S</title>
+    <title>Gestion des Services | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* ==================================== */
-        /* CSS GLOBAL ADMIN (Intégré)          */
-        /* ==================================== */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
+        :root {
+            --primary: #2D3748;
+            --accent: #E53E3E;
+            --bg-light: #F0F2F5;
+            --white: #ffffff;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #4A4A4A; background-color: #E2E8F0; }
-        a { text-decoration: none; transition: 0.3s; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: #4A4A4A; }
         
         .admin-layout { display: flex; min-height: 100vh; }
 
-        /* SIDEBAR / HEADER LATÉRAL */
+        /* SIDEBAR */
         .sidebar {
             width: 250px;
-            background-color: #2D3748;
+            background-color: var(--primary);
             color: white;
             padding: 20px 0;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-        }
-        .sidebar-header {
-            text-align: center;
-            padding-bottom: 20px;
-            margin: 0 20px 30px 20px;
-            border-bottom: 1px solid #4A5568;
-        }
-        .sidebar .logo { font-size: 1.4em; font-weight: 700; color: white; }
-        .sidebar .logo i { color: #3182CE; margin-right: 10px; }
-
-        .sidebar-nav ul { list-style: none; padding: 0 10px; }
-        .sidebar-nav a {
             display: flex;
-            align-items: center;
-            padding: 12px 15px;
+            flex-direction: column;
+        }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
             color: #A0AEC0;
-            margin-bottom: 5px;
-            border-radius: 4px;
+            text-decoration: none;
+            transition: 0.3s;
         }
-        .sidebar-nav a:hover, .sidebar-nav a.active {
-            background-color: #3182CE;
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255,255,255,0.05);
             color: white;
+            border-left: 4px solid var(--accent);
         }
-        .sidebar-nav a i { margin-right: 10px; width: 20px; text-align: center; }
+        .sidebar-menu i { margin-right: 10px; width: 20px; }
 
         /* MAIN CONTENT */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 30px; }
+        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        .admin-topbar {
-            background-color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .btn-add {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
         }
+        .btn-add:hover { background: #C53030; }
 
-        .dashboard-content { padding: 30px; flex-grow: 1; }
-
-        /* TABLEAU DES ANNONCES */
-        .admin-table-container {
-            background: white;
+        /* TABLE STYLES */
+        .table-container {
+            background: var(--white);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .admin-table th { 
-            text-align: left; 
-            padding: 12px; 
-            background: #F7FAFC; 
-            color: #718096; 
-            text-transform: uppercase; 
-            font-size: 0.8em; 
-        }
-        .admin-table td { padding: 15px 12px; border-bottom: 1px solid #E2E8F0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; color: #718096; text-transform: uppercase; font-size: 0.8rem; }
+        td { padding: 15px; border-bottom: 1px solid #edf2f7; vertical-align: middle; }
         
-        /* BADGES & BOUTONS */
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
         .badge-active { background: #C6F6D5; color: #22543D; }
-        
-        .admin-cta {
-            background: #3182CE;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        .btn-edit { color: #3182CE; margin-right: 10px; }
-        .btn-delete { color: #E53E3E; }
 
-        /* FOOTER ADMIN */
-        .admin-footer {
-            padding: 15px 30px;
-            background: white;
-            text-align: center;
-            font-size: 0.85em;
-            color: #718096;
-            border-top: 1px solid #E2E8F0;
+        .actions i {
+            margin-right: 10px;
+            cursor: pointer;
+            transition: 0.3s;
         }
+        .fa-edit { color: #3182CE; }
+        .fa-trash-alt { color: #E53E3E; }
+        .fa-edit:hover, .fa-trash-alt:hover { opacity: 0.7; }
+
+        .admin-footer { margin-top: 40px; text-align: center; color: #A0AEC0; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -116,67 +96,73 @@
     <div class="admin-layout">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <a href="dashboard.html" class="logo">
-                    <i class="fas fa-user-shield"></i> <span>SIMEL Admin</span>
-                </a>
+                <h2 style="font-size: 1.2rem;"><i class="fas fa-bolt" style="color:var(--accent)"></i> SIMEL Admin</h2>
             </div>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> <span>Tableau de Bord</span></a></li>
-                    <li><a href="annonces-list.html" class="active"><i class="fas fa-building"></i> <span>Annonces</span></a></li>
-                    <li><a href="leads.html"><i class="fas fa-envelope-open-text"></i> <span>Demandes</span></a></li>
-                    <li><a href="agents.html"><i class="fas fa-users"></i> <span>Agents</span></a></li>
-                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Paramètres</span></a></li>
-                </ul>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="annonces-list.html" class="active"><i class="fas fa-list"></i> Nos Services</a>
+                <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
+                <a href="agents.html"><i class="fas fa-users"></i> Agents</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
+                <hr style="margin: 10px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
+                <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Voir le site</a>
             </nav>
         </aside>
 
         <main class="main-content">
-            <header class="admin-topbar">
-                <h1>Gestion des Annonces</h1>
-                <a href="annonces-new.html" class="admin-cta"><i class="fas fa-plus"></i> Ajouter un service</a>
-            </header>
+            <div class="header-actions">
+                <h1>Gestion des Services (Annonces)</h1>
+                <a href="#" class="btn-add"><i class="fas fa-plus"></i> Nouveau Service</a>
+            </div>
 
-            <div class="dashboard-content">
-                <div class="admin-table-container">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Titre du Service</th>
-                                <th>Catégorie</th>
-                                <th>Date de création</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Installation Solaire 5KVA</strong></td>
-                                <td>Photovoltaïque</td>
-                                <td>22/12/2025</td>
-                                <td><span class="badge badge-active">En ligne</span></td>
-                                <td>
-                                    <a href="#" class="btn-edit"><i class="fas fa-edit"></i></a>
-                                    <a href="#" class="btn-delete"><i class="fas fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Maintenance Climatisation VRV</strong></td>
-                                <td>Froid & Clim</td>
-                                <td>20/12/2025</td>
-                                <td><span class="badge badge-active">En ligne</span></td>
-                                <td>
-                                    <a href="#" class="btn-edit"><i class="fas fa-edit"></i></a>
-                                    <a href="#" class="btn-delete"><i class="fas fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service / Annonce</th>
+                            <th>Catégorie</th>
+                            <th>Date Publiée</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Installation Solaire 5KVA</strong></td>
+                            <td>Photovoltaïque</td>
+                            <td>22/12/2025</td>
+                            <td><span class="badge badge-active">En ligne</span></td>
+                            <td class="actions">
+                                <a href="#"><i class="fas fa-edit"></i></a>
+                                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maintenance Climatisation VRV</strong></td>
+                            <td>Froid & Clim</td>
+                            <td>20/12/2025</td>
+                            <td><span class="badge badge-active">En ligne</span></td>
+                            <td class="actions">
+                                <a href="#"><i class="fas fa-edit"></i></a>
+                                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sécurité Vidéosurveillance IP</strong></td>
+                            <td>Électronique</td>
+                            <td>15/12/2025</td>
+                            <td><span class="badge badge-active">En ligne</span></td>
+                            <td class="actions">
+                                <a href="#"><i class="fas fa-edit"></i></a>
+                                <a href="#"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <footer class="admin-footer">
-                &copy; 2025 SIMEL S.E.S - Système de Gestion Interne.
+                &copy; 2025 SIMEL S.E.S - Système de Gestion de Contenu.
             </footer>
         </main>
     </div>
