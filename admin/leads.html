@@ -3,61 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Agents | SIMEL S.E.S</title>
+    <title>Demandes Clients | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
         :root { --primary: #2D3748; --accent: #E53E3E; --bg: #F0F2F5; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; min-height: 100vh; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; }
 
         .sidebar { width: 250px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 20px 0; }
-        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; transition: 0.3s; }
+        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; }
         .sidebar-menu a.active { color: white; border-left: 4px solid var(--accent); background: rgba(255,255,255,0.05); }
 
         .main-content { flex: 1; margin-left: 250px; padding: 40px; width: calc(100% - 250px); }
-        .agent-form { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
-        .btn-add { background: #38A169; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; }
-
-        .agent-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .agent-card { background: white; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .agent-avatar { width: 50px; height: 50px; background: #E2E8F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); }
-        .btn-del { position: absolute; top: 10px; right: 10px; color: #E53E3E; cursor: pointer; border: none; background: none; font-size: 1.1rem; }
+        .lead-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; display: grid; grid-template-columns: 200px 1fr 50px; gap: 20px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #CBD5E0; }
+        .lead-card.new { border-left-color: var(--accent); }
+        .btn-delete { color: #E53E3E; background: none; border: none; cursor: pointer; font-size: 1.2rem; }
         #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay">Chargement sécurisé...</div>
+    <div id="loadingOverlay">Chargement des messages...</div>
 
     <aside class="sidebar">
-        <div class="sidebar-header"><h2>SIMEL Admin</h2></div>
+        <div style="padding: 20px;"><h2>SIMEL Admin</h2></div>
         <nav class="sidebar-menu">
             <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
-            <a href="agents.html" class="active"><i class="fas fa-users"></i> Agents</a>
+            <a href="leads.html" class="active"><i class="fas fa-envelope"></i> Demandes</a>
+            <a href="agents.html"><i class="fas fa-users"></i> Agents</a>
             <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
         </nav>
     </aside>
 
     <main class="main-content">
-        <h1>Équipe Technique</h1>
-        <div class="agent-form">
-            <h3>Ajouter un Agent</h3>
-            <form id="addAgentForm">
-                <div class="form-grid">
-                    <input type="text" id="name" placeholder="Nom Complet" required>
-                    <input type="text" id="specialty" placeholder="Spécialité" required>
-                    <input type="tel" id="phone" placeholder="Téléphone">
-                </div>
-                <button type="submit" class="btn-add">Enregistrer l'agent</button>
-            </form>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1>Messages reçus</h1>
+            <button onclick="fetchLeads()" class="btn-add" style="background:var(--primary); color:white; padding:10px; border-radius:5px; border:none; cursor:pointer;"><i class="fas fa-sync"></i></button>
         </div>
-        <div id="agentList" class="agent-list"></div>
+        <div id="leadsList"></div>
     </main>
 
     <script>
@@ -71,42 +56,34 @@
                 window.location.replace('login.html');
             } else {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                loadAgents();
+                fetchLeads();
             }
         }
 
-        async function loadAgents() {
-            const { data: agents } = await _supabase.from('agents').select('*').order('created_at', { ascending: false });
-            const list = document.getElementById('agentList');
-            if (agents) {
-                list.innerHTML = agents.map(agent => `
-                    <div class="agent-card">
-                        <div class="agent-avatar"><i class="fas fa-user-gear"></i></div>
+        async function fetchLeads() {
+            const { data: leads } = await _supabase.from('leads').select('*').order('created_at', { ascending: false });
+            const list = document.getElementById('leadsList');
+            if (leads) {
+                list.innerHTML = leads.map(l => `
+                    <div class="lead-card ${l.status === 'nouveau' ? 'new' : ''}">
                         <div>
-                            <strong>${agent.full_name}</strong>
-                            <p style="font-size: 0.85rem; color: #718096;">${agent.specialty}</p>
-                            <p style="font-size: 0.85rem;"><i class="fas fa-phone"></i> ${agent.phone || '-'}</p>
+                            <strong style="display:block;">${l.client_name}</strong>
+                            <small>${l.client_phone}</small>
                         </div>
-                        <button onclick="deleteAgent(${agent.id})" class="btn-del"><i class="fas fa-trash"></i></button>
+                        <div>
+                            <em style="color:var(--accent); font-weight:bold;">${l.subject}</em>
+                            <p style="margin-top:5px; font-size:0.9rem;">${l.message}</p>
+                        </div>
+                        <button onclick="deleteLead(${l.id})" class="btn-delete"><i class="fas fa-trash"></i></button>
                     </div>
                 `).join('');
             }
         }
 
-        document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const { error } = await _supabase.from('agents').insert([{
-                full_name: document.getElementById('name').value,
-                specialty: document.getElementById('specialty').value,
-                phone: document.getElementById('phone').value
-            }]);
-            if (!error) { e.target.reset(); loadAgents(); }
-        });
-
-        async function deleteAgent(id) {
-            if(confirm("Supprimer cet agent ?")) {
-                await _supabase.from('agents').delete().eq('id', id);
-                loadAgents();
+        async function deleteLead(id) {
+            if(confirm("Supprimer ce message ?")) {
+                await _supabase.from('leads').delete().eq('id', id);
+                fetchLeads();
             }
         }
 
