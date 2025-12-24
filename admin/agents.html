@@ -10,32 +10,32 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
         :root { --primary: #2D3748; --accent: #E53E3E; --bg: #F0F2F5; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; min-height: 100vh; }
 
-        /* SIDEBAR identique aux autres pages */
         .sidebar { width: 250px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 20px 0; }
-        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; transition: 0.3s; }
         .sidebar-menu a.active { color: white; border-left: 4px solid var(--accent); background: rgba(255,255,255,0.05); }
 
-        .main-content { flex: 1; margin-left: 250px; padding: 40px; }
-        
-        /* FORMULAIRE D'AJOUT */
+        .main-content { flex: 1; margin-left: 250px; padding: 40px; width: calc(100% - 250px); }
         .agent-form { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
-        .btn-add { background: #38A169; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+        .btn-add { background: #38A169; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; }
 
-        /* LISTE DES AGENTS */
         .agent-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .agent-card { background: white; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; position: relative; }
+        .agent-card { background: white; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .agent-avatar { width: 50px; height: 50px; background: #E2E8F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); }
-        .btn-del { position: absolute; top: 10px; right: 10px; color: #E53E3E; cursor: pointer; border: none; background: none; }
+        .btn-del { position: absolute; top: 10px; right: 10px; color: #E53E3E; cursor: pointer; border: none; background: none; font-size: 1.1rem; }
+        #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 1000; }
     </style>
 </head>
 <body>
 
+    <div id="loadingOverlay">Chargement sécurisé...</div>
+
     <aside class="sidebar">
-        <div style="padding: 20px;"><h2>SIMEL Admin</h2></div>
+        <div class="sidebar-header"><h2>SIMEL Admin</h2></div>
         <nav class="sidebar-menu">
             <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
@@ -45,23 +45,19 @@
     </aside>
 
     <main class="main-content">
-        <h1>Gestion des Agents</h1>
-        <p style="margin-bottom: 25px; color: #718096;">Ajoutez les membres de votre équipe technique.</p>
-
+        <h1>Équipe Technique</h1>
         <div class="agent-form">
-            <h3>Nouvel Agent</h3>
+            <h3>Ajouter un Agent</h3>
             <form id="addAgentForm">
-                <div class="form-grid" style="margin-top: 15px;">
+                <div class="form-grid">
                     <input type="text" id="name" placeholder="Nom Complet" required>
-                    <input type="text" id="specialty" placeholder="Spécialité (ex: Solaire)" required>
+                    <input type="text" id="specialty" placeholder="Spécialité" required>
                     <input type="tel" id="phone" placeholder="Téléphone">
                 </div>
-                <button type="submit" class="btn-add">Ajouter l'agent</button>
+                <button type="submit" class="btn-add">Enregistrer l'agent</button>
             </form>
         </div>
-
-        <div id="agentList" class="agent-list">
-            </div>
+        <div id="agentList" class="agent-list"></div>
     </main>
 
     <script>
@@ -69,40 +65,44 @@
         const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Charger les agents
+        async function checkAuth() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) {
+                window.location.replace('login.html');
+            } else {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                loadAgents();
+            }
+        }
+
         async function loadAgents() {
             const { data: agents } = await _supabase.from('agents').select('*').order('created_at', { ascending: false });
             const list = document.getElementById('agentList');
-            list.innerHTML = agents.map(agent => `
-                <div class="agent-card">
-                    <div class="agent-avatar"><i class="fas fa-user"></i></div>
-                    <div>
-                        <strong>${agent.full_name}</strong>
-                        <p style="font-size: 0.8rem; color: #718096;">${agent.specialty}</p>
-                        <p style="font-size: 0.8rem;"><i class="fas fa-phone"></i> ${agent.phone || 'Non renseigné'}</p>
+            if (agents) {
+                list.innerHTML = agents.map(agent => `
+                    <div class="agent-card">
+                        <div class="agent-avatar"><i class="fas fa-user-gear"></i></div>
+                        <div>
+                            <strong>${agent.full_name}</strong>
+                            <p style="font-size: 0.85rem; color: #718096;">${agent.specialty}</p>
+                            <p style="font-size: 0.85rem;"><i class="fas fa-phone"></i> ${agent.phone || '-'}</p>
+                        </div>
+                        <button onclick="deleteAgent(${agent.id})" class="btn-del"><i class="fas fa-trash"></i></button>
                     </div>
-                    <button onclick="deleteAgent(${agent.id})" class="btn-del"><i class="fas fa-trash"></i></button>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
 
-        // Ajouter un agent
         document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const newAgent = {
+            const { error } = await _supabase.from('agents').insert([{
                 full_name: document.getElementById('name').value,
                 specialty: document.getElementById('specialty').value,
                 phone: document.getElementById('phone').value
-            };
-
-            const { error } = await _supabase.from('agents').insert([newAgent]);
-            if (!error) {
-                document.getElementById('addAgentForm').reset();
-                loadAgents();
-            }
+            }]);
+            if (!error) { e.target.reset(); loadAgents(); }
         });
 
-        // Supprimer
         async function deleteAgent(id) {
             if(confirm("Supprimer cet agent ?")) {
                 await _supabase.from('agents').delete().eq('id', id);
@@ -110,14 +110,7 @@
             }
         }
 
-        // Vérifier auth
-        async function init() {
-            const { data } = await _supabase.auth.getSession();
-            if (!data.session) window.location.href = 'login.html';
-            else loadAgents();
-        }
-
-        init();
+        window.onload = checkAuth;
     </script>
 </body>
 </html>
