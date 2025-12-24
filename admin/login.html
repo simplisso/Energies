@@ -9,7 +9,7 @@
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #2D3748; /* Couleur primaire SIMEL */
+            background-color: #2D3748; /* Bleu nuit SIMEL */
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -31,7 +31,7 @@
             font-size: 1.8rem;
         }
         .login-card h1 i {
-            color: #E53E3E; /* Rouge accent SIMEL */
+            color: #E53E3E; /* Rouge SIMEL */
             margin-right: 10px;
         }
         .form-group { text-align: left; margin-bottom: 20px; }
@@ -50,7 +50,7 @@
             box-sizing: border-box;
         }
         .form-group input:focus {
-            border-color: #3182CE;
+            border-color: #E53E3E;
             outline: none;
         }
         .login-btn { 
@@ -69,6 +69,15 @@
             background: #C53030; 
             transform: translateY(-2px);
         }
+        .error-msg {
+            color: #E53E3E;
+            background: #FFF5F5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none; /* Caché par défaut */
+            font-size: 0.9rem;
+        }
         .back-site { 
             display: inline-block; 
             margin-top: 25px; 
@@ -76,10 +85,7 @@
             color: #718096; 
             text-decoration: none;
         }
-        .back-site:hover {
-            color: #2D3748;
-            text-decoration: underline;
-        }
+        .back-site:hover { color: #2D3748; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -87,15 +93,17 @@
     <div class="login-card">
         <h1><i class="fas fa-user-shield"></i> Espace Admin</h1>
         
-        <form action="dashboard.html">
+        <div id="errorMessage" class="error-msg">Identifiants incorrects</div>
+
+        <form id="loginForm">
             <div class="form-group">
                 <label>Identifiant</label>
-                <input type="text" placeholder="Nom d'utilisateur" required>
+                <input type="text" id="username" placeholder="Nom d'utilisateur" required>
             </div>
             
             <div class="form-group">
                 <label>Mot de passe</label>
-                <input type="password" placeholder="••••••••" required>
+                <input type="password" id="password" placeholder="••••••••" required>
             </div>
             
             <button type="submit" class="login-btn">Se connecter</button>
@@ -105,6 +113,39 @@
             <i class="fas fa-arrow-left"></i> Retour au site public
         </a>
     </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            // Envoi des données au backend (server.js)
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Si succès, direction le dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    // Si échec, on affiche l'erreur
+                    errorDiv.textContent = result.message || "Erreur de connexion";
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = "Erreur serveur. Vérifiez que le backend tourne.";
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
 
 </body>
 </html>
