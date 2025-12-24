@@ -2,150 +2,63 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion Admin - SIMEL S.E.S</title>
+    <title>Connexion Sécurisée - SIMEL S.E.S</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css"> 
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #2D3748; /* Bleu nuit SIMEL */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
-        .login-card { 
-            background: white; 
-            padding: 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
-            width: 100%; 
-            max-width: 400px; 
-            text-align: center; 
-        }
-        .login-card h1 { 
-            color: #2D3748; 
-            margin-bottom: 30px; 
-            font-size: 1.8rem;
-        }
-        .login-card h1 i {
-            color: #E53E3E; /* Rouge SIMEL */
-            margin-right: 10px;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #2D3748; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .form-group { text-align: left; margin-bottom: 20px; }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 600; 
-            color: #4A5568;
-        }
-        .form-group input { 
-            width: 100%; 
-            padding: 12px; 
-            border: 2px solid #E2E8F0; 
-            border-radius: 6px; 
-            transition: 0.3s;
-            box-sizing: border-box;
-        }
-        .form-group input:focus {
-            border-color: #E53E3E;
-            outline: none;
-        }
-        .login-btn { 
-            width: 100%; 
-            padding: 14px; 
-            background: #E53E3E; 
-            color: white; 
-            border: none; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            font-size: 1rem;
-            cursor: pointer; 
-            transition: 0.3s; 
-        }
-        .login-btn:hover { 
-            background: #C53030; 
-            transform: translateY(-2px);
-        }
-        .error-msg {
-            color: #E53E3E;
-            background: #FFF5F5;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: none; /* Caché par défaut */
-            font-size: 0.9rem;
-        }
-        .back-site { 
-            display: inline-block; 
-            margin-top: 25px; 
-            font-size: 0.9em; 
-            color: #718096; 
-            text-decoration: none;
-        }
-        .back-site:hover { color: #2D3748; text-decoration: underline; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #4A5568; }
+        .form-group input { width: 100%; padding: 12px; border: 2px solid #E2E8F0; border-radius: 6px; box-sizing: border-box; }
+        .login-btn { width: 100%; padding: 14px; background: #E53E3E; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .error { color: #E53E3E; margin-bottom: 15px; font-size: 0.9em; display: none; }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-        <h1><i class="fas fa-user-shield"></i> Espace Admin</h1>
+        <h1 style="color: #2D3748;"><i class="fas fa-user-shield"></i> Admin</h1>
+        <div id="errorMsg" class="error">Identifiants invalides</div>
         
-        <div id="errorMessage" class="error-msg">Identifiants incorrects</div>
-
         <form id="loginForm">
             <div class="form-group">
-                <label>Identifiant</label>
-                <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+                <label>Email Admin</label>
+                <input type="email" id="email" placeholder="votre@email.com" required>
             </div>
-            
             <div class="form-group">
                 <label>Mot de passe</label>
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
-            
             <button type="submit" class="login-btn">Se connecter</button>
         </form>
-
-        <a href="../index.html" class="back-site">
-            <i class="fas fa-arrow-left"></i> Retour au site public
-        </a>
     </div>
 
     <script>
+        // REMPLACEZ PAR VOS CLÉS SUPABASE
+        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
+        const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('errorMessage');
+            const errorDiv = document.getElementById('errorMsg');
 
-            // Envoi des données au backend (server.js)
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
+            const { data, error } = await _supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
 
-                const result = await response.json();
-
-                if (result.success) {
-                    // Si succès, direction le dashboard
-                    window.location.href = 'dashboard.html';
-                } else {
-                    // Si échec, on affiche l'erreur
-                    errorDiv.textContent = result.message || "Erreur de connexion";
-                    errorDiv.style.display = 'block';
-                }
-            } catch (err) {
-                errorDiv.textContent = "Erreur serveur. Vérifiez que le backend tourne.";
+            if (error) {
+                errorDiv.innerText = "Erreur : " + error.message;
                 errorDiv.style.display = 'block';
+            } else {
+                // Succès : Supabase garde la session dans le navigateur automatiquement
+                window.location.href = 'dashboard.html';
             }
         });
     </script>
-
 </body>
 </html>
