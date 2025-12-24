@@ -6,248 +6,89 @@
     <title>Gestion des Annonces | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
         /* ==================================== */
-        /* CSS GLOBAL ADMIN (Intégré)          */
+        /* CSS GLOBAL ADMIN (Ton Style)        */
         /* ==================================== */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #4A4A4A; background-color: #E2E8F0; }
         a { text-decoration: none; transition: 0.3s; }
-        
         .admin-layout { display: flex; min-height: 100vh; }
-
-        /* SIDEBAR / HEADER LATÉRAL */
-        .sidebar {
-            width: 250px;
-            background-color: #2D3748;
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            height: 100vh;
-        }
-
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: #A0AEC0;
-            font-size: 0.95rem;
-        }
-
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background-color: rgba(255,255,255,0.05);
-            color: white;
-            border-left: 4px solid #E53E3E;
-        }
-
-        .sidebar-menu i { margin-right: 10px; width: 20px; text-align: center; }
-
-        /* CONTENU PRINCIPAL */
+        .sidebar { width: 250px; background-color: #2D3748; color: white; padding: 20px 0; position: fixed; height: 100vh; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; font-size: 0.95rem; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(255,255,255,0.05); color: white; border-left: 4px solid #E53E3E; }
         .main-content { flex: 1; margin-left: 250px; padding: 30px; }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .btn-add {
-            background-color: #3182CE;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* TABLEAU */
-        .admin-table-container {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th {
-            text-align: left;
-            padding: 15px;
-            border-bottom: 2px solid #edf2f7;
-            color: #718096;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-        }
-
-        .admin-table td {
-            padding: 15px;
-            border-bottom: 1px solid #edf2f7;
-            vertical-align: middle;
-        }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-active { background-color: #C6F6D5; color: #22543D; }
-
-        .btn-edit { color: #3182CE; margin-right: 10px; }
-        .btn-delete { color: #E53E3E; border:none; background:none; cursor:pointer; font-size:1rem; }
-
-        .admin-footer {
-            margin-top: 50px;
-            text-align: center;
-            color: #718096;
-            font-size: 0.85rem;
-        }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-add { background-color: #3182CE; color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; }
+        .admin-table-container { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; color: #718096; font-size: 0.8rem; }
+        .admin-table td { padding: 15px; border-bottom: 1px solid #edf2f7; }
+        .btn-delete { color: #E53E3E; border:none; background:none; cursor:pointer; }
     </style>
 </head>
 <body>
-
     <div class="admin-layout">
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fas fa-bolt" style="color:#E53E3E"></i> <span>SIMEL Admin</span></h2>
-            </div>
+            <div class="sidebar-header"><h2><i class="fas fa-bolt" style="color:#E53E3E"></i> SIMEL Admin</h2></div>
             <nav class="sidebar-menu">
                 <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
                 <a href="annonces-list.html" class="active"><i class="fas fa-list"></i> Nos Services</a>
                 <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
                 <a href="agents.html"><i class="fas fa-users"></i> Agents</a>
                 <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
-                <hr style="margin: 20px; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
-                <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Voir le site</a>
             </nav>
         </aside>
 
         <main class="main-content">
             <div class="page-header">
                 <h1>Liste des Services</h1>
-                <a href="annonces-new.html" class="btn-add">
-                    <i class="fas fa-plus"></i> Nouveau Service
-                </a>
+                <a href="annonces-new.html" class="btn-add"><i class="fas fa-plus"></i> Nouveau Service</a>
             </div>
 
             <div class="admin-table-container">
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Titre du Service</th>
+                            <th>Titre</th>
                             <th>Catégorie</th>
-                            <th>Date de création</th>
-                            <th>Statut</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="services-tbody">
-                        <tr><td colspan="5" style="text-align:center;">Chargement des services...</td></tr>
+                        <tr><td colspan="3">Chargement...</td></tr>
                     </tbody>
                 </table>
             </div>
-
-            <footer class="admin-footer">
-                &copy; 2025 SIMEL S.E.S - Système de Gestion Interne.
-            </footer>
         </main>
     </div>
 
     <script>
-        // CONFIGURATION
-        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM');
 
-        // 1. CHARGEMENT DES DONNÉES
         async function loadServices() {
-            // Vérifier si l'utilisateur est connecté
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Récupérer les services de la table 'portfolio_services'
-            const { data, error } = await _supabase
-                .from('portfolio_services')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error("Erreur:", error.message);
-                return;
-            }
-
+            const { data, error } = await _supabase.from('portfolio_services').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('services-tbody');
-            tbody.innerHTML = ''; // Vider le tableau
-
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Aucun service trouvé.</td></tr>';
-                return;
-            }
-
-            data.forEach(service => {
-                const dateFormatee = new Date(service.created_at).toLocaleDateString('fr-FR');
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${service.title || 'Sans titre'}</strong></td>
-                        <td>${service.category || 'Général'}</td>
-                        <td>${dateFormatee}</td>
-                        <td><span class="badge badge-active">En ligne</span></td>
-                        <td>
-                            <a href="#" class="btn-edit"><i class="fas fa-edit"></i></a>
-                            <button onclick="deleteService('${service.id}')" class="btn-delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                tbody.innerHTML += `<tr>
+                    <td><strong>${item.title}</strong></td>
+                    <td>${item.category || 'Service'}</td>
+                    <td>
+                        <button onclick="deleteItem('${item.id}')" class="btn-delete"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>`;
             });
         }
 
-        // 2. SUPPRESSION D'UN SERVICE
-        async function deleteService(id) {
-            if (confirm("Voulez-vous vraiment supprimer ce service ?")) {
-                const { error } = await _supabase
-                    .from('portfolio_services')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) {
-                    alert("Erreur lors de la suppression : " + error.message);
-                } else {
-                    loadServices(); // Recharger la liste
-                }
+        async function deleteItem(id) {
+            if(confirm("Supprimer ?")) {
+                await _supabase.from('portfolio_services').delete().eq('id', id);
+                loadServices();
             }
         }
-
-        // Lancer au chargement
         window.onload = loadServices;
     </script>
 </body>
