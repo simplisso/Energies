@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos | SIMEL S.E.S</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="header-top">
+                <a href="index.html" class="logo"><i class="fas fa-bolt"></i> SIMEL S.E.S</a>
+                <button class="menu-toggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+            </div>
+            <nav class="main-nav">
+                <ul id="main-menu" class="nav-list">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="expertises.html">Nos Expertises</a></li>
+                    <li><a href="a-propos.html" class="active">À Propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="tel:+22900000000" class="cta-admin"><i class="fas fa-phone-alt"></i> Urgence 24h/7</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section style="background: var(--primary); color: white; padding: 60px 0; text-align: center;">
+            <div class="container">
+                <h1>Qui sommes-nous ?</h1>
+                <p>L'alliance de l'expertise technique et de l'innovation énergétique au Bénin.</p>
+            </div>
+        </section>
+
+        <section class="container" style="padding: 60px 0;">
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800" alt="SIMEL SES Équipe" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 style="color: var(--primary); margin-bottom: 20px;">Notre Histoire & Mission</h2>
+                    <p style="margin-bottom: 15px;">Fondée par <strong>Simplice Medard OLOUBI</strong> et son associé, <strong>SIMEL S.E.S</strong> est née de la volonté d'offrir aux entreprises et ménages béninois une expertise fiable en gestion d'énergie.</p>
+                    <p>Nous ne nous contentons pas d'installer des équipements ; nous concevons des systèmes durables et sécurisés pour garantir votre continuité d'activité et votre confort thermique.</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="background: #edf2f7; padding: 60px 0;">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 40px;">Nos Valeurs Fondamentales</h2>
+                <div class="annonces-grid">
+                    <div class="annonce-card">
+                        <div class="card-content" style="text-align: center;">
+                            <i class="fas fa-shield-check" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
+                            <h3>Rigueur Technique</h3>
+                            <p>Toutes nos installations respectent les normes NF C 15-100 pour une sécurité maximale.</p>
+                        </div>
+                    </div>
+                    <div class="annonce-card">
+                        <div class="card-content" style="text-align: center;">
+                            <i class="fas fa-leaf" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
+                            <h3>Éco-Responsabilité</h3>
+                            <p>Nous favorisons le solaire et les solutions basse consommation pour protéger l'environnement.</p>
+                        </div>
+                    </div>
+                    <div class="annonce-card">
+                        <div class="card-content" style="text-align: center;">
+                            <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
+                            <h3>Proximité</h3>
+                            <p>Une équipe réactive basée à Cotonou pour vos urgences et maintenances 24h/7.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <a href="https://wa.me/22900000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>Échanger avec nous</span>
+    </a>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>SIMEL S.E.S</h3>
+                    <p>Qualité, Sécurité, Innovation.</p>
+                </div>
+                <div>
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> +229 XX XX XX XX</p>
+                    <p><i class="fas fa-envelope"></i> contact@simel-ses.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S - Tous droits réservés.</div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.getElementById('main-menu').classList.toggle('is-open');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demandes de Contact | Admin SIMEL S.E.S</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ==================================== */
+        /* CSS GLOBAL ADMIN (Intégré)          */
+        /* ==================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #4A4A4A; background-color: #E2E8F0; }
+        a { text-decoration: none; transition: 0.3s; }
+        
+        .admin-layout { display: flex; min-height: 100vh; }
+
+        /* SIDEBAR / HEADER LATÉRAL */
+        .sidebar {
+            width: 250px;
+            background-color: #2D3748;
+            color: white;
+            padding: 20px 0;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 20px;
+            margin: 0 20px 30px 20px;
+            border-bottom: 1px solid #4A5568;
+        }
+        .sidebar .logo { font-size: 1.4em; font-weight: 700; color: white; }
+        .sidebar .logo i { color: #3182CE; margin-right: 10px; }
+
+        .sidebar-nav ul { list-style: none; padding: 0 10px; }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #A0AEC0;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background-color: #3182CE;
+            color: white;
+        }
+        .sidebar-nav a i { margin-right: 10px; width: 20px; text-align: center; }
+
+        /* MAIN CONTENT */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        
+        .admin-topbar {
+            background-color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dashboard-content { padding: 30px; flex-grow: 1; }
+
+        /* LISTE DES MESSAGES (LEADS) */
+        .leads-container { display: flex; flex-direction: column; gap: 20px; }
+        
+        .lead-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #3182CE;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .lead-card.new { border-left-color: #E53E3E; } /* Rouge pour les nouveaux messages */
+        
+        .lead-info h3 { font-size: 1.1em; color: #2D3748; }
+        .lead-info p { font-size: 0.85em; color: #718096; }
+        
+        .lead-message { font-size: 0.9em; color: #4A5568; border-left: 1px solid #E2E8F0; padding-left: 20px; }
+        
+        .lead-actions { text-align: right; }
+        
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+        .badge-new { background: #fed7d7; color: #822727; }
+        .badge-read { background: #E2E8F0; color: #4A5568; }
+
+        .btn-reply { color: #3182CE; font-weight: 600; font-size: 0.9em; }
+        .btn-delete { color: #E53E3E; font-size: 0.9em; margin-left: 15px; }
+
+        /* FOOTER ADMIN */
+        .admin-footer {
+            padding: 15px 30px;
+            background: white;
+            text-align: center;
+            font-size: 0.85em;
+            color: #718096;
+            border-top: 1px solid #E2E8F0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="logo">
+                    <i class="fas fa-user-shield"></i> <span>SIMEL Admin</span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> <span>Tableau de Bord</span></a></li>
+                    <li><a href="annonces-list.html"><i class="fas fa-building"></i> <span>Annonces</span></a></li>
+                    <li><a href="leads.html" class="active"><i class="fas fa-envelope-open-text"></i> <span>Demandes</span></a></li>
+                    <li><a href="agents.html"><i class="fas fa-users"></i> <span>Agents</span></a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Paramètres</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="admin-topbar">
+                <h1>Demandes de Contact (Leads)</h1>
+                <span style="color: #718096;">Total : 12 demandes</span>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="leads-container">
+                    
+                    <div class="lead-card new">
+                        <div class="lead-info">
+                            <span class="badge badge-new">Nouveau</span>
+                            <h3>M. Koffi Azan</h3>
+                            <p><i class="fas fa-phone"></i> +229 90 00 00 01</p>
+                            <p><i class="fas fa-envelope"></i> k.azan@email.com</p>
+                        </div>
+                        <div class="lead-message">
+                            <strong>Sujet : Devis Solaire</strong>
+                            <p>"Bonjour, j'aimerais installer un kit solaire pour ma villa à Calavi. Merci de me recontacter."</p>
+                            <small style="color: #A0AEC0;">Reçu le : 23/12/2025 à 08:30</small>
+                        </div>
+                        <div class="lead-actions">
+                            <a href="mailto:k.azan@email.com" class="btn-reply"><i class="fas fa-reply"></i> Répondre</a>
+                            <a href="#" class="btn-delete"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="lead-card">
+                        <div class="lead-info">
+                            <span class="badge badge-read">Lu</span>
+                            <h3>Mme. Sandra Dossou</h3>
+                            <p><i class="fas fa-phone"></i> +229 97 00 00 02</p>
+                            <p><i class="fas fa-envelope"></i> s.dossou@email.com</p>
+                        </div>
+                        <div class="lead-message">
+                            <strong>Sujet : Maintenance Clim</strong>
+                            <p>"Ma climatisation de bureau ne refroidit plus. Besoin d'un technicien urgemment."</p>
+                            <small style="color: #A0AEC0;">Reçu le : 22/12/2025 à 14:15</small>
+                        </div>
+                        <div class="lead-actions">
+                            <a href="tel:+22997000002" class="btn-reply"><i class="fas fa-phone"></i> Appeler</a>
+                            <a href="#" class="btn-delete"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <footer class="admin-footer">
+                &copy; 2025 SIMEL S.E.S - Gestion des prospects.
+            </footer>
+        </main>
+    </div>
+
+</body>
+</html>

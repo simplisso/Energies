@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Expertises | SIMEL S.E.S</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="header-top">
+                <a href="index.html" class="logo"><i class="fas fa-bolt"></i> SIMEL S.E.S</a>
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+            </div>
+            <nav class="main-nav">
+                <ul id="main-menu" class="nav-list">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="expertises.html" class="active">Nos Expertises</a></li>
+                    <li><a href="a-propos.html">À Propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="tel:+22900000000" class="cta-admin"><i class="fas fa-phone-alt"></i> Urgence 24h/7</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section style="background: var(--primary); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h1>Nos Expertises Techniques</h1>
+            <p>Des solutions sur mesure pour particuliers et industriels au Bénin.</p>
+        </div>
+    </section>
+
+    <main class="container" style="padding: 40px 0;">
+        <div class="annonces-grid">
+            
+            <article class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=500');"></div>
+                <div class="card-content">
+                    <h3>Énergie Solaire</h3>
+                    <p>Étude et installation de systèmes photovoltaïques (On-grid, Off-grid et Hybride). Gagnez en autonomie énergétique.</p>
+                </div>
+            </article>
+
+            <article class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1621905252507-b354bc2d18c4?w=500');"></div>
+                <div class="card-content">
+                    <h3>Électricité Industrielle</h3>
+                    <p>Câblage d'armoires électriques, maintenance de machines et installation de TGBT aux normes internationales.</p>
+                </div>
+            </article>
+
+            <article class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=500');"></div>
+                <div class="card-content">
+                    <h3>Sécurité Électronique</h3>
+                    <p>Vidéosurveillance IP, alarmes anti-intrusion et contrôle d'accès biométrique pour sécuriser vos biens.</p>
+                </div>
+            </article>
+
+            <article class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500');"></div>
+                <div class="card-content">
+                    <h3>Froid & Climatisation</h3>
+                    <p>Pose et entretien de climatisations et chambres froides. Solutions thermiques efficaces et durables.</p>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <a href="https://wa.me/22900000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>Un devis gratuit ?</span>
+    </a>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>SIMEL S.E.S</h3>
+                    <p>Expertise et Qualité à Cotonou.</p>
+                </div>
+                <div>
+                    <h3>Contact rapide</h3>
+                    <p><i class="fas fa-phone"></i> +229 XX XX XX XX</p>
+                    <p><i class="fas fa-envelope"></i> contact@simel-ses.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S</div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.getElementById('main-menu').classList.toggle('is-open');
+        });
+    </script>
+
+</body>
+</html>

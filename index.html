@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMEL S.E.S | Accueil - Expertise Énergétique au Bénin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="header-top">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-bolt"></i> SIMEL S.E.S
+                </a>
+                <button class="menu-toggle" aria-label="Ouvrir le menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="main-nav">
+                <ul id="main-menu" class="nav-list">
+                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="expertises.html">Nos Expertises</a></li>
+                    <li><a href="a-propos.html">À Propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="tel:+22900000000" class="cta-admin"><i class="fas fa-phone-alt"></i> Urgence 24h/7</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1200') center/cover; padding: 100px 0; color: white; text-align: center;">
+        <div class="container">
+            <h1 style="font-size: 2.8rem; margin-bottom: 20px;">Solutions Énergétiques de Précision</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 35px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                SIMEL S.E.S vous accompagne dans vos projets de Solaire, Électricité Industrielle et Sécurité Électronique au Bénin.
+            </p>
+            <a href="expertises.html" class="primary-cta" style="background: #E53E3E; padding: 15px 30px; border-radius: 5px; display: inline-block; color: white; font-weight: bold;">Voir nos services</a>
+        </div>
+    </section>
+
+    <main class="container" style="padding: 60px 0;">
+        <h2 style="text-align: center; margin-bottom: 40px; color: #2D3748;">Nos Domaines d'Intervention</h2>
+        
+        <div class="annonces-grid">
+            <div class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=400');"></div>
+                <div class="card-content">
+                    <h3>Énergie Solaire</h3>
+                    <p>Installation photovoltaïque pour autonomie complète et réduction de facture.</p>
+                </div>
+            </div>
+
+            <div class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558444479-c8f027d6a5ad?w=400');"></div>
+                <div class="card-content">
+                    <h3>Électricité Pro</h3>
+                    <p>Maintenance industrielle, câblage d'armoires et mise aux normes sécurisées.</p>
+                </div>
+            </div>
+
+            <div class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=400');"></div>
+                <div class="card-content">
+                    <h3>Sécurité Électronique</h3>
+                    <p>Vidéosurveillance HD et contrôle d'accès intelligent pour vos locaux.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="https://wa.me/22900000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>Nous contacter</span>
+    </a>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>SIMEL S.E.S</h3>
+                    <p>L'expertise technique au service de votre confort et de votre sécurité.</p>
+                </div>
+                <div>
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="expertises.html">Nos Services</a></li>
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> +229 XX XX XX XX</p>
+                    <p><i class="fas fa-envelope"></i> contact@simel-ses.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2025 SIMEL S.E.S. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const toggle = document.querySelector('.menu-toggle');
+        const menu = document.getElementById('main-menu');
+
+        toggle.addEventListener('click', () => {
+            menu.classList.toggle('is-open');
+        });
+    </script>
+
+</body>
+</html>
