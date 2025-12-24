@@ -3,38 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMEL S.E.S - Énergie Solaire & Électricité au Bénin</title>
-    <meta name="description" id="meta-description" content="Expert en énergie solaire, électricité et sécurité électronique au Bénin.">
-    
+    <title>SIMEL S.E.S - Énergie Solaire & Électricité</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        /* Styles rapides pour le portfolio dynamique */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        .service-card {
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-        .service-card:hover { transform: translateY(-5px); }
-        .service-card img { width: 100%; height: 200px; object-fit: cover; }
-        .service-card-body { padding: 20px; }
-        .service-card h3 { margin-bottom: 10px; color: #2D3748; }
-        .service-card p { font-size: 0.9rem; color: #718096; line-height: 1.6; }
-        
-        .contact-info-bar { background: #f7fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        .info-item { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-        .info-item i { color: #E53E3E; }
-    </style>
 </head>
 <body>
 
@@ -42,7 +14,7 @@
         <div class="logo">SIMEL <span>S.E.S</span></div>
         <ul class="nav-links">
             <li><a href="#accueil">Accueil</a></li>
-            <li><a href="#services">Réalisations</a></li>
+            <li><a href="#services">Services</a></li>
             <li><a href="#contact">Contact</a></li>
             <li><a href="admin/login.html" class="admin-link"><i class="fas fa-user-lock"></i></a></li>
         </ul>
@@ -51,63 +23,42 @@
     <header id="accueil" class="hero">
         <div class="hero-content">
             <h1>L'énergie de demain, dès aujourd'hui.</h1>
-            <p>Solutions photovoltaïques et expertise électrique de haute qualité au Bénin.</p>
-            <a href="#contact" class="btn-primary">Obtenir un devis gratuit</a>
+            <p>Solutions photovoltaïques et expertise électrique au Bénin.</p>
+            <a href="#contact" class="btn-primary">Demander un devis</a>
         </div>
     </header>
 
-    <section id="services" style="padding: 60px 0;">
+    <section id="services" class="services">
         <div class="container">
-            <h2 style="text-align:center;">Nos Services & Réalisations</h2>
-            <p style="text-align:center; color:#718096;">Découvrez nos derniers chantiers finalisés</p>
-            <div id="portfolio-grid" class="services-grid">
-                <p style="text-align:center;">Chargement de nos projets...</p>
-            </div>
+            <h2>Nos Services</h2>
+            <div class="services-grid" id="services-container">
+                </div>
         </div>
     </section>
 
-    <section id="contact" style="background:#edf2f7; padding: 60px 0;">
+    <section id="contact" class="contact">
         <div class="container">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-                
-                <div>
-                    <h2>Parlons de votre projet</h2>
-                    <p style="margin-bottom:20px;">Nos experts sont à votre écoute pour toute installation ou maintenance.</p>
-                    <div class="contact-info-bar">
-                        <div class="info-item">
-                            <i class="fas fa-phone-alt"></i>
-                            <span id="display-phone">Chargement...</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <span id="display-email">Chargement...</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span id="display-address">Chargement...</span>
-                        </div>
-                    </div>
+            <h2>Contactez-nous</h2>
+            <div class="contact-flex">
+                <div class="contact-info">
+                    <p><i class="fas fa-phone"></i> <span id="display-phone">Chargement...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="display-email">Chargement...</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="display-address">Cotonou, Bénin</span></p>
                 </div>
 
-                <form id="contactForm" style="background:white; padding:30px; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-                    <input type="text" id="client_name" placeholder="Votre Nom" required style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:6px;">
-                    <input type="text" id="client_phone" placeholder="Numéro de Téléphone" required style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:6px;">
-                    <select id="subject" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:6px;">
-                        <option value="Solaire">Énergie Solaire</option>
-                        <option value="Électricité">Électricité Bâtiment</option>
-                        <option value="Maintenance">Maintenance / SAV</option>
-                    </select>
-                    <textarea id="message" placeholder="Détails de votre demande..." rows="4" required style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ddd; border-radius:6px;"></textarea>
-                    <button type="submit" id="submitBtn" style="width:100%; padding:15px; background:#E53E3E; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Envoyer ma demande</button>
-                    <p id="formStatus" style="display:none; margin-top:15px; text-align:center; font-weight:bold;"></p>
+                <form id="contactForm">
+                    <input type="text" id="client_name" placeholder="Nom" required>
+                    <input type="text" id="client_phone" placeholder="Téléphone" required>
+                    <textarea id="message" placeholder="Votre message" required></textarea>
+                    <button type="submit" id="submitBtn" class="btn-primary">Envoyer</button>
+                    <div id="formStatus" style="margin-top:10px;"></div>
                 </form>
-
             </div>
         </div>
     </section>
 
-    <footer style="padding: 30px; text-align: center; background: #2D3748; color: white;">
-        <p>&copy; 2025 SIMEL S.E.S - Ingénierie Électrique au Bénin.</p>
+    <footer>
+        <p>&copy; 2025 SIMEL S.E.S</p>
     </footer>
 
     <script>
@@ -116,71 +67,53 @@
         const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 1. CHARGER LES INFOS (PHONE/EMAIL)
+        // 1. Charger les infos de contact
         async function loadSettings() {
             const { data } = await _supabase.from('settings').select('*').eq('id', 1).single();
             if (data) {
                 document.getElementById('display-phone').innerText = data.phone;
                 document.getElementById('display-email').innerText = data.email;
-                document.getElementById('display-address').innerText = data.address;
-                document.getElementById('meta-description').content = data.seo_description;
             }
         }
 
-        // 2. CHARGER LE PORTFOLIO (SERVICES)
-        async function loadPortfolio() {
-            const { data } = await _supabase.from('portfolio_services').select('*').order('created_at', { ascending: false });
-            const grid = document.getElementById('portfolio-grid');
+        // 2. Charger les services (avec tes photos)
+        async function loadServices() {
+            const { data } = await _supabase.from('portfolio_services').select('*');
+            const container = document.getElementById('services-container');
             if (data && data.length > 0) {
-                grid.innerHTML = data.map(item => `
+                container.innerHTML = data.map(s => `
                     <div class="service-card">
-                        <img src="${item.image_url}" alt="${item.title}">
-                        <div class="service-card-body">
-                            <h3>${item.title}</h3>
-                            <p>${item.description}</p>
-                        </div>
+                        <img src="${s.image_url}" alt="${s.title}" style="width:100%; border-radius:8px;">
+                        <h3>${s.title}</h3>
+                        <p>${s.description}</p>
                     </div>
                 `).join('');
-            } else {
-                grid.innerHTML = "<p>Découvrez bientôt nos nouvelles réalisations.</p>";
             }
         }
 
-        // 3. ENVOYER UN MESSAGE (LEADS)
-        const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', async (e) => {
+        // 3. Envoyer le formulaire
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('formStatus');
-            btn.disabled = true;
             btn.innerText = "Envoi...";
-
+            
             const { error } = await _supabase.from('leads').insert([{
                 client_name: document.getElementById('client_name').value,
                 client_phone: document.getElementById('client_phone').value,
-                subject: document.getElementById('subject').value,
                 message: document.getElementById('message').value,
-                status: 'nouveau'
+                subject: "Demande via site",
+                status: "nouveau"
             }]);
 
-            status.style.display = 'block';
-            if (error) {
-                status.innerText = "Erreur : " + error.message;
-                status.style.color = "red";
-                btn.disabled = false;
-            } else {
-                status.innerText = "Message envoyé avec succès !";
-                status.style.color = "green";
-                contactForm.reset();
-                btn.innerText = "Envoyé ✓";
+            if (!error) {
+                document.getElementById('formStatus').innerText = "Message envoyé !";
+                e.target.reset();
+                btn.innerText = "Envoyer";
             }
         });
 
-        // INIT
-        window.onload = () => {
-            loadSettings();
-            loadPortfolio();
-        };
+        loadSettings();
+        loadServices();
     </script>
 </body>
 </html>
