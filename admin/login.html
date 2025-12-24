@@ -6,99 +6,70 @@
     <title>Connexion Admin | SIMEL S.E.S</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #1a202c;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #2D3748; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        
+        .login-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+            width: 100%; 
+            max-width: 380px; 
+            text-align: center; 
         }
 
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
+        .login-card h1 { color: #2D3748; margin-bottom: 5px; font-size: 1.6rem; }
+        .login-card p { color: #718096; margin-bottom: 25px; font-size: 0.9rem; }
 
-        .logo-admin {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 30px;
-        }
-
-        .logo-admin span { color: #e53e3e; }
-
-        .form-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #4a5568;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #4A5568; font-size: 0.85rem; }
+        .form-group input { 
+            width: 100%; padding: 12px; border: 1px solid #E2E8F0; 
+            border-radius: 6px; font-family: inherit; outline: none;
             box-sizing: border-box;
-            outline: none;
-            transition: 0.3s;
         }
+        .form-group input:focus { border-color: #3182CE; }
 
-        .form-group input:focus { border-color: #e53e3e; }
-
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: #e53e3e;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
+        .login-btn { 
+            width: 100%; padding: 12px; background: #3182CE; color: white; 
+            border: none; border-radius: 6px; font-weight: bold; 
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
+        .login-btn:hover { background: #2C5282; }
+        .login-btn:disabled { background: #A0AEC0; cursor: not-allowed; }
 
-        .login-btn:hover { background: #c53030; }
-
-        .error-msg {
-            background: #fff5f5;
-            color: #c53030;
+        #error-msg { 
+            color: #E53E3E; 
+            font-size: 0.85rem; 
+            margin-top: 15px; 
+            background: #FFF5F5;
             padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none; /* Caché par défaut */
+            border-radius: 4px;
+            display: none; 
         }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-        <div class="logo-admin">SIMEL <span>Admin</span></div>
-        
-        <div id="errorMessage" class="error-msg"></div>
+        <i class="fas fa-lock" style="font-size: 2.5rem; color: #3182CE; margin-bottom: 15px;"></i>
+        <h1>Admin SIMEL</h1>
+        <p>Accès restreint aux administrateurs</p>
 
         <form id="loginForm">
             <div class="form-group">
-                <label>Email professionnel</label>
+                <label>Email</label>
                 <input type="email" id="email" placeholder="admin@simel-ses.com" required>
             </div>
             <div class="form-group">
@@ -106,60 +77,59 @@
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
             <button type="submit" id="submitBtn" class="login-btn">Se connecter</button>
+            <div id="error-msg"></div>
         </form>
+
+        <a href="../index.html" style="display:inline-block; margin-top:20px; color:#718096; text-decoration:none; font-size:0.8rem;">
+            <i class="fas fa-arrow-left"></i> Retour au site
+        </a>
     </div>
 
     <script>
-        // 1. CONFIGURATION SUPABASE
-        // Remplacez ces valeurs par vos vraies clés Supabase (Settings > API)
+        // --- CONFIGURATION ---
+        // Utilise bien la ANON_KEY ici
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const loginForm = document.getElementById('loginForm');
-        const errorMessage = document.getElementById('errorMessage');
         const submitBtn = document.getElementById('submitBtn');
+        const errorMsg = document.getElementById('error-msg');
 
-        // 2. GESTION DE LA CONNEXION
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Réinitialiser l'interface
-            errorMessage.style.display = 'none';
+            errorMsg.style.display = 'none';
             submitBtn.disabled = true;
-            submitBtn.innerText = "Vérification...";
+            submitBtn.innerText = "Connexion en cours...";
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Appel à l'authentification Supabase
             const { data, error } = await _supabase.auth.signInWithPassword({
                 email: email,
-                password: password,
+                password: password
             });
 
             if (error) {
-                // Afficher l'erreur
-                errorMessage.innerText = "Échec : " + error.message;
-                errorMessage.style.display = 'block';
+                errorMsg.innerText = "Erreur : " + error.message;
+                errorMsg.style.display = 'block';
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Se connecter";
             } else {
-                // Succès : Redirection vers le dashboard
-                window.location.href = 'dashboard.html';
+                // Redirection immédiate vers le dashboard
+                window.location.replace('dashboard.html');
             }
         });
 
-        // 3. VÉRIFICATION : Si déjà connecté, redirection directe
+        // Vérification automatique : si déjà connecté, on saute le login
         async function checkSession() {
-            const { data } = await _supabase.auth.getSession();
-            if (data.session) {
-                window.location.href = 'dashboard.html';
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session) {
+                window.location.replace('dashboard.html');
             }
         }
-        checkSession();
+        window.onload = checkSession;
     </script>
 </body>
 </html>
-
-
