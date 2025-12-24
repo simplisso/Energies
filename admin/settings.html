@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paramètres Généraux | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -94,6 +95,14 @@
             gap: 10px;
         }
         .btn-save:hover { background: #2F855A; transform: translateY(-2px); }
+        .btn-save:disabled { background: #A0AEC0; cursor: not-allowed; }
+
+        .loading-overlay {
+            display: none;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
 
         .admin-footer { margin-top: 40px; text-align: center; color: var(--text-gray); font-size: 0.8rem; }
     </style>
@@ -119,23 +128,25 @@
         <main class="main-content">
             <h1 style="margin-bottom: 30px;">Configuration du Site</h1>
 
+            <div id="loader" class="loading-overlay">Chargement des paramètres...</div>
+
             <div class="settings-container">
                 <form id="settingsForm">
                     <div class="settings-section">
                         <h2><i class="fas fa-id-card"></i> Coordonnées de contact</h2>
                         <div class="form-grid">
                             <div class="form-group">
-                                <label>Téléphone d'Urgence (et WhatsApp)</label>
-                                <input type="text" id="phone" value="+229 90 00 00 00" required>
+                                <label>Téléphone Officiel (WhatsApp)</label>
+                                <input type="text" id="phone" required>
                             </div>
                             <div class="form-group">
                                 <label>Email Officiel</label>
-                                <input type="email" id="email" value="contact@simel-ses.com" required>
+                                <input type="email" id="email" required>
                             </div>
                         </div>
                         <div class="form-group" style="margin-top:15px;">
                             <label>Adresse Physique</label>
-                            <input type="text" id="address" value="Cotonou, Bénin">
+                            <input type="text" id="address">
                         </div>
                     </div>
 
@@ -143,47 +154,93 @@
                         <h2><i class="fas fa-search"></i> Référencement (SEO)</h2>
                         <div class="form-group">
                             <label>Description du site (Meta Description)</label>
-                            <textarea rows="3">SIMEL S.E.S : Votre expert en énergie solaire, électricité industrielle et sécurité électronique au Bénin.</textarea>
+                            <textarea id="seo_description" rows="3"></textarea>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-save">
+                    <button type="submit" id="saveBtn" class="btn-save">
                         <i class="fas fa-save"></i> Enregistrer les modifications
                     </button>
                 </form>
             </div>
 
             <footer class="admin-footer">
-                &copy; 2025 SIMEL S.E.S - Configuration du système.
+                &copy; 2025 SIMEL S.E.S - Gestion Cloud Supabase.
             </footer>
         </main>
     </div>
 
     <script>
-        document.getElementById('settingsForm').addEventListener('submit', function(e) {
+        // CONFIGURATION SUPABASE
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_PcbOe0RSuZQffQ9zYhVO0w_xkuK44Nx';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const form = document.getElementById('settingsForm');
+        const loader = document.getElementById('loader');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // 1. CHARGER LES DONNÉES DEPUIS SUPABASE
+        async function loadSettings() {
+            loader.style.display = 'block';
+            const { data, error } = await _supabase
+                .from('settings')
+                .select('*')
+                .eq('id', 1)
+                .single();
+
+            if (error) {
+                console.error("Erreur de chargement:", error);
+                alert("Impossible de charger les réglages.");
+            } else if (data) {
+                document.getElementById('phone').value = data.phone || '';
+                document.getElementById('email').value = data.email || '';
+                document.getElementById('address').value = data.address || '';
+                document.getElementById('seo_description').value = data.seo_description || '';
+            }
+            loader.style.display = 'none';
+        }
+
+        // 2. SAUVEGARDER LES MODIFICATIONS
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Simulation de sauvegarde
-            const data = {
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
+            const updatedData = {
                 phone: document.getElementById('phone').value,
                 email: document.getElementById('email').value,
-                address: document.getElementById('address').value
+                address: document.getElementById('address').value,
+                seo_description: document.getElementById('seo_description').value
             };
 
-            console.log("Sauvegarde des données :", data);
-            
-            // Petit effet visuel
-            const btn = document.querySelector('.btn-save');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Enregistré !';
-            btn.style.background = '#2D3748';
-            
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.background = '#38A169';
-                alert("Les réglages ont été mis à jour avec succès !");
-            }, 2000);
+            const { error } = await _supabase
+                .from('settings')
+                .update(updatedData)
+                .eq('id', 1);
+
+            if (error) {
+                alert("Erreur lors de la sauvegarde : " + error.message);
+            } else {
+                alert("Réglages mis à jour avec succès !");
+            }
+
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer les modifications';
         });
+
+        // 3. VÉRIFIER LA SESSION (SÉCURITÉ)
+        async function checkAuth() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+            } else {
+                loadSettings();
+            }
+        }
+
+        checkAuth();
     </script>
 
 </body>
