@@ -1,8 +1,10 @@
-/* PALETTE DE COULEURS SIMEL S.E.S */
+/* POLICE ET VARIABLES */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
 :root {
     --primary: #2D3748;
-    --accent: #E53E3E; /* Le rouge de ton logo */
-    --bg-light: #F7FAFC;
+    --accent: #E53E3E; /* Rouge SIMEL */
+    --light: #F7FAFC;
     --white: #ffffff;
 }
 
@@ -10,14 +12,11 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
+    background-color: var(--light);
     color: var(--primary);
-    background-color: var(--bg-light);
 }
 
-.container { width: 90%; max-width: 1200px; margin: auto; }
-
-/* NAVBAR */
+/* NAVIGATION */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -25,20 +24,15 @@ body {
     padding: 20px 5%;
     background: var(--white);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0; z-index: 1000;
 }
 
 .logo { font-size: 1.5rem; font-weight: bold; }
 .logo span { color: var(--accent); }
 
-.nav-links { display: flex; list-style: none; gap: 20px; }
-.nav-links a { text-decoration: none; color: var(--primary); font-weight: 500; }
-
 /* HERO SECTION */
 .hero {
-    height: 80vh;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1509391366360-fe5bb584850a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    height: 70vh;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1509391366360-fe5bb584850a?q=80&w=1350');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -48,51 +42,46 @@ body {
     color: white;
 }
 
-.hero-content h1 { font-size: 3rem; margin-bottom: 20px; }
+/* GRILLE DE SERVICES */
+.container { width: 90%; max-width: 1200px; margin: auto; padding: 50px 0; }
 
-.btn-primary {
-    display: inline-block;
-    padding: 12px 30px;
-    background: var(--accent);
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-primary:hover { background: #c53030; }
-
-/* SERVICES GRID */
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    padding: 50px 0;
 }
 
 .service-card {
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    text-align: center;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* CONTACT */
-.contact-flex {
+.service-card img { width: 100%; height: 200px; object-fit: cover; }
+.service-card-content { padding: 20px; }
+
+/* FORMULAIRE DE CONTACT */
+.contact-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 50px;
-    padding: 50px 0;
 }
 
-form input, form textarea {
+.contact-form input, .contact-form textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 6px;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
 }
