@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau Service | Admin SIMEL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Même style que tes autres pages */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; background-color: #E2E8F0; margin: 0; display: flex; }
+        .sidebar { width: 250px; background-color: #2D3748; color: white; padding: 20px 0; position: fixed; height: 100vh; }
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; }
+        .form-card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 600px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 6px; }
+        .btn-save { background: #38A169; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div style="padding:20px;"><h2>SIMEL Admin</h2></div>
+        <nav class="sidebar-menu">
+            <a href="annonces-list.html" style="color:white; padding:15px; display:block;">← Retour à la liste</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Ajouter un nouveau service</h1>
+        <div class="form-card">
+            <form id="addForm">
+                <div class="form-group">
+                    <label>Titre du Service</label>
+                    <input type="text" id="title" required placeholder="Ex: Installation Solaire">
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <select id="category">
+                        <option value="Photovoltaïque">Photovoltaïque</option>
+                        <option value="Froid & Clim">Froid & Clim</option>
+                        <option value="Électricité">Électricité</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Lien de l'image (URL)</label>
+                    <input type="text" id="image_url" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-save">Créer le service</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM');
+
+        document.getElementById('addForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const service = {
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                image_url: document.getElementById('image_url').value,
+                description: document.getElementById('description').value
+            };
+
+            const { error } = await _supabase.from('portfolio_services').insert([service]);
+            if(error) alert(error.message);
+            else window.location.href = 'annonces-list.html';
+        };
+    </script>
+</body>
+</html>
