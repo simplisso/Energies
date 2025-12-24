@@ -26,7 +26,8 @@
                     <li><a href="expertises.html">Nos Expertises</a></li>
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="tel:+22900000000" class="cta-admin"><i class="fas fa-phone-alt"></i> Urgence 24h/7</a></li>
+                    <li><a href="/admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="tel:+22900000000" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
@@ -72,7 +73,7 @@
         </div>
     </main>
 
-    <a href="https://wa.me/22900000000" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/22900000000" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
         <span>Nous contacter</span>
     </a>
@@ -90,12 +91,14 @@
                         <li><a href="expertises.html">Nos Services</a></li>
                         <li><a href="a-propos.html">À Propos</a></li>
                         <li><a href="contact.html">Contact</a></li>
+                        <li><a href="/admin/login.html">Admin</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3>Contact</h3>
-                    <p><i class="fas fa-phone"></i> +229 XX XX XX XX</p>
-                    <p><i class="fas fa-envelope"></i> contact@simel-ses.com</p>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">+229 XX XX XX XX</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">contact@simel-ses.com</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">Bénin</span></p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -105,12 +108,31 @@
     </footer>
 
     <script>
+        // Menu Mobile
         const toggle = document.querySelector('.menu-toggle');
         const menu = document.getElementById('main-menu');
+        toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
 
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('is-open');
-        });
+        // Synchronisation avec le Dashboard (Réglages)
+        async function syncSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+
+                // Mise à jour des textes (Téléphone, Email, Adresse)
+                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
+                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
+                document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
+
+                // Mise à jour des liens cliquables (Appel et WhatsApp)
+                const cleanNumber = data.phone.replace(/\D/g, ''); // Garde uniquement les chiffres
+                document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                    if(link.href.includes('tel:')) link.href = `tel:${cleanNumber}`;
+                    if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
+                });
+            } catch (err) { console.log("Erreur de synchro"); }
+        }
+        window.onload = syncSettings;
     </script>
 
 </body>
