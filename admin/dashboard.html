@@ -9,14 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* CSS ADMIN INTÉGRÉ */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; color: #4A4A4A; }
         .admin-layout { display: flex; min-height: 100vh; }
 
         /* SIDEBAR */
-        .sidebar { width: 250px; background: #2D3748; color: white; position: fixed; height: 100vh; padding: 20px 0; }
+        .sidebar { width: 250px; background: #2D3748; color: white; position: fixed; height: 100vh; padding: 20px 0; z-index: 100; }
         .sidebar-header { padding: 0 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
         .sidebar-menu li a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; border-left: 4px solid transparent; }
         .sidebar-menu li a:hover, .sidebar-menu li a.active { background: rgba(255,255,255,0.05); color: white; border-left-color: #E53E3E; }
@@ -32,13 +31,22 @@
         .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
         .white-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
         
-        /* Loader */
-        #page-loader { position: fixed; inset: 0; background: #2D3748; display: flex; justify-content: center; align-items: center; color: white; z-index: 9999; }
+        /* LOADER ANTI-BOUCLE */
+        #page-loader { 
+            position: fixed; inset: 0; background: #2D3748; 
+            display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; color: white; z-index: 9999; 
+        }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: #E53E3E; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="page-loader">Vérification de la session...</div>
+    <div id="page-loader">
+        <div class="spinner"></div>
+        <p>Vérification de sécurité SIMEL...</p>
+    </div>
 
     <div class="admin-layout">
         <aside class="sidebar">
@@ -56,45 +64,34 @@
         <main class="main-content">
             <div style="margin-bottom: 30px;">
                 <h1>Tableau de Bord</h1>
-                <p>Bienvenue sur l'interface de gestion SIMEL S.E.S</p>
+                <p>Bienvenue sur votre gestionnaire SIMEL S.E.S</p>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon" style="background: #3182CE;"><i class="fas fa-envelope"></i></div>
-                    <div class="stat-info">
-                        <h3>Messages</h3>
-                        <p id="count-leads">--</p>
-                    </div>
+                    <div class="stat-info"><h3>Messages</h3><p id="count-leads">0</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background: #38A169;"><i class="fas fa-bolt"></i></div>
-                    <div class="stat-info">
-                        <h3>Services</h3>
-                        <p id="count-services">--</p>
-                    </div>
+                    <div class="stat-info"><h3>Expertises</h3><p id="count-services">0</p></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background: #E53E3E;"><i class="fas fa-users"></i></div>
-                    <div class="stat-info">
-                        <h3>Équipe</h3>
-                        <p id="count-agents">--</p>
-                    </div>
+                    <div class="stat-info"><h3>Équipe</h3><p id="count-agents">0</p></div>
                 </div>
             </div>
 
             <div class="dashboard-grid">
                 <div class="white-box">
-                    <h2 style="margin-bottom: 20px;">Dernières demandes</h2>
+                    <h2 style="margin-bottom: 20px;">Demandes récentes</h2>
                     <div id="latest-leads">Chargement...</div>
                 </div>
-
                 <div class="white-box">
-                    <h2 style="margin-bottom: 20px;">Actions Rapides</h2>
+                    <h2 style="margin-bottom: 20px;">Actions</h2>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <a href="annonces-list.html" style="background: #edf2f7; padding: 15px; border-radius: 5px; color: #2d3748; font-weight: 600;">📁 Gérer les services</a>
-                        <a href="settings.html" style="background: #edf2f7; padding: 15px; border-radius: 5px; color: #2d3748; font-weight: 600;">⚙️ Modifier Contact</a>
-                        <a href="../index.html" target="_blank" style="background: #2D3748; padding: 15px; border-radius: 5px; color: white; font-weight: 600; text-align: center;">👁️ Voir le site public</a>
+                        <a href="annonces-list.html" style="background: #edf2f7; padding: 12px; border-radius: 6px; text-align: center; font-weight: 600;">Modifier les services</a>
+                        <a href="../index.html" target="_blank" style="background: #2D3748; color: white; padding: 12px; border-radius: 6px; text-align: center;">Voir le site public</a>
                     </div>
                 </div>
             </div>
@@ -102,59 +99,71 @@
     </div>
 
     <script>
-        // CONFIGURATION
+        // 1. CONFIGURATION (VERIFIEZ BIEN CES CLES)
         const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
         const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 1. VÉRIFICATION SESSION
-        async function checkSession() {
-            const { data: { session } } = await _supabase.auth.getSession();
+        // 2. LOGIQUE DE PROTECTION ANTI-BOUCLE GITHUB PAGES
+        async function secureCheck() {
+            // Tentative 1
+            let { data: { session } } = await _supabase.auth.getSession();
+
+            // Si session vide, on attend 1.5 seconde (GitHub Pages peut être lent)
             if (!session) {
-                window.location.href = 'login.html';
+                console.log("Session non détectée, attente de synchronisation...");
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                const secondCheck = await _supabase.auth.getSession();
+                session = secondCheck.data.session;
+            }
+
+            if (!session) {
+                console.warn("Échec authentification, retour login.");
+                window.location.replace('login.html');
             } else {
+                console.log("Connecté en tant que :", session.user.email);
                 document.getElementById('page-loader').style.display = 'none';
-                loadStats();
+                loadData();
             }
         }
 
-        // 2. CHARGEMENT DES STATS RÉELLES
-        async function loadStats() {
-            // Nombre de leads
-            const { count: leadsCount } = await _supabase.from('leads').select('*', { count: 'exact', head: true });
-            document.getElementById('count-leads').innerText = leadsCount || 0;
+        // 3. CHARGEMENT DES DONNÉES DEPUIS SUPABASE
+        async function loadData() {
+            try {
+                // Comptes
+                const resLeads = await _supabase.from('leads').select('*', { count: 'exact', head: true });
+                const resServ = await _supabase.from('portfolio_services').select('*', { count: 'exact', head: true });
+                const resAgents = await _supabase.from('agents').select('*', { count: 'exact', head: true });
 
-            // Nombre de services
-            const { count: servicesCount } = await _supabase.from('portfolio_services').select('*', { count: 'exact', head: true });
-            document.getElementById('count-services').innerText = servicesCount || 0;
+                document.getElementById('count-leads').innerText = resLeads.count || 0;
+                document.getElementById('count-services').innerText = resServ.count || 0;
+                document.getElementById('count-agents').innerText = resAgents.count || 0;
 
-            // Nombre d'agents
-            const { count: agentsCount } = await _supabase.from('agents').select('*', { count: 'exact', head: true });
-            document.getElementById('count-agents').innerText = agentsCount || 0;
-
-            // Aperçu des 3 derniers leads
-            const { data: lastLeads } = await _supabase.from('leads').select('*').order('created_at', { ascending: false }).limit(3);
-            
-            if (lastLeads && lastLeads.length > 0) {
-                document.getElementById('latest-leads').innerHTML = lastLeads.map(l => `
-                    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
-                        <strong>${l.client_name}</strong> - <span style="color: #E53E3E">${l.subject}</span>
-                        <br><small>${new Date(l.created_at).toLocaleDateString()}</small>
-                    </div>
-                `).join('');
-            } else {
-                document.getElementById('latest-leads').innerText = "Aucun message récent.";
-            }
+                // Liste des messages
+                const { data: lastLeads } = await _supabase.from('leads').select('*').order('created_at', { ascending: false }).limit(3);
+                const leadContainer = document.getElementById('latest-leads');
+                
+                if (lastLeads && lastLeads.length > 0) {
+                    leadContainer.innerHTML = lastLeads.map(l => `
+                        <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+                            <strong>${l.client_name}</strong> - <span style="color:#E53E3E">${l.subject}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    leadContainer.innerText = "Aucun message.";
+                }
+            } catch (e) { console.error("Erreur data:", e); }
         }
 
-        // 3. LOGOUT
+        // 4. LOGOUT
         document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
             await _supabase.auth.signOut();
-            window.location.href = 'login.html';
+            window.location.replace('login.html');
         });
 
-        window.onload = checkSession;
+        // Lancement
+        window.onload = secureCheck;
     </script>
 </body>
 </html>
