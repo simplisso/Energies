@@ -2,144 +2,90 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demandes de Contact | Admin SIMEL S.E.S</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>Demandes Clients | Admin SIMEL</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* CSS GLOBAL ADMIN (Conservé selon vos fichiers) */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #4A4A4A; background-color: #E2E8F0; }
-        a { text-decoration: none; transition: 0.3s; }
-        .admin-layout { display: flex; min-height: 100vh; }
-
-        /* SIDEBAR */
-        .sidebar { width: 250px; background-color: #2D3748; color: white; padding: 20px 0; position: fixed; height: 100vh; }
-        .sidebar-header { padding: 0 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .sidebar-menu li a { display: block; padding: 12px 20px; color: #A0AEC0; border-left: 4px solid transparent; }
-        .sidebar-menu li a:hover, .sidebar-menu li a.active { background: rgba(255,255,255,0.05); color: white; border-left-color: #E53E3E; }
-
-        /* MAIN CONTENT */
-        .main-content { flex: 1; margin-left: 250px; padding: 30px; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        /* LEADS CARDS */
-        .leads-container { display: grid; gap: 20px; }
-        .lead-card { background: white; border-radius: 10px; padding: 20px; display: grid; grid-template-columns: 200px 1fr 150px; gap: 20px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .lead-info h3 { font-size: 1.1rem; color: #2D3748; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .badge-new { background: #FED7D7; color: #C53030; }
-        .btn-delete { color: #E53E3E; background: #FFF5F5; padding: 10px; border-radius: 5px; border: none; cursor: pointer; }
-        .btn-reply { display: inline-block; background: #3182CE; color: white; padding: 8px 15px; border-radius: 5px; font-size: 0.9rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; }
+        .sidebar { width: 250px; background: #2D3748; color: white; min-height: 100vh; padding: 20px; position: fixed; }
+        .main { margin-left: 280px; padding: 30px; width: calc(100% - 280px); }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #718096; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .status { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; background: #EBF8FF; color: #2B6CB0; }
+        #loader { position: fixed; inset: 0; background: #2D3748; color: white; display: flex; align-items: center; justify-content: center; z-index: 9999; }
     </style>
 </head>
 <body>
 
-    <div class="admin-layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>SIMEL Admin</h2>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="leads.html" class="active"><i class="fas fa-envelope"></i> Demandes</a></li>
-                <li><a href="agents.html"><i class="fas fa-users"></i> Équipe</a></li>
-                <li><a href="settings.html"><i class="fas fa-cog"></i> Réglages</a></li>
-                <li><a href="#" id="logoutBtn" style="color: #FC8181; margin-top: 50px;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
-            </ul>
-        </aside>
+    <div id="loader">Vérification de la session...</div>
 
-        <main class="main-content">
-            <div class="top-bar">
-                <h1>Demandes de Contact</h1>
-                <span id="leadsCount">0 message(s)</span>
-            </div>
+    <nav class="sidebar">
+        <h2>SIMEL Admin</h2>
+        <ul style="list-style: none; padding: 0; margin-top: 30px;">
+            <li><a href="dashboard.html" style="color:#A0AEC0; text-decoration: none; display:block; padding:10px 0;">Dashboard</a></li>
+            <li><a href="annonces-list.html" style="color:#A0AEC0; text-decoration: none; display:block; padding:10px 0;">Expertises</a></li>
+            <li><a href="leads.html" style="color:white; text-decoration: none; display:block; padding:10px 0;"><b>Demandes</b></a></li>
+            <li><a href="agents.html" style="color:#A0AEC0; text-decoration: none; display:block; padding:10px 0;">Agents</a></li>
+        </ul>
+    </nav>
 
-            <div id="leadsList" class="leads-container">
-                <p>Chargement des messages...</p>
-            </div>
-
-            <footer style="margin-top: 50px; opacity: 0.5; font-size: 0.8rem;">
-                &copy; 2025 SIMEL S.E.S - Gestion des prospects.
-            </footer>
-        </main>
-    </div>
+    <main class="main">
+        <h1>Demandes de contact (Leads)</h1>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Sujet</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody id="leads-table">
+                    <tr><td colspan="4">Chargement des messages...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
     <script>
-        // CONFIGURATION SUPABASE
         const _supabase = supabase.createClient('https://VOTRE_PROJET.supabase.co', 'VOTRE_CLE_ANON');
 
-        // 1. Vérifier l'authentification
-        async function checkUser() {
+        async function initLeads() {
+            // 1. Vérification Session
             const { data: { session } } = await _supabase.auth.getSession();
             if (!session) {
-                window.location.href = 'login.html';
+                window.location.replace('login.html');
+                return;
             }
-        }
+            document.getElementById('loader').style.display = 'none';
 
-        // 2. Charger les Leads depuis la base
-        async function fetchLeads() {
+            // 2. Chargement des données
             const { data: leads, error } = await _supabase
                 .from('leads')
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            const container = document.getElementById('leadsList');
-            document.getElementById('leadsCount').innerText = `${leads ? leads.length : 0} message(s)`;
-
+            const table = document.getElementById('leads-table');
             if (error) {
-                container.innerHTML = "<p>Erreur lors du chargement.</p>";
+                table.innerHTML = `<tr><td colspan="4">Erreur: ${error.message}</td></tr>`;
                 return;
             }
 
-            if (leads.length === 0) {
-                container.innerHTML = "<p>Aucun message reçu pour le moment.</p>";
-                return;
-            }
-
-            container.innerHTML = leads.map(l => `
-                <div class="lead-card">
-                    <div class="lead-info">
-                        <span class="badge badge-new">${l.status || 'Nouveau'}</span>
-                        <h3>${l.client_name}</h3>
-                        <p><i class="fas fa-phone"></i> ${l.client_phone}</p>
-                    </div>
-                    <div class="lead-message">
-                        <strong>Sujet : ${l.subject || 'Contact'}</strong>
-                        <p>"${l.message}"</p>
-                        <small style="color: #A0AEC0;">Le ${new Date(l.created_at).toLocaleString()}</small>
-                    </div>
-                    <div class="lead-actions">
-                        <a href="tel:${l.client_phone}" class="btn-reply"><i class="fas fa-phone"></i> Appeler</a>
-                        <button onclick="deleteLead(${l.id})" class="btn-delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
+            table.innerHTML = leads.map(l => `
+                <tr>
+                    <td>${new Date(l.created_at).toLocaleDateString()}</td>
+                    <td><b>${l.client_name}</b><br><small>${l.client_email}</small></td>
+                    <td><span class="status">${l.subject}</span></td>
+                    <td style="font-size: 0.9rem;">${l.message}</td>
+                </tr>
             `).join('');
         }
 
-        // 3. Supprimer un lead
-        async function deleteLead(id) {
-            if (confirm("Supprimer définitivement ce message ?")) {
-                const { error } = await _supabase.from('leads').delete().eq('id', id);
-                if (!error) fetchLeads();
-                else alert("Erreur de suppression");
-            }
-        }
-
-        // 4. Déconnexion
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await _supabase.auth.signOut();
-            window.location.href = 'login.html';
-        });
-
-        // Initialisation
-        window.onload = () => {
-            checkUser();
-            fetchLeads();
-        };
+        window.onload = initLeads;
     </script>
 </body>
 </html>
