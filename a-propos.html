@@ -21,7 +21,8 @@
                     <li><a href="expertises.html">Nos Expertises</a></li>
                     <li><a href="a-propos.html" class="active">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="tel:+22900000000" class="cta-admin"><i class="fas fa-phone-alt"></i> Urgence 24h/7</a></li>
+                    <li><a href="/admin/login.html" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="tel:+22900000000" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
@@ -42,8 +43,8 @@
                 </div>
                 <div style="flex: 1; min-width: 300px;">
                     <h2 style="color: var(--primary); margin-bottom: 20px;">Notre Histoire & Mission</h2>
-                    <p style="margin-bottom: 15px;">Fondée par <strong>Simplice Medard OLOUBI</strong> et son associé, <strong>SIMEL S.E.S</strong> est née de la volonté d'offrir aux entreprises et ménages béninois une expertise fiable en gestion d'énergie.</p>
-                    <p>Nous ne nous contentons pas d'installer des équipements ; nous concevons des systèmes durables et sécurisés pour garantir votre continuité d'activité et votre confort thermique.</p>
+                    <p style="margin-bottom: 15px;">Fondée par <strong>Simplice Medard OLOUBI</strong> et son associé, <strong>SIMEL S.E.S</strong> est basée à <span class="dyn-address">Bénin</span> et est née de la volonté d'offrir une expertise fiable en gestion d'énergie.</p>
+                    <p>Nous concevons des systèmes durables et sécurisés pour garantir votre continuité d'activité et votre confort thermique.</p>
                 </div>
             </div>
         </section>
@@ -70,7 +71,7 @@
                         <div class="card-content" style="text-align: center;">
                             <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
                             <h3>Proximité</h3>
-                            <p>Une équipe réactive basée à Cotonou pour vos urgences et maintenances 24h/7.</p>
+                            <p>Une équipe réactive pour vos urgences et maintenances 24h/7 via le <span class="dyn-phone">...</span>.</p>
                         </div>
                     </div>
                 </div>
@@ -78,7 +79,7 @@
         </section>
     </main>
 
-    <a href="https://wa.me/22900000000" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/22900000000" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
         <span>Échanger avec nous</span>
     </a>
@@ -91,9 +92,9 @@
                     <p>Qualité, Sécurité, Innovation.</p>
                 </div>
                 <div>
-                    <h3>Contact</h3>
-                    <p><i class="fas fa-phone"></i> +229 XX XX XX XX</p>
-                    <p><i class="fas fa-envelope"></i> contact@simel-ses.com</p>
+                    <h3>Contact rapide</h3>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">+229 XX XX XX XX</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">contact@simel-ses.com</span></p>
                 </div>
             </div>
             <div class="footer-bottom">&copy; 2025 SIMEL S.E.S - Tous droits réservés.</div>
@@ -101,9 +102,31 @@
     </footer>
 
     <script>
-        document.querySelector('.menu-toggle').addEventListener('click', () => {
-            document.getElementById('main-menu').classList.toggle('is-open');
+        // Menu Mobile
+        const toggle = document.querySelector('.menu-toggle');
+        const menu = document.getElementById('main-menu');
+        toggle.addEventListener('click', () => {
+            menu.classList.toggle('is-open');
         });
+
+        // Synchronisation avec le Dashboard
+        async function syncSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+
+                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
+                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
+                document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
+
+                const cleanNumber = data.phone.replace(/\D/g, ''); 
+                document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                    if(link.href.includes('tel:')) link.href = `tel:${cleanNumber}`;
+                    if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
+                });
+            } catch (err) { console.log("Erreur de synchronisation"); }
+        }
+        window.onload = syncSettings;
     </script>
 </body>
 </html>
