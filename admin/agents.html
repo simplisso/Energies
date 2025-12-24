@@ -3,121 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Agents | SIMEL S.E.S</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Gestion des Agents | SIMEL Admin</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        :root { --primary: #2D3748; --accent: #E53E3E; --bg: #F0F2F5; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); display: flex; }
-
-        /* SIDEBAR identique aux autres pages */
-        .sidebar { width: 250px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 20px 0; }
-        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; }
-        .sidebar-menu a.active { color: white; border-left: 4px solid var(--accent); background: rgba(255,255,255,0.05); }
-
-        .main-content { flex: 1; margin-left: 250px; padding: 40px; }
+        body { font-family: 'Poppins', sans-serif; background: #F0F2F5; margin: 0; display: flex; }
+        .sidebar { width: 250px; background: #2D3748; color: white; min-height: 100vh; padding: 20px; position: fixed; }
+        .main { margin-left: 280px; padding: 30px; width: calc(100% - 280px); }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
-        /* FORMULAIRE D'AJOUT */
-        .agent-form { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
-        .btn-add { background: #38A169; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-        /* LISTE DES AGENTS */
-        .agent-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .agent-card { background: white; padding: 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px; position: relative; }
-        .agent-avatar { width: 50px; height: 50px; background: #E2E8F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); }
-        .btn-del { position: absolute; top: 10px; right: 10px; color: #E53E3E; cursor: pointer; border: none; background: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #718096; }
+        td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        
+        .agent-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: #eee; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; background: #E9D8FD; color: #553C9A; font-weight: 600; }
+        
+        #loader { position: fixed; inset: 0; background: #2D3748; color: white; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .btn-add { background: #3182CE; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: inline-block; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div style="padding: 20px;"><h2>SIMEL Admin</h2></div>
-        <nav class="sidebar-menu">
-            <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
-            <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
-            <a href="agents.html" class="active"><i class="fas fa-users"></i> Agents</a>
-            <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
-        </nav>
-    </aside>
+    <div id="loader">Chargement de l'équipe...</div>
 
-    <main class="main-content">
-        <h1>Gestion des Agents</h1>
-        <p style="margin-bottom: 25px; color: #718096;">Ajoutez les membres de votre équipe technique.</p>
+    <nav class="sidebar">
+        <h2>SIMEL Admin</h2>
+        <ul style="list-style: none; padding: 0; margin-top: 30px;">
+            <li><a href="dashboard.html" style="color:#A0AEC0; text-decoration: none; display:block; padding:10px 0;">Dashboard</a></li>
+            <li><a href="annonces-list.html" style="color:#A0AEC0; text-decoration: none; display:block; padding:10px 0;">Expertises</a></li>
+            <li><a href="leads.html" style="color:#A0AEC0; text-decoration: none; display:block; padding:10px 0;">Demandes</a></li>
+            <li><a href="agents.html" style="color:white; text-decoration: none; display:block; padding:10px 0;"><b>Agents</b></a></li>
+        </ul>
+    </nav>
 
-        <div class="agent-form">
-            <h3>Nouvel Agent</h3>
-            <form id="addAgentForm">
-                <div class="form-grid" style="margin-top: 15px;">
-                    <input type="text" id="name" placeholder="Nom Complet" required>
-                    <input type="text" id="specialty" placeholder="Spécialité (ex: Solaire)" required>
-                    <input type="tel" id="phone" placeholder="Téléphone">
-                </div>
-                <button type="submit" class="btn-add">Ajouter l'agent</button>
-            </form>
+    <main class="main">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Équipe SIMEL S.E.S</h1>
+            <a href="#" class="btn-add"><i class="fas fa-plus"></i> Ajouter un agent</a>
         </div>
 
-        <div id="agentList" class="agent-list">
-            </div>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Nom & Prénom</th>
+                        <th>Poste</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="agents-table">
+                    <tr><td colspan="5">Récupération des agents...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <script>
-        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
-        const SUPABASE_KEY = 'VOTRE_CLE_ANON_PUBLIC';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // --- CONFIGURATION ---
+        // Utilise bien la ANON KEY ici !
+        const _supabase = supabase.createClient('https://VOTRE_PROJET.supabase.co', 'VOTRE_CLE_ANON_REEL');
 
-        // Charger les agents
-        async function loadAgents() {
-            const { data: agents } = await _supabase.from('agents').select('*').order('created_at', { ascending: false });
-            const list = document.getElementById('agentList');
-            list.innerHTML = agents.map(agent => `
-                <div class="agent-card">
-                    <div class="agent-avatar"><i class="fas fa-user"></i></div>
-                    <div>
-                        <strong>${agent.full_name}</strong>
-                        <p style="font-size: 0.8rem; color: #718096;">${agent.specialty}</p>
-                        <p style="font-size: 0.8rem;"><i class="fas fa-phone"></i> ${agent.phone || 'Non renseigné'}</p>
-                    </div>
-                    <button onclick="deleteAgent(${agent.id})" class="btn-del"><i class="fas fa-trash"></i></button>
-                </div>
+        async function initAgents() {
+            // Vérification Session
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (!session) {
+                window.location.replace('login.html');
+                return;
+            }
+            document.getElementById('loader').style.display = 'none';
+
+            // Récupération des agents
+            const { data: agents, error } = await _supabase
+                .from('agents')
+                .select('*')
+                .order('name', { ascending: true });
+
+            const table = document.getElementById('agents-table');
+            
+            if (error) {
+                table.innerHTML = `<tr><td colspan="5" style="color:red;">Erreur : ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (agents.length === 0) {
+                table.innerHTML = `<tr><td colspan="5">Aucun agent trouvé dans la base.</td></tr>`;
+                return;
+            }
+
+            table.innerHTML = agents.map(agent => `
+                <tr>
+                    <td><img src="${agent.image_url || 'https://via.placeholder.com/150'}" class="agent-img"></td>
+                    <td><b>${agent.name}</b></td>
+                    <td><span class="badge">${agent.role || 'Agent'}</span></td>
+                    <td>${agent.email || 'N/A'}</td>
+                    <td>
+                        <button onclick="deleteAgent('${agent.id}')" style="background:none; border:none; color:#E53E3E; cursor:pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
             `).join('');
         }
 
-        // Ajouter un agent
-        document.getElementById('addAgentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newAgent = {
-                full_name: document.getElementById('name').value,
-                specialty: document.getElementById('specialty').value,
-                phone: document.getElementById('phone').value
-            };
-
-            const { error } = await _supabase.from('agents').insert([newAgent]);
-            if (!error) {
-                document.getElementById('addAgentForm').reset();
-                loadAgents();
-            }
-        });
-
-        // Supprimer
         async function deleteAgent(id) {
-            if(confirm("Supprimer cet agent ?")) {
-                await _supabase.from('agents').delete().eq('id', id);
-                loadAgents();
+            if (confirm("Voulez-vous vraiment supprimer cet agent ?")) {
+                const { error } = await _supabase.from('agents').delete().eq('id', id);
+                if (error) alert("Erreur lors de la suppression");
+                else location.reload();
             }
         }
 
-        // Vérifier auth
-        async function init() {
-            const { data } = await _supabase.auth.getSession();
-            if (!data.session) window.location.href = 'login.html';
-            else loadAgents();
-        }
-
-        init();
+        window.onload = initAgents;
     </script>
 </body>
 </html>
