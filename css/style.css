@@ -1,10 +1,10 @@
-/* POLICE ET VARIABLES */
+/* style.css - Design Public SIMEL */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
     --primary: #2D3748;
     --accent: #E53E3E; /* Rouge SIMEL */
-    --light: #F7FAFC;
+    --bg-light: #F7FAFC;
     --white: #ffffff;
 }
 
@@ -12,11 +12,12 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--light);
+    background-color: var(--bg-light);
     color: var(--primary);
+    line-height: 1.6;
 }
 
-/* NAVIGATION */
+/* NAVBAR */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -26,12 +27,12 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.logo { font-size: 1.5rem; font-weight: bold; }
+.logo { font-size: 1.5rem; font-weight: bold; text-transform: uppercase; }
 .logo span { color: var(--accent); }
 
-/* HERO SECTION */
+/* HERO */
 .hero {
-    height: 70vh;
+    height: 65vh;
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1509391366360-fe5bb584850a?q=80&w=1350');
     background-size: cover;
     background-position: center;
@@ -42,8 +43,8 @@ body {
     color: white;
 }
 
-/* GRILLE DE SERVICES */
-.container { width: 90%; max-width: 1200px; margin: auto; padding: 50px 0; }
+/* GRILLE DE SERVICES (PORTFOLIO) */
+.container { width: 90%; max-width: 1200px; margin: 50px auto; }
 
 .services-grid {
     display: grid;
@@ -58,22 +59,24 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.service-card img { width: 100%; height: 200px; object-fit: cover; }
+.service-card img { width: 100%; height: 220px; object-fit: cover; }
 .service-card-content { padding: 20px; }
 
-/* FORMULAIRE DE CONTACT */
+/* CONTACT */
 .contact-section {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 50px;
+    margin-top: 50px;
 }
 
 .contact-form input, .contact-form textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
+    font-family: inherit;
 }
 
 .btn-primary {
@@ -84,4 +87,5 @@ body {
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    width: 100%;
 }
