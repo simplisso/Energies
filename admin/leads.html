@@ -3,82 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demandes de Contact | Admin SIMEL S.E.S</title>
+    <title>Gestion des Leads | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        :root { --primary: #2D3748; --accent: #E53E3E; --bg-light: #F0F2F5; --white: #ffffff; --text-gray: #718096; }
+
+        :root {
+            --primary: #2D3748;
+            --accent: #E53E3E;
+            --bg-light: #F0F2F5;
+            --white: #ffffff;
+            --text-gray: #718096;
+            --success: #38A169;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: var(--primary); }
+        
         .admin-layout { display: flex; min-height: 100vh; }
 
         /* SIDEBAR */
-        .sidebar { width: 250px; background-color: var(--primary); color: white; position: fixed; height: 100vh; padding: 20px 0; display: flex; flex-direction: column; }
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
         .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none; transition: 0.3s; }
-        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.05); color: white; border-left: 4px solid var(--accent); }
-        
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: #A0AEC0;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border-left: 4px solid var(--accent);
+        }
+        .sidebar-menu i { margin-right: 10px; width: 20px; }
+
         /* MAIN CONTENT */
         .main-content { flex: 1; padding: 30px; margin-left: 250px; }
-        .leads-container { display: flex; flex-direction: column; gap: 15px; }
+        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 
+        /* LEADS STYLING */
+        .leads-container { display: flex; flex-direction: column; gap: 15px; }
         .lead-card {
             background: var(--white);
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             display: grid;
-            grid-template-columns: 1fr 2fr 100px;
+            grid-template-columns: 200px 1fr 120px;
+            gap: 20px;
             align-items: center;
-            border-left: 5px solid #E2E8F0;
+            border-left: 6px solid #CBD5E0;
+            transition: 0.2s;
         }
         .lead-card.new { border-left-color: var(--accent); }
         
-        .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        .lead-user h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .lead-user p { font-size: 0.85rem; color: var(--text-gray); }
+        
+        .lead-content strong { display: block; color: var(--primary); margin-bottom: 5px; }
+        .lead-content p { font-size: 0.95rem; line-height: 1.5; color: #4A5568; }
+        
+        .lead-date { font-size: 0.75rem; color: #A0AEC0; margin-top: 8px; display: block; }
+
+        .btn-delete {
+            background: #FFF5F5;
+            color: #E53E3E;
+            border: 1px solid #FED7D7;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-delete:hover { background: #E53E3E; color: white; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
         .badge-new { background: #FED7D7; color: #C53030; }
-        .badge-read { background: #E2E8F0; color: #4A5568; }
+        .badge-old { background: #E2E8F0; color: #4A5568; }
 
-        .btn-action { padding: 8px; border-radius: 5px; color: var(--text-gray); cursor: pointer; border: none; background: #F7FAFC; }
-        .btn-delete:hover { color: var(--accent); background: #FFF5F5; }
-
-        @media (max-width: 900px) { .lead-card { grid-template-columns: 1fr; gap: 10px; } }
+        .loader { text-align: center; padding: 50px; color: var(--text-gray); }
     </style>
 </head>
 <body>
 
     <div class="admin-layout">
         <aside class="sidebar">
-            <div class="sidebar-header"><h2>SIMEL Admin</h2></div>
+            <div class="sidebar-header">
+                <h2>SIMEL Admin</h2>
+            </div>
             <nav class="sidebar-menu">
                 <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
                 <a href="leads.html" class="active"><i class="fas fa-envelope"></i> Demandes</a>
                 <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
-                <hr style="opacity: 0.1; margin: 10px;">
-                <a href="../index.html"><i class="fas fa-arrow-left"></i> Voir le site</a>
+                <hr style="opacity: 0.1; margin: 15px;">
+                <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Voir le site</a>
             </nav>
         </aside>
 
         <main class="main-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h1>Demandes Reçues</h1>
-                <button onclick="loadLeads()" class="btn-action"><i class="fas fa-sync"></i> Actualiser</button>
+            <div class="header-actions">
+                <h1>Messages Reçus</h1>
+                <button onclick="fetchLeads()" style="padding: 10px 20px; cursor: pointer; border-radius: 6px; border: 1px solid #ddd; background: white;">
+                    <i class="fas fa-sync-alt"></i> Actualiser
+                </button>
             </div>
 
             <div id="leadsList" class="leads-container">
-                <p>Chargement des messages...</p>
+                <div class="loader">Chargement des messages...</div>
             </div>
         </main>
     </div>
 
     <script>
-        // CONFIGURATION SUPABASE
-        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // LA CLÉ COMMENÇANT PAR eyJ
+        // 1. CONFIGURATION SUPABASE
+        const SUPABASE_URL = 'https://VOTRE_PROJET.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function loadLeads() {
+        // 2. RÉCUPÉRER LES LEADS
+        async function fetchLeads() {
             const container = document.getElementById('leadsList');
             
             const { data: leads, error } = await _supabase
@@ -87,50 +150,63 @@
                 .order('created_at', { ascending: false });
 
             if (error) {
-                container.innerHTML = `<p style="color:red">Erreur : ${error.message}</p>`;
+                container.innerHTML = `<p style="color:red; padding:20px;">Erreur de chargement : ${error.message}</p>`;
                 return;
             }
 
-            if (leads.length === 0) {
-                container.innerHTML = '<p>Aucun message reçu pour le moment.</p>';
+            if (!leads || leads.length === 0) {
+                container.innerHTML = '<div class="loader">Aucun message pour le moment.</div>';
                 return;
             }
 
             container.innerHTML = leads.map(lead => `
                 <div class="lead-card ${lead.status === 'nouveau' ? 'new' : ''}">
-                    <div>
-                        <span class="badge ${lead.status === 'nouveau' ? 'badge-new' : 'badge-read'}">${lead.status}</span>
-                        <h3 style="margin-top:5px">${lead.client_name}</h3>
-                        <p style="font-size: 0.85rem; color: var(--text-gray)">${lead.client_phone}</p>
+                    <div class="lead-user">
+                        <span class="badge ${lead.status === 'nouveau' ? 'badge-new' : 'badge-old'}">${lead.status}</span>
+                        <h3>${lead.client_name}</h3>
+                        <p><i class="fas fa-phone"></i> ${lead.client_phone}</p>
                     </div>
-                    <div style="border-left: 1px solid #EEE; padding-left: 15px;">
-                        <strong>${lead.subject}</strong>
-                        <p style="font-size: 0.9rem;">${lead.message}</p>
-                        <small style="color:#A0AEC0">${new Date(lead.created_at).toLocaleString()}</small>
+                    <div class="lead-content">
+                        <strong>Sujet : ${lead.subject}</strong>
+                        <p>"${lead.message}"</p>
+                        <span class="lead-date">Reçu le : ${new Date(lead.created_at).toLocaleString('fr-FR')}</span>
                     </div>
                     <div style="text-align: right;">
-                        <button onclick="deleteLead(${lead.id})" class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                        <button onclick="deleteLead(${lead.id})" class="btn-delete" title="Supprimer">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
+        // 3. SUPPRIMER UN LEAD
         async function deleteLead(id) {
-            if (confirm("Supprimer ce message définitivement ?")) {
-                const { error } = await _supabase.from('leads').delete().eq('id', id);
-                if (error) alert("Erreur lors de la suppression");
-                else loadLeads();
+            if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
+                const { error } = await _supabase
+                    .from('leads')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    alert("Erreur lors de la suppression");
+                } else {
+                    fetchLeads(); // Recharger la liste
+                }
             }
         }
 
-        // Vérification session et chargement
-        async function init() {
+        // 4. VÉRIFIER LA CONNEXION AU DÉMARRAGE
+        async function checkAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) window.location.href = 'login.html';
-            else loadLeads();
+            if (!session) {
+                window.location.href = 'login.html';
+            } else {
+                fetchLeads();
+            }
         }
 
-        init();
+        checkAuth();
     </script>
 </body>
 </html>
