@@ -7,132 +7,112 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* ==================================== */
-        /* CSS GLOBAL ADMIN (Intégré)          */
-        /* ==================================== */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
+        :root {
+            --primary: #2D3748;
+            --accent: #E53E3E;
+            --bg-light: #F0F2F5;
+            --white: #ffffff;
+            --text-gray: #718096;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #4A4A4A; background-color: #E2E8F0; }
-        a { text-decoration: none; transition: 0.3s; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: #2D3748; }
         
         .admin-layout { display: flex; min-height: 100vh; }
 
-        /* SIDEBAR / HEADER LATÉRAL */
+        /* SIDEBAR */
         .sidebar {
             width: 250px;
-            background-color: #2D3748;
+            background-color: var(--primary);
             color: white;
             padding: 20px 0;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
             height: 100vh;
         }
-        .sidebar-header {
-            text-align: center;
-            padding-bottom: 20px;
-            margin: 0 20px 30px 20px;
-            border-bottom: 1px solid #4A5568;
-        }
-        .sidebar .logo { font-size: 1.4em; font-weight: 700; color: white; }
-        .sidebar .logo i { color: #3182CE; margin-right: 10px; }
-
-        .sidebar-nav ul { list-style: none; padding: 0 10px; }
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
             color: #A0AEC0;
-            margin-bottom: 5px;
-            border-radius: 4px;
+            text-decoration: none;
+            transition: 0.3s;
         }
-        .sidebar-nav a:hover, .sidebar-nav a.active {
-            background-color: #3182CE;
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255,255,255,0.05);
             color: white;
+            border-left: 4px solid var(--accent);
         }
-        .sidebar-nav a i { margin-right: 10px; width: 20px; text-align: center; }
+        .sidebar-menu i { margin-right: 10px; width: 20px; }
 
         /* MAIN CONTENT */
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 30px; margin-left: 250px; }
+        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        .admin-topbar {
-            background-color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .btn-add {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
         }
+        .btn-add:hover { background: #C53030; }
 
-        .dashboard-content { padding: 30px; flex-grow: 1; }
-
-        /* GRILLE DES AGENTS */
+        /* AGENTS GRID */
         .agents-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
         .agent-card {
-            background: white;
-            border-radius: 10px;
+            background: var(--white);
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             position: relative;
         }
         .agent-avatar {
             width: 60px;
             height: 60px;
-            background: #E2E8F0;
+            background: #EDF2F7;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            color: #718096;
+            color: var(--primary);
         }
-        .agent-info h3 { font-size: 1.1em; color: #2D3748; }
-        .agent-info p { font-size: 0.85em; color: #718096; }
+        .agent-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
         .role-tag {
-            font-size: 0.75em;
-            padding: 2px 8px;
+            font-size: 0.75rem;
             background: #EBF8FF;
             color: #3182CE;
-            border-radius: 4px;
+            padding: 2px 8px;
+            border-radius: 10px;
             font-weight: 600;
         }
-
-        /* BOUTONS ACTIONS */
-        .admin-cta {
-            background: #3182CE;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.9em;
-            border: none;
-            cursor: pointer;
+        .agent-contact {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-gray);
         }
         .agent-actions {
             position: absolute;
             top: 15px;
             right: 15px;
         }
-        .agent-actions i { color: #CBD5E0; cursor: pointer; transition: 0.3s; }
-        .agent-actions i:hover { color: #E53E3E; }
+        .btn-delete { color: #E53E3E; cursor: pointer; opacity: 0.6; transition: 0.3s; }
+        .btn-delete:hover { opacity: 1; }
 
-        /* FOOTER ADMIN */
-        .admin-footer {
-            padding: 15px 30px;
-            background: white;
-            text-align: center;
-            font-size: 0.85em;
-            color: #718096;
-            border-top: 1px solid #E2E8F0;
-        }
+        .admin-footer { margin-top: 40px; text-align: center; color: var(--text-gray); font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -140,71 +120,73 @@
     <div class="admin-layout">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <a href="dashboard.html" class="logo">
-                    <i class="fas fa-user-shield"></i> <span>SIMEL Admin</span>
-                </a>
+                <h2><i class="fas fa-bolt" style="color:var(--accent)"></i> <span>SIMEL Admin</span></h2>
             </div>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> <span>Tableau de Bord</span></a></li>
-                    <li><a href="annonces-list.html"><i class="fas fa-building"></i> <span>Annonces</span></a></li>
-                    <li><a href="leads.html"><i class="fas fa-envelope-open-text"></i> <span>Demandes</span></a></li>
-                    <li><a href="agents.html" class="active"><i class="fas fa-users"></i> <span>Agents</span></a></li>
-                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Paramètres</span></a></li>
-                </ul>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> <span>Dashboard</span></a>
+                <a href="annonces-list.html"><i class="fas fa-list"></i> <span>Nos Services</span></a>
+                <a href="leads.html"><i class="fas fa-envelope"></i> <span>Demandes</span></a>
+                <a href="agents.html" class="active"><i class="fas fa-users"></i> <span>Agents</span></a>
+                <a href="settings.html"><i class="fas fa-cog"></i> <span>Réglages</span></a>
+                <hr style="margin: 20px; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
+                <a href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> <span>Voir le site</span></a>
             </nav>
         </aside>
 
         <main class="main-content">
-            <header class="admin-topbar">
-                <h1>Équipe Technique</h1>
-                <button class="admin-cta"><i class="fas fa-user-plus"></i> Ajouter un technicien</button>
-            </header>
+            <div class="header-actions">
+                <h1>Gestion de l'Équipe</h1>
+                <a href="#" class="btn-add"><i class="fas fa-user-plus"></i> Ajouter un Agent</a>
+            </div>
 
-            <div class="dashboard-content">
-                <div class="agents-grid">
-                    
-                    <div class="agent-card">
-                        <div class="agent-avatar"><i class="fas fa-user"></i></div>
-                        <div class="agent-info">
-                            <h3>Simplice M. OLOUBI</h3>
-                            <span class="role-tag">Directeur Technique</span>
-                            <p><i class="fas fa-phone" style="font-size: 0.8em;"></i> +229 XX XX XX XX</p>
-                        </div>
-                        <div class="agent-actions">
-                            <i class="fas fa-trash-alt"></i>
+            <div class="agents-grid">
+                
+                <div class="agent-card">
+                    <div class="agent-avatar"><i class="fas fa-solar-panel"></i></div>
+                    <div class="agent-info">
+                        <h3>Marc Dossou</h3>
+                        <span class="role-tag">Installateur Solaire</span>
+                        <div class="agent-contact">
+                            <p><i class="fas fa-phone"></i> +229 90 00 00 01</p>
                         </div>
                     </div>
-
-                    <div class="agent-card">
-                        <div class="agent-avatar"><i class="fas fa-user-cog"></i></div>
-                        <div class="agent-info">
-                            <h3>Marc Dossou</h3>
-                            <span class="role-tag">Installateur Solaire</span>
-                            <p><i class="fas fa-phone" style="font-size: 0.8em;"></i> +229 XX XX XX XX</p>
-                        </div>
-                        <div class="agent-actions">
-                            <i class="fas fa-trash-alt"></i>
-                        </div>
+                    <div class="agent-actions">
+                        <i class="fas fa-trash-alt btn-delete" title="Supprimer"></i>
                     </div>
-
-                    <div class="agent-card">
-                        <div class="agent-avatar"><i class="fas fa-snowflake"></i></div>
-                        <div class="agent-info">
-                            <h3>Eric Loko</h3>
-                            <span class="role-tag">Frigoriste</span>
-                            <p><i class="fas fa-phone" style="font-size: 0.8em;"></i> +229 XX XX XX XX</p>
-                        </div>
-                        <div class="agent-actions">
-                            <i class="fas fa-trash-alt"></i>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div class="agent-card">
+                    <div class="agent-avatar"><i class="fas fa-tools"></i></div>
+                    <div class="agent-info">
+                        <h3>Eric Loko</h3>
+                        <span class="role-tag">Frigoriste</span>
+                        <div class="agent-contact">
+                            <p><i class="fas fa-phone"></i> +229 90 00 00 02</p>
+                        </div>
+                    </div>
+                    <div class="agent-actions">
+                        <i class="fas fa-trash-alt btn-delete" title="Supprimer"></i>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="agent-avatar"><i class="fas fa-bolt"></i></div>
+                    <div class="agent-info">
+                        <h3>Jean Gnonlonfoun</h3>
+                        <span class="role-tag">Électricien Industriel</span>
+                        <div class="agent-contact">
+                            <p><i class="fas fa-phone"></i> +229 90 00 00 03</p>
+                        </div>
+                    </div>
+                    <div class="agent-actions">
+                        <i class="fas fa-trash-alt btn-delete" title="Supprimer"></i>
+                    </div>
+                </div>
+
             </div>
 
             <footer class="admin-footer">
-                &copy; 2025 SIMEL S.E.S - Gestion des ressources humaines techniques.
+                &copy; 2025 SIMEL S.E.S - Gestion des ressources techniques.
             </footer>
         </main>
     </div>
