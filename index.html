@@ -48,7 +48,7 @@
         <h2 style="text-align: center; margin-bottom: 40px; color: #2D3748;">Nos Dernières Réalisations</h2>
         
         <div class="annonces-grid" id="projects-container">
-            <div style="text-align: center; grid-column: 1/-1;">Chargement des projets...</div>
+            <div style="text-align: center; grid-column: 1/-1;">Chargement des réalisations...</div>
         </div>
     </main>
 
@@ -94,15 +94,15 @@
         // Menu Mobile
         const toggle = document.querySelector('.menu-toggle');
         const menu = document.getElementById('main-menu');
-        toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
+        if(toggle) toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
 
-        // --- CHARGEMENT DES RÉALISATIONS (Table projects) ---
+        // --- CHARGEMENT DES RÉALISATIONS ---
         async function loadProjects() {
             const container = document.getElementById('projects-container');
             try {
-                // On récupère les données de la table 'projects' (anciennement portfolio_services)
+                // Utilisation de la table 'portfolio_services' vue sur tes captures
                 const { data, error } = await _supabase
-                    .from('projects')
+                    .from('portfolio_services')
                     .select('*')
                     .order('created_at', { ascending: false })
                     .limit(3);
@@ -114,26 +114,25 @@
                     data.forEach(project => {
                         container.innerHTML += `
                             <article class="annonce-card">
-                                <div class="card-image" style="background-image: url('${project.image_url || 'https://via.placeholder.com/400x250'}');"></div>
+                                <div class="card-image" style="background-image: url('${project.image_url || 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=400'}');"></div>
                                 <div class="card-content">
                                     <span style="color: #E53E3E; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">${project.category || 'Réalisation'}</span>
                                     <h3 style="margin-top: 5px;">${project.title}</h3>
                                     <p style="font-size: 0.9rem; color: #718096;"><i class="fas fa-map-marker-alt"></i> ${project.location || 'Bénin'}</p>
                                     <p>${project.description || ''}</p>
                                 </div>
-                            </article>
-                        `;
+                            </article>`;
                     });
                 } else {
-                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Aucune réalisation pour le moment.</p>';
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Aucune réalisation enregistrée pour le moment.</p>';
                 }
             } catch (err) {
                 console.error("Erreur projets:", err);
-                container.innerHTML = '<p>Erreur lors du chargement des réalisations.</p>';
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Erreur de chargement des données. Vérifiez la table "portfolio_services".</p>';
             }
         }
 
-        // --- SYNCHRONISATION DES RÉGLAGES ---
+        // --- SYNCHRONISATION DES RÉGLAGES (Téléphone, Email, Adresse) ---
         async function syncSettings() {
             try {
                 const { data, error } = await _supabase.from('settings').select('*').single();
@@ -144,11 +143,11 @@
 
                     const cleanNumber = data.phone.replace(/\D/g, '');
                     document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                        if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
+                        if(link.classList.contains('whatsapp-float')) link.href = `https://wa.me/${cleanNumber}`;
                         else link.href = `tel:${cleanNumber}`;
                     });
                 }
-            } catch (err) { console.log("Erreur synchro réglages"); }
+            } catch (err) { console.log("Erreur de synchro réglages"); }
         }
 
         window.onload = () => {
