@@ -9,84 +9,123 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
         body { font-family: 'Poppins', sans-serif; background: #f4f7f6; margin: 0; display: flex; }
-        .sidebar { width: 250px; background: #2D3748; color: white; height: 100vh; position: fixed; padding: 20px; }
-        .sidebar a { display: block; color: #A0AEC0; padding: 12px; text-decoration: none; margin-bottom: 5px; border-radius: 5px; }
-        .sidebar a.active { background: #E53E3E; color: white; }
         
-        .main-content { margin-left: 250px; padding: 40px; width: 100%; }
+        /* Sidebar d'origine */
+        .sidebar { width: 250px; background: #2D3748; color: white; height: 100vh; position: fixed; padding: 20px; }
+        .sidebar h2 { font-size: 1.5rem; margin-bottom: 30px; color: #E53E3E; }
+        .sidebar a { display: block; color: #A0AEC0; padding: 12px; text-decoration: none; margin-bottom: 5px; border-radius: 5px; transition: 0.3s; }
+        .sidebar a.active, .sidebar a:hover { background: #4A5568; color: white; }
+        .sidebar a.active { border-left: 4px solid #E53E3E; }
+        
+        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; }
-        .card img { width: 100%; height: 150px; object-fit: cover; }
+        /* Grille des réalisations */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 180px; object-fit: cover; background: #edf2f7; }
+        
         .card-info { padding: 15px; }
-        .card-info h3 { margin: 0; font-size: 1.1rem; }
-        .btn-add { background: #3182CE; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-delete { position: absolute; top: 10px; right: 10px; background: rgba(229, 62, 62, 0.9); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .card-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: #2D3748; }
+        .card-info .category { color: #E53E3E; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .card-info .loc { color: #718096; font-size: 0.85rem; margin-top: 5px; }
+
+        .btn-add { background: #3182CE; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .btn-delete { position: absolute; top: 10px; right: 10px; background: rgba(229, 62, 62, 0.9); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <h2>SIMEL Admin</h2>
-        <a href="dashboard.html">Dashboard</a>
+        <a href="dashboard.html">Tableau de bord</a>
         <a href="realisations-list.html" class="active">Réalisations</a>
-        <a href="leads.html">Demandes</a>
-        <a href="agents.html">Agents</a>
-        <a href="settings.html">Réglages</a>
+        <a href="leads.html">Demandes clients</a>
+        <a href="agents.html">Équipe technique</a>
+        <a href="settings.html">Paramètres généraux</a>
     </div>
 
     <div class="main-content">
         <div class="header">
-            <h1>Nos Réalisations</h1>
-            <button class="btn-add" onclick="addProject()"><i class="fas fa-plus"></i> Nouveau Projet</button>
+            <h1>Gestion des Réalisations</h1>
+            <button class="btn-add" onclick="addProject()"><i class="fas fa-plus"></i> Ajouter un projet</button>
         </div>
 
         <div class="project-grid" id="projectList">
-            </div>
+            <p>Chargement des données...</p>
+        </div>
     </div>
 
     <script>
+        // CONFIGURATION SUPABASE
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // CHARGER LES PROJETS
         async function loadProjects() {
-            const { data, error } = await _supabase.from('projects').select('*').order('created_at', { ascending: false });
             const container = document.getElementById('projectList');
+            const { data, error } = await _supabase
+                .from('portfolio_services')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<p style="color:red">Erreur : ${error.message}</p>`;
+                return;
+            }
+
             container.innerHTML = '';
+            if (data.length === 0) {
+                container.innerHTML = '<p>Aucune réalisation trouvée. Cliquez sur "Ajouter un projet".</p>';
+            }
 
             data.forEach(p => {
                 container.innerHTML += `
                     <div class="card">
-                        <button class="btn-delete" onclick="deleteProject('${p.id}')"><i class="fas fa-trash"></i></button>
-                        <img src="${p.image_url || 'https://via.placeholder.com/400x250'}" alt="">
+                        <button class="btn-delete" onclick="deleteProject('${p.id}')" title="Supprimer">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <img src="${p.image_url || 'https://via.placeholder.com/400x250?text=Pas+d\'image'}" alt="">
                         <div class="card-info">
+                            <span class="category">${p.category || 'PROJET'}</span>
                             <h3>${p.title}</h3>
-                            <p style="color: #718096; font-size: 0.8rem;"><i class="fas fa-map-marker-alt"></i> ${p.location}</p>
+                            <div class="loc"><i class="fas fa-map-marker-alt"></i> ${p.location || 'Bénin'}</div>
                         </div>
                     </div>
                 `;
             });
         }
 
+        // AJOUTER UN PROJET
         async function addProject() {
-            const title = prompt("Nom du projet (ex: Installation Solaire 5kW) :");
-            const location = prompt("Ville (ex: Cotonou, Calavi) :");
-            const category = prompt("Catégorie (Solaire, Électricité, Froid) :");
-            const image_url = prompt("URL de l'image (Lien vers la photo) :");
+            const title = prompt("Titre du projet (ex: Installation Solaire 10kW) :");
+            if (!title) return;
 
-            if (title && location) {
-                const { error } = await _supabase.from('projects').insert([{ title, location, category, image_url }]);
-                if (error) alert(error.message);
-                else loadProjects();
-            }
+            const category = prompt("Catégorie (Solaire / Électricité / Froid) :");
+            const location = prompt("Ville ou Localité :");
+            const image_url = prompt("URL de la photo (Lien direct) :");
+            const description = prompt("Courte description :");
+
+            const { error } = await _supabase.from('portfolio_services').insert([{ 
+                title, 
+                category, 
+                location, 
+                image_url,
+                description 
+            }]);
+
+            if (error) alert("Erreur : " + error.message);
+            else loadProjects();
         }
 
+        // SUPPRIMER UN PROJET
         async function deleteProject(id) {
-            if (confirm("Supprimer cette réalisation ?")) {
-                await _supabase.from('projects').delete().eq('id', id);
-                loadProjects();
+            if (confirm("Voulez-vous vraiment supprimer cette réalisation ?")) {
+                const { error } = await _supabase.from('portfolio_services').delete().eq('id', id);
+                if (error) alert("Erreur lors de la suppression");
+                else loadProjects();
             }
         }
 
