@@ -6,6 +6,7 @@
     <title>À Propos | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -22,14 +23,14 @@
                     <li><a href="a-propos.html" class="active">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="admin/login.html" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-user-shield"></i> Admin</a></li>
-                    <li><a href="tel:+22900000000" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
+                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main>
-        <section style="background: var(--primary); color: white; padding: 60px 0; text-align: center;">
+        <section style="background: #2D3748; color: white; padding: 60px 0; text-align: center;">
             <div class="container">
                 <h1>Qui sommes-nous ?</h1>
                 <p>L'alliance de l'expertise technique et de l'innovation énergétique au Bénin.</p>
@@ -42,7 +43,7 @@
                     <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800" alt="SIMEL SES Équipe" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                 </div>
                 <div style="flex: 1; min-width: 300px;">
-                    <h2 style="color: var(--primary); margin-bottom: 20px;">Notre Histoire & Mission</h2>
+                    <h2 style="color: #2D3748; margin-bottom: 20px;">Notre Histoire & Mission</h2>
                     <p style="margin-bottom: 15px;">Fondée par <strong>Simplice Medard OLOUBI</strong> et son associé, <strong>SIMEL S.E.S</strong> est basée à <span class="dyn-address">Bénin</span> et est née de la volonté d'offrir une expertise fiable en gestion d'énergie.</p>
                     <p>Nous concevons des systèmes durables et sécurisés pour garantir votre continuité d'activité et votre confort thermique.</p>
                 </div>
@@ -52,52 +53,46 @@
         <section style="background: #edf2f7; padding: 60px 0;">
             <div class="container">
                 <h2 style="text-align: center; margin-bottom: 40px;">Nos Valeurs Fondamentales</h2>
-                <div class="annonces-grid">
-                    <div class="annonce-card">
-                        <div class="card-content" style="text-align: center;">
-                            <i class="fas fa-shield-check" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
-                            <h3>Rigueur Technique</h3>
-                            <p>Toutes nos installations respectent les normes NF C 15-100 pour une sécurité maximale.</p>
-                        </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
+                        <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: #E53E3E; margin-bottom: 15px;"></i>
+                        <h3>Rigueur Technique</h3>
+                        <p>Installations aux normes pour une sécurité maximale.</p>
                     </div>
-                    <div class="annonce-card">
-                        <div class="card-content" style="text-align: center;">
-                            <i class="fas fa-leaf" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
-                            <h3>Éco-Responsabilité</h3>
-                            <p>Nous favorisons le solaire et les solutions basse consommation pour protéger l'environnement.</p>
-                        </div>
+                    <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
+                        <i class="fas fa-leaf" style="font-size: 2.5rem; color: #38A169; margin-bottom: 15px;"></i>
+                        <h3>Éco-Responsabilité</h3>
+                        <p>Solaire et solutions basse consommation.</p>
                     </div>
-                    <div class="annonce-card">
-                        <div class="card-content" style="text-align: center;">
-                            <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--accent); margin-bottom: 15px;"></i>
-                            <h3>Proximité</h3>
-                            <p>Une équipe réactive pour vos urgences et maintenances 24h/7 via le <span class="dyn-phone">...</span>.</p>
-                        </div>
+                    <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
+                        <i class="fas fa-handshake" style="font-size: 2.5rem; color: #3182CE; margin-bottom: 15px;"></i>
+                        <h3>Proximité</h3>
+                        <p>Équipe réactive via le <span class="dyn-phone">...</span>.</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <a href="https://wa.me/22900000000" class="whatsapp-float dyn-phone-link" target="_blank">
+    <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
         <span>Échanger avec nous</span>
     </a>
 
-    <footer class="main-footer">
+    <footer class="main-footer" style="background: #1A202C; color: white; padding: 40px 0; margin-top: 60px;">
         <div class="container">
-            <div class="footer-grid">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
                 <div>
                     <h3>SIMEL S.E.S</h3>
                     <p>Qualité, Sécurité, Innovation.</p>
                 </div>
                 <div>
                     <h3>Contact rapide</h3>
-                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">+229 XX XX XX XX</span></p>
-                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">contact@simel-ses.com</span></p>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">Chargement...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">Chargement...</span></p>
                 </div>
             </div>
-            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S - Tous droits réservés.</div>
+            <div style="text-align: center; margin-top: 40px; opacity: 0.6;">&copy; 2025 SIMEL S.E.S - Tous droits réservés.</div>
         </div>
     </footer>
 
@@ -105,29 +100,39 @@
         // Menu Mobile
         const toggle = document.querySelector('.menu-toggle');
         const menu = document.getElementById('main-menu');
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('is-open');
-        });
+        toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
 
-        // Synchronisation avec le Dashboard
+        // Connexion Supabase
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         async function syncSettings() {
             try {
-                const response = await fetch('/api/settings');
-                const data = await response.json();
+                // On récupère la première ligne de la table settings
+                const { data, error } = await _supabase.from('settings').select('*').single();
 
-                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
-                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
-                document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
+                if (data) {
+                    // Mise à jour des textes
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || '+229 00 00 00 00');
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || 'contact@simel-ses.com');
+                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address || 'Bénin');
 
-                const cleanNumber = data.phone.replace(/\D/g, ''); 
-                document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                    if(link.href.includes('tel:')) link.href = `tel:${cleanNumber}`;
-                    if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
-                });
-            } catch (err) { console.log("Erreur de synchronisation"); }
+                    // Mise à jour des liens cliquables
+                    const cleanNumber = (data.phone || '22900000000').replace(/\D/g, '');
+                    document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                        if (link.classList.contains('whatsapp-float')) {
+                            link.href = `https://wa.me/${cleanNumber}`;
+                        } else {
+                            link.href = `tel:${cleanNumber}`;
+                        }
+                    });
+                }
+            } catch (err) { 
+                console.log("Erreur de synchronisation des données"); 
+            }
         }
         window.onload = syncSettings;
     </script>
 </body>
 </html>
-
