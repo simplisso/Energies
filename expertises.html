@@ -6,6 +6,7 @@
     <title>Nos Expertises | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -27,13 +28,13 @@
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="admin/login.html" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-user-shield"></i> Admin</a></li>
-                    <li><a href="tel:+22900000000" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
+                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section style="background: var(--primary); color: white; padding: 60px 0; text-align: center;">
+    <section style="background: #2D3748; color: white; padding: 60px 0; text-align: center;">
         <div class="container">
             <h1>Nos Expertises Techniques</h1>
             <p>Des solutions sur mesure pour particuliers et industriels au Bénin.</p>
@@ -78,12 +79,12 @@
         </div>
     </main>
 
-    <a href="https://wa.me/22900000000" class="whatsapp-float dyn-phone-link" target="_blank">
+    <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
         <span>Un devis gratuit ?</span>
     </a>
 
-    <footer class="main-footer">
+    <footer class="main-footer" style="background: #1A202C; color: white; padding: 40px 0; margin-top: 40px;">
         <div class="container">
             <div class="footer-grid">
                 <div>
@@ -92,11 +93,11 @@
                 </div>
                 <div>
                     <h3>Contact rapide</h3>
-                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">+229 XX XX XX XX</span></p>
-                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">contact@simel-ses.com</span></p>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">Chargement...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">Chargement...</span></p>
                 </div>
             </div>
-            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S</div>
+            <div class="footer-bottom" style="text-align: center; margin-top: 30px; opacity: 0.7;">&copy; 2025 SIMEL S.E.S</div>
         </div>
     </footer>
 
@@ -108,27 +109,38 @@
             menu.classList.toggle('is-open');
         });
 
-        // Synchronisation avec le Dashboard (Réglages)
+        // Config Supabase
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         async function syncSettings() {
             try {
-                const response = await fetch('/api/settings');
-                const data = await response.json();
+                // Récupération des données depuis la table 'settings'
+                const { data, error } = await _supabase.from('settings').select('*').single();
 
-                // Mise à jour des textes
-                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
-                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
+                if (data) {
+                    // Mise à jour des numéros et emails
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || '+229 00 00 00 00');
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || 'contact@simel-ses.com');
 
-                // Mise à jour des liens (Appel et WhatsApp)
-                const cleanNumber = data.phone.replace(/\D/g, ''); 
-                document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                    if(link.href.includes('tel:')) link.href = `tel:${cleanNumber}`;
-                    if(link.href.includes('wa.me')) link.href = `https://wa.me/${cleanNumber}`;
-                });
-            } catch (err) { console.log("Erreur de synchronisation"); }
+                    // Nettoyage du numéro pour les liens tel: et whatsapp
+                    const cleanNumber = (data.phone || '22900000000').replace(/\D/g, ''); 
+                    
+                    document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                        if (link.href.includes('wa.me') || link.classList.contains('whatsapp-float')) {
+                            link.href = `https://wa.me/${cleanNumber}`;
+                        } else {
+                            link.href = `tel:${cleanNumber}`;
+                        }
+                    });
+                }
+            } catch (err) { 
+                console.log("Erreur de synchronisation des réglages."); 
+            }
         }
         window.onload = syncSettings;
     </script>
 
 </body>
 </html>
-
