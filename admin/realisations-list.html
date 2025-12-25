@@ -3,133 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gérer les Réalisations | Admin SIMEL</title>
+    <title>Gestion des Réalisations | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; margin: 0; display: flex; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #4A4A4A; background-color: #E2E8F0; }
         
-        /* Sidebar d'origine */
-        .sidebar { width: 250px; background: #2D3748; color: white; height: 100vh; position: fixed; padding: 20px; }
-        .sidebar h2 { font-size: 1.5rem; margin-bottom: 30px; color: #E53E3E; }
-        .sidebar a { display: block; color: #A0AEC0; padding: 12px; text-decoration: none; margin-bottom: 5px; border-radius: 5px; transition: 0.3s; }
-        .sidebar a.active, .sidebar a:hover { background: #4A5568; color: white; }
-        .sidebar a.active { border-left: 4px solid #E53E3E; }
-        
-        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        /* Grille des réalisations */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        .card img { width: 100%; height: 180px; object-fit: cover; background: #edf2f7; }
-        
-        .card-info { padding: 15px; }
-        .card-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: #2D3748; }
-        .card-info .category { color: #E53E3E; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .card-info .loc { color: #718096; font-size: 0.85rem; margin-top: 5px; }
+        /* Layout */
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background-color: #2D3748; color: white; padding: 20px 0; position: fixed; height: 100vh; }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-menu a { display: block; padding: 12px 20px; color: #A0AEC0; text-decoration: none;}
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(255,255,255,0.05); color: white; border-left: 4px solid #E53E3E; }
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; }
 
-        .btn-add { background: #3182CE; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .btn-delete { position: absolute; top: 10px; right: 10px; background: rgba(229, 62, 62, 0.9); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        /* Formulaire */
+        .form-container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 5px; font-family: inherit; }
+        .btn-save { background-color: #38A169; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        
+        /* Table */
+        .admin-table-container { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; color: #718096; font-size: 0.8rem; }
+        .admin-table td { padding: 15px; border-bottom: 1px solid #edf2f7; }
+        .thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; }
+        .btn-delete { color: #E53E3E; border:none; background:none; cursor:pointer; font-size: 1.1rem; }
     </style>
 </head>
 <body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header"><h2><i class="fas fa-bolt" style="color:#E53E3E"></i> SIMEL Admin</h2></div>
+            <nav class="sidebar-menu">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="realisations-list.html" class="active"><i class="fas fa-images"></i> Réalisations</a>
+                <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
+                <a href="agents.html"><i class="fas fa-users"></i> Agents</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Réglages</a>
+            </nav>
+        </aside>
 
-    <div class="sidebar">
-        <h2>SIMEL Admin</h2>
-        <a href="dashboard.html">Tableau de bord</a>
-        <a href="realisations-list.html" class="active">Réalisations</a>
-        <a href="leads.html">Demandes clients</a>
-        <a href="agents.html">Équipe technique</a>
-        <a href="settings.html">Paramètres généraux</a>
-    </div>
-
-    <div class="main-content">
-        <div class="header">
+        <main class="main-content">
             <h1>Gestion des Réalisations</h1>
-            <button class="btn-add" onclick="addProject()"><i class="fas fa-plus"></i> Ajouter un projet</button>
-        </div>
+            <p style="margin-bottom: 20px;">Ajoutez vos chantiers et photos directement ici.</p>
 
-        <div class="project-grid" id="projectList">
-            <p>Chargement des données...</p>
-        </div>
+            <div class="form-container">
+                <form id="add-project-form">
+                    <div class="form-grid">
+                        <input type="text" id="p-title" placeholder="Titre du projet (ex: Installation 5kW)" required>
+                        <select id="p-category">
+                            <option value="Solaire">Solaire</option>
+                            <option value="Électricité">Électricité</option>
+                            <option value="Froid">Froid</option>
+                            <option value="Sécurité">Sécurité</option>
+                        </select>
+                        <input type="text" id="p-location" placeholder="Ville (ex: Cotonou)" required>
+                        <input type="file" id="p-image" accept="image/*" required>
+                    </div>
+                    <textarea id="p-desc" placeholder="Courte description du travail effectué" rows="2"></textarea>
+                    <button type="submit" class="btn-save" id="btn-submit">
+                        <i class="fas fa-upload"></i> Enregistrer la réalisation
+                    </button>
+                </form>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Titre</th>
+                            <th>Lieu</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="services-tbody">
+                        <tr><td colspan="4">Chargement des données...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </div>
 
     <script>
-        // CONFIGURATION SUPABASE
-        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM');
 
-        // CHARGER LES PROJETS
-        async function loadProjects() {
-            const container = document.getElementById('projectList');
-            const { data, error } = await _supabase
-                .from('portfolio_services')
-                .select('*')
-                .order('created_at', { ascending: false });
+        const form = document.getElementById('add-project-form');
+        const btnSubmit = document.getElementById('btn-submit');
 
-            if (error) {
-                container.innerHTML = `<p style="color:red">Erreur : ${error.message}</p>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            if (data.length === 0) {
-                container.innerHTML = '<p>Aucune réalisation trouvée. Cliquez sur "Ajouter un projet".</p>';
-            }
-
-            data.forEach(p => {
-                container.innerHTML += `
-                    <div class="card">
-                        <button class="btn-delete" onclick="deleteProject('${p.id}')" title="Supprimer">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <img src="${p.image_url || 'https://via.placeholder.com/400x250?text=Pas+d\'image'}" alt="">
-                        <div class="card-info">
-                            <span class="category">${p.category || 'PROJET'}</span>
-                            <h3>${p.title}</h3>
-                            <div class="loc"><i class="fas fa-map-marker-alt"></i> ${p.location || 'Bénin'}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // AJOUTER UN PROJET
-        async function addProject() {
-            const title = prompt("Titre du projet (ex: Installation Solaire 10kW) :");
-            if (!title) return;
-
-            const category = prompt("Catégorie (Solaire / Électricité / Froid) :");
-            const location = prompt("Ville ou Localité :");
-            const image_url = prompt("URL de la photo (Lien direct) :");
-            const description = prompt("Courte description :");
-
-            const { error } = await _supabase.from('portfolio_services').insert([{ 
-                title, 
-                category, 
-                location, 
-                image_url,
-                description 
-            }]);
-
-            if (error) alert("Erreur : " + error.message);
-            else loadProjects();
-        }
-
-        // SUPPRIMER UN PROJET
-        async function deleteProject(id) {
-            if (confirm("Voulez-vous vraiment supprimer cette réalisation ?")) {
-                const { error } = await _supabase.from('portfolio_services').delete().eq('id', id);
-                if (error) alert("Erreur lors de la suppression");
-                else loadProjects();
+        async function loadServices() {
+            const { data, error } = await _supabase.from('portfolio_services').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('services-tbody');
+            tbody.innerHTML = '';
+            if (data) {
+                data.forEach(item => {
+                    tbody.innerHTML += `<tr>
+                        <td><img src="${item.image_url}" class="thumb" onerror="this.src='https://via.placeholder.com/60'"></td>
+                        <td><strong>${item.title}</strong><br><small>${item.category}</small></td>
+                        <td>${item.location || '-'}</td>
+                        <td>
+                            <button onclick="deleteItem('${item.id}', '${item.image_url}')" class="btn-delete"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>`;
+                });
             }
         }
 
-        window.onload = loadProjects;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = "Téléchargement de l'image...";
+
+            const file = document.getElementById('p-image').files[0];
+            const title = document.getElementById('p-title').value;
+            const category = document.getElementById('p-category').value;
+            const location = document.getElementById('p-location').value;
+            const description = document.getElementById('p-desc').value;
+
+            try {
+                // 1. Upload l'image dans le Storage
+                const fileName = `${Date.now()}_${file.name}`;
+                const { data: uploadData, error: uploadError } = await _supabase.storage
+                    .from('realisations')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // 2. Récupérer l'URL publique de l'image
+                const { data: urlData } = _supabase.storage
+                    .from('realisations')
+                    .getPublicUrl(fileName);
+                
+                const imagePublicUrl = urlData.publicUrl;
+
+                // 3. Insérer les données dans la table
+                const { error: insertError } = await _supabase.from('portfolio_services').insert([{
+                    title,
+                    category,
+                    location,
+                    description,
+                    image_url: imagePublicUrl
+                }]);
+
+                if (insertError) throw insertError;
+
+                alert("Réalisation ajoutée avec succès !");
+                form.reset();
+                loadServices();
+
+            } catch (err) {
+                alert("Erreur : " + err.message);
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="fas fa-upload"></i> Enregistrer la réalisation';
+            }
+        });
+
+        async function deleteItem(id, imageUrl) {
+            if(confirm("Voulez-vous supprimer cette réalisation ?")) {
+                // Optionnel : extraire le nom du fichier de l'URL pour supprimer du storage
+                await _supabase.from('portfolio_services').delete().eq('id', id);
+                loadServices();
+            }
+        }
+
+        window.onload = loadServices;
     </script>
 </body>
-</html>
+</html> 
