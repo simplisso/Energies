@@ -3,103 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMEL S.E.S | Accueil - Expertise Énergétique & Solaire au Bénin</title>
+    <title>SIMEL S.E.S | Accueil - Expertise Énergétique au Bénin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        /* Styles rapides pour garantir le rendu si le CSS externe est absent */
-        :root { --primary: #2D3748; --accent: #E53E3E; --light: #F7FAFC; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--primary); }
-        .container { width: 90%; max-width: 1200px; margin: auto; }
-        
-        /* Header & Nav */
-        .main-header { background: white; padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .nav-list { list-style: none; display: flex; gap: 20px; align-items: center; }
-        .nav-list a { text-decoration: none; color: var(--primary); font-weight: 500; transition: 0.3s; }
-        .nav-list a:hover, .nav-list a.active { color: var(--accent); }
-        .cta-urgence { background: var(--accent); color: white !important; padding: 8px 15px; border-radius: 5px; }
-
-        /* Hero Banner */
-        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?q=80&w=1200') center/cover; height: 80vh; display: flex; align-items: center; color: white; text-align: center; }
-        .hero h1 { font-size: 3rem; margin-bottom: 20px; }
-        .hero p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; }
-        .btn-primary { background: var(--accent); color: white; padding: 15px 35px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1rem; }
-
-        /* Grid */
-        .services-preview { padding: 80px 0; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
-        .card { background: white; padding: 0; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .card-img { height: 200px; background-size: cover; background-position: center; }
-        .card-content { padding: 25px; }
-
-        /* Footer */
-        .main-footer { background: var(--primary); color: white; padding: 60px 0 20px; margin-top: 50px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
-
-        /* WhatsApp */
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white; padding: 15px 25px; border-radius: 50px; text-decoration: none; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; font-weight: bold; }
-    </style>
 </head>
 <body>
 
     <header class="main-header">
-        <div class="container header-top">
-            <a href="index.html" class="logo"><i class="fas fa-bolt" style="color:var(--accent)"></i> SIMEL S.E.S</a>
-            <nav>
-                <ul class="nav-list" id="main-menu">
+        <div class="container">
+            <div class="header-top">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-bolt"></i> SIMEL S.E.S
+                </a>
+                <button class="menu-toggle" aria-label="Ouvrir le menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="main-nav">
+                <ul id="main-menu" class="nav-list">
                     <li><a href="index.html" class="active">Accueil</a></li>
                     <li><a href="realisations.html">Nos Réalisations</a></li>
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="#" class="cta-urgence dyn-phone-link"><i class="fas fa-phone-alt"></i> <span class="dyn-phone">Chargement...</span></a></li>
+                    <li><a href="admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li>
+                        <a href="#" class="cta-admin dyn-phone-link">
+                            <i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero">
+    <section class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1200') center/cover;">
         <div class="container">
-            <h1>Énergie Durable & Sécurité Maximale</h1>
-            <p>Expertise en Énergie Solaire, Électricité Industrielle et Froid au Bénin.</p>
-            <a href="realisations.html" class="btn-primary">Découvrir nos projets</a>
+            <h1>Solutions Énergétiques de Précision</h1>
+            <p>SIMEL S.E.S vous accompagne dans vos projets de Solaire, Électricité Industrielle et Sécurité Électronique au Bénin.</p>
+            <a href="realisations.html" class="primary-cta">Découvrir nos projets</a>
         </div>
     </section>
 
-    <main class="container services-preview">
-        <h2>Nos Domaines d'Intervention</h2>
-        <div class="grid">
-            <div class="card">
-                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400')"></div>
+    <main class="container" style="padding: 60px 0;">
+        <h2 style="text-align: center; margin-bottom: 40px; color: var(--primary);">Nos Domaines d'Intervention</h2>
+        
+        <div class="annonces-grid">
+            <div class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=400');"></div>
                 <div class="card-content">
-                    <h3>Solaire Photovoltaïque</h3>
-                    <p>Réduisez vos factures avec nos installations solaires intelligentes.</p>
+                    <h3>Énergie Solaire</h3>
+                    <p>Installation photovoltaïque pour autonomie complète et réduction de facture.</p>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=400')"></div>
+
+            <div class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558444479-c8f027d6a5ad?w=400');"></div>
                 <div class="card-content">
-                    <h3>Froid & Climatisation</h3>
-                    <p>Installation et maintenance de systèmes thermiques performants.</p>
+                    <h3>Électricité Pro</h3>
+                    <p>Maintenance industrielle, câblage d'armoires et mise aux normes sécurisées.</p>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=400')"></div>
+
+            <div class="annonce-card">
+                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=400');"></div>
                 <div class="card-content">
                     <h3>Sécurité Électronique</h3>
-                    <p>Vidéosurveillance et alarmes pour protéger vos infrastructures.</p>
+                    <p>Vidéosurveillance HD et contrôle d'accès intelligent pour vos locaux.</p>
                 </div>
             </div>
         </div>
     </main>
 
     <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
-        <i class="fab fa-whatsapp"></i> WhatsApp
+        <i class="fab fa-whatsapp"></i>
+        <span>Nous contacter</span>
     </a>
 
     <footer class="main-footer">
@@ -107,28 +87,38 @@
             <div class="footer-grid">
                 <div>
                     <h3>SIMEL S.E.S</h3>
-                    <p>L'excellence technique pour un avenir énergétique sûr.</p>
+                    <p>L'expertise technique au service de votre confort et de votre sécurité.</p>
                 </div>
                 <div>
-                    <h3>Contact rapide</h3>
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="realisations.html">Nos Projets</a></li>
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Contact</h3>
                     <p><i class="fas fa-phone"></i> <span class="dyn-phone">...</span></p>
                     <p><i class="fas fa-envelope"></i> <span class="dyn-email">...</span></p>
                     <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">...</span></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                &copy; 2025 SIMEL S.E.S - Tous droits réservés.
+                &copy; 2025 SIMEL S.E.S. Tous droits réservés.
             </div>
         </div>
     </footer>
 
     <script>
-        // CONFIGURATION SUPABASE
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // SYNC DES RÉGLAGES
+        const toggle = document.querySelector('.menu-toggle');
+        const menu = document.getElementById('main-menu');
+        toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
+
         async function syncSettings() {
             try {
                 const { data, error } = await _supabase.from('settings').select('*').single();
@@ -139,11 +129,10 @@
 
                     const cleanNum = data.phone.replace(/\D/g, '');
                     document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                        if(link.classList.contains('whatsapp-float')) link.href = `https://wa.me/${cleanNum}`;
-                        else link.href = `tel:${cleanNum}`;
+                        link.href = link.classList.contains('whatsapp-float') ? `https://wa.me/${cleanNum}` : `tel:${cleanNum}`;
                     });
                 }
-            } catch (e) { console.log("Erreur sync index"); }
+            } catch (e) { console.error("Erreur sync"); }
         }
         window.onload = syncSettings;
     </script>
