@@ -7,6 +7,80 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Styles pour la grille des réalisations */
+        .annonces-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .annonce-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid #edf2f7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .annonce-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            background-color: #f7fafc;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card-category {
+            color: #E53E3E;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .card-content h3 {
+            color: #2D3748;
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-location {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            color: #4A5568;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        /* Badge d'urgence */
+        .cta-admin {
+            background: #E53E3E;
+            color: white !important;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 
@@ -14,7 +88,7 @@
         <div class="container">
             <div class="header-top">
                 <a href="index.html" class="logo">
-                    <i class="fas fa-bolt"></i> SIMEL S.E.S
+                    <i class="fas fa-bolt" style="color: #E53E3E;"></i> SIMEL S.E.S
                 </a>
                 <button class="menu-toggle" aria-label="Ouvrir le menu">
                     <i class="fas fa-bars"></i>
@@ -28,33 +102,41 @@
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
-                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
+                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1200') center/cover; padding: 100px 0; color: white; text-align: center;">
+    <section class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1200') center/cover; padding: 120px 0; color: white; text-align: center;">
         <div class="container">
-            <h1 style="font-size: 2.8rem; margin-bottom: 20px;">Solutions Énergétiques de Précision</h1>
-            <p style="font-size: 1.2rem; margin-bottom: 35px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            <h1 style="font-size: 3rem; margin-bottom: 20px; font-weight: 700;">Solutions Énergétiques de Précision</h1>
+            <p style="font-size: 1.25rem; margin-bottom: 40px; max-width: 850px; margin-left: auto; margin-right: auto; opacity: 0.9;">
                 SIMEL S.E.S vous accompagne dans vos projets de Solaire, Électricité Industrielle et Sécurité Électronique au Bénin.
             </p>
-            <a href="contact.html" class="primary-cta" style="background: #E53E3E; padding: 15px 30px; border-radius: 5px; display: inline-block; color: white; font-weight: bold; text-decoration: none;">Demander un devis</a>
+            <a href="contact.html" class="primary-cta" style="background: #E53E3E; padding: 18px 35px; border-radius: 8px; display: inline-block; color: white; font-weight: bold; text-decoration: none; font-size: 1.1rem; transition: 0.3s;">
+                Demander un devis gratuit
+            </a>
         </div>
     </section>
 
-    <main class="container" style="padding: 60px 0;">
-        <h2 style="text-align: center; margin-bottom: 40px; color: #2D3748;">Nos Dernières Réalisations</h2>
+    <main class="container" style="padding: 80px 0;">
+        <div style="text-align: center; margin-bottom: 50px;">
+            <h2 style="font-size: 2.2rem; color: #2D3748; margin-bottom: 10px;">Nos Dernières Réalisations</h2>
+            <div style="width: 60px; height: 4px; background: #E53E3E; margin: 0 auto;"></div>
+        </div>
         
         <div class="annonces-grid" id="projects-container">
-            <div style="text-align: center; grid-column: 1/-1;">Chargement des réalisations...</div>
+            <div style="text-align: center; grid-column: 1/-1;">
+                <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; color: #E53E3E;"></i>
+                <p style="margin-top: 15px;">Chargement de nos projets récents...</p>
+            </div>
         </div>
     </main>
 
     <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
-        <span>Nous contacter</span>
+        <span>Contact WhatsApp</span>
     </a>
 
     <footer class="main-footer">
@@ -62,7 +144,7 @@
             <div class="footer-grid">
                 <div>
                     <h3>SIMEL S.E.S</h3>
-                    <p>L'expertise technique au service de votre confort et de votre sécurité.</p>
+                    <p>L'expertise technique au service de votre confort et de votre sécurité énergétique au Bénin.</p>
                 </div>
                 <div>
                     <h3>Navigation</h3>
@@ -73,14 +155,14 @@
                     </ul>
                 </div>
                 <div>
-                    <h3>Contact</h3>
+                    <h3>Contact Rapide</h3>
                     <p><i class="fas fa-phone"></i> <span class="dyn-phone">...</span></p>
                     <p><i class="fas fa-envelope"></i> <span class="dyn-email">...</span></p>
                     <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">...</span></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                &copy; 2025 SIMEL S.E.S. Tous droits réservés.
+                &copy; 2025 SIMEL S.E.S. Expertise Électrique & Solaire.
             </div>
         </div>
     </footer>
@@ -91,16 +173,20 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Menu Mobile
+        // Menu Mobile Toggle
         const toggle = document.querySelector('.menu-toggle');
         const menu = document.getElementById('main-menu');
-        if(toggle) toggle.addEventListener('click', () => { menu.classList.toggle('is-open'); });
+        if(toggle) {
+            toggle.addEventListener('click', () => { 
+                menu.classList.toggle('is-open'); 
+            });
+        }
 
-        // --- CHARGEMENT DES RÉALISATIONS ---
+        // --- CHARGEMENT DES RÉALISATIONS DYNAMIQUE ---
         async function loadProjects() {
             const container = document.getElementById('projects-container');
             try {
-                // Utilisation de la table 'portfolio_services' vue sur tes captures
+                // On récupère les 3 dernières réalisations de la table portfolio_services
                 const { data, error } = await _supabase
                     .from('portfolio_services')
                     .select('*')
@@ -112,49 +198,61 @@
                 if (data && data.length > 0) {
                     container.innerHTML = '';
                     data.forEach(project => {
+                        // Gestion de l'image de secours si project.image_url est vide
+                        const imgUrl = project.image_url || 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=400';
+                        
                         container.innerHTML += `
                             <article class="annonce-card">
-                                <div class="card-image" style="background-image: url('${project.image_url || 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=400'}');"></div>
+                                <div class="card-image" style="background-image: url('${imgUrl}');"></div>
                                 <div class="card-content">
-                                    <span style="color: #E53E3E; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">${project.category || 'Réalisation'}</span>
-                                    <h3 style="margin-top: 5px;">${project.title}</h3>
-                                    <p style="font-size: 0.9rem; color: #718096;"><i class="fas fa-map-marker-alt"></i> ${project.location || 'Bénin'}</p>
-                                    <p>${project.description || ''}</p>
+                                    <span class="card-category">${project.category || 'Réalisation'}</span>
+                                    <h3>${project.title}</h3>
+                                    <div class="card-location">
+                                        <i class="fas fa-map-marker-alt"></i> ${project.location || 'Bénin'}
+                                    </div>
+                                    <p class="card-description">${project.description || 'Projet réalisé avec succès par les équipes de SIMEL S.E.S.'}</p>
                                 </div>
                             </article>`;
                     });
                 } else {
-                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Aucune réalisation enregistrée pour le moment.</p>';
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #718096;">Aucune réalisation disponible pour le moment.</p>';
                 }
             } catch (err) {
                 console.error("Erreur projets:", err);
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Erreur de chargement des données. Vérifiez la table "portfolio_services".</p>';
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #E53E3E;">Erreur lors de la connexion à la base de données.</p>';
             }
         }
 
-        // --- SYNCHRONISATION DES RÉGLAGES (Téléphone, Email, Adresse) ---
+        // --- SYNCHRONISATION DES RÉGLAGES DEPUIS L'ADMIN ---
         async function syncSettings() {
             try {
                 const { data, error } = await _supabase.from('settings').select('*').single();
                 if (data) {
+                    // Mise à jour des textes
                     document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
                     document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
                     document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
 
-                    const cleanNumber = data.phone.replace(/\D/g, '');
+                    // Mise à jour des liens d'appel et WhatsApp
+                    const cleanNumber = data.phone.replace(/\D/g, ''); // Enlève les espaces/caractères
                     document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                        if(link.classList.contains('whatsapp-float')) link.href = `https://wa.me/${cleanNumber}`;
-                        else link.href = `tel:${cleanNumber}`;
+                        if(link.classList.contains('whatsapp-float')) {
+                            link.href = `https://wa.me/${cleanNumber}`;
+                        } else {
+                            link.href = `tel:${cleanNumber}`;
+                        }
                     });
                 }
-            } catch (err) { console.log("Erreur de synchro réglages"); }
+            } catch (err) { 
+                console.log("Les réglages n'ont pas encore été configurés dans la table 'settings'."); 
+            }
         }
 
+        // Lancement au chargement de la page
         window.onload = () => {
             syncSettings();
             loadProjects();
         };
     </script>
-
 </body>
 </html>
