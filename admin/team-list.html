@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Équipe | Admin SIMEL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background: #f4f7f6; display: flex; min-height: 100vh; margin: 0; }
+        .admin-sidebar { width: 250px; background: #2d3748; color: white; padding: 20px; }
+        .admin-main { flex: 1; padding: 40px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: 1 / -1; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; }
+        .btn-save { background: #38a169; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+        
+        .team-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        .team-table th { background: #edf2f7; padding: 15px; text-align: left; }
+        .team-table td { padding: 15px; border-bottom: 1px solid #edf2f7; }
+        .member-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .btn-delete { color: #e53e3e; cursor: pointer; border: none; background: none; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+    <aside class="admin-sidebar">
+        <h2>SIMEL Admin</h2>
+        <nav style="margin-top: 30px;">
+            <a href="dashboard.html" style="display:block; color:white; padding:10px 0; text-decoration:none;"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="realisations-list.html" style="display:block; color:white; padding:10px 0; text-decoration:none;"><i class="fas fa-images"></i> Réalisations</a>
+            <a href="team-list.html" style="display:block; color:#e53e3e; padding:10px 0; text-decoration:none; font-weight:bold;"><i class="fas fa-users"></i> Équipe</a>
+            <a href="settings.html" style="display:block; color:white; padding:10px 0; text-decoration:none;"><i class="fas fa-cog"></i> Réglages</a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <h1>Gestion de l'Équipe Dirigeante</h1>
+        
+        <div class="card">
+            <h3>Ajouter un Responsable</h3>
+            <div class="form-grid">
+                <input type="text" id="m-name" placeholder="Nom et Prénom">
+                <input type="text" id="m-post" placeholder="Poste (ex: Directeur Technique)">
+                <div class="full-width">
+                    <label>Photo du responsable :</label>
+                    <input type="file" id="m-photo" accept="image/*">
+                </div>
+                <button class="btn-save" onclick="addMember()" id="btn-text">
+                    <i class="fas fa-user-plus"></i> Enregistrer le membre
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <table class="team-table">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Nom</th>
+                        <th>Poste</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="team-body">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM'; //
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadTeam() {
+            const { data, error } = await _supabase.from('team_members').select('*').order('created_at', { ascending: false });
+            const body = document.getElementById('team-body');
+            body.innerHTML = '';
+            
+            data.forEach(m => {
+                body.innerHTML += `
+                    <tr>
+                        <td><img src="${m.photo_url}" class="member-img"></td>
+                        <td><strong>${m.full_name}</strong></td>
+                        <td>${m.position}</td>
+                        <td><button class="btn-delete" onclick="deleteMember('${m.id}')"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function addMember() {
+            const name = document.getElementById('m-name').value;
+            const post = document.getElementById('m-post').value;
+            const file = document.getElementById('m-photo').files[0];
+            const btn = document.getElementById('btn-text');
+
+            if (!name || !file) return alert("Le nom et la photo sont obligatoires.");
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
+            try {
+                // 1. Upload de la photo dans le bucket REALISATIONS
+                const fileName = `team_${Date.now()}_${file.name}`;
+                const { data: upData, error: upErr } = await _supabase.storage
+                    .from('REALISATIONS')
+                    .upload(fileName, file);
+
+                if (upErr) throw upErr;
+
+                const { data: urlData } = _supabase.storage.from('REALISATIONS').getPublicUrl(fileName);
+
+                // 2. Insertion dans la table team_members
+                const { error: insErr } = await _supabase.from('team_members').insert([{
+                    full_name: name,
+                    position: post,
+                    photo_url: urlData.publicUrl
+                }]);
+
+                if (insErr) throw insErr;
+
+                alert("Membre ajouté !");
+                location.reload();
+            } catch (err) {
+                alert("Erreur : " + err.message);
+                btn.disabled = false;
+                btn.innerText = "Enregistrer le membre";
+            }
+        }
+
+        async function deleteMember(id) {
+            if (confirm("Supprimer ce membre de l'équipe ?")) {
+                await _supabase.from('team_members').delete().eq('id', id);
+                loadTeam();
+            }
+        }
+
+        window.onload = loadTeam;
+    </script>
+</body>
+</html>
