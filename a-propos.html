@@ -3,18 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>À Propos | SIMEL S.E.S</title>
+    <title>À Propos | SIMEL S.E.S - Expertise et Équipe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Styles pour la section équipe */
+        .team-section {
+            padding: 80px 0;
+            background: #f7fafc;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        .member-card {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .member-card:hover {
+            transform: translateY(-10px);
+        }
+        .member-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 4px solid #E53E3E;
+            padding: 5px;
+            background: white;
+        }
+        .member-name {
+            font-size: 1.4rem;
+            color: #2D3748;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        .member-position {
+            color: #E53E3E;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
 <body>
 
     <header class="main-header">
         <div class="container">
             <div class="header-top">
-                <a href="index.html" class="logo"><i class="fas fa-bolt"></i> SIMEL S.E.S</a>
-                <button class="menu-toggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-bolt"></i> SIMEL S.E.S
+                </a>
             </div>
             <nav class="main-nav">
                 <ul id="main-menu" class="nav-list">
@@ -22,117 +70,81 @@
                     <li><a href="expertises.html">Nos Expertises</a></li>
                     <li><a href="a-propos.html" class="active">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="admin/login.html" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-user-shield"></i> Admin</a></li>
-                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main>
-        <section style="background: #2D3748; color: white; padding: 60px 0; text-align: center;">
-            <div class="container">
-                <h1>Qui sommes-nous ?</h1>
-                <p>L'alliance de l'expertise technique et de l'innovation énergétique au Bénin.</p>
-            </div>
-        </section>
-
-        <section class="container" style="padding: 60px 0;">
-            <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: center;">
-                <div style="flex: 1; min-width: 300px;">
-                    <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800" alt="SIMEL SES Équipe" style="width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                </div>
-                <div style="flex: 1; min-width: 300px;">
-                    <h2 style="color: #2D3748; margin-bottom: 20px;">Notre Histoire & Mission</h2>
-                    <p style="margin-bottom: 15px;">Fondée par <strong>Simplice Medard OLOUBI</strong> et son associé, <strong>SIMEL S.E.S</strong> est basée à <span class="dyn-address">Bénin</span> et est née de la volonté d'offrir une expertise fiable en gestion d'énergie.</p>
-                    <p>Nous concevons des systèmes durables et sécurisés pour garantir votre continuité d'activité et votre confort thermique.</p>
-                </div>
-            </div>
-        </section>
-
-        <section style="background: #edf2f7; padding: 60px 0;">
-            <div class="container">
-                <h2 style="text-align: center; margin-bottom: 40px;">Nos Valeurs Fondamentales</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                    <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
-                        <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: #E53E3E; margin-bottom: 15px;"></i>
-                        <h3>Rigueur Technique</h3>
-                        <p>Installations aux normes pour une sécurité maximale.</p>
-                    </div>
-                    <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
-                        <i class="fas fa-leaf" style="font-size: 2.5rem; color: #38A169; margin-bottom: 15px;"></i>
-                        <h3>Éco-Responsabilité</h3>
-                        <p>Solaire et solutions basse consommation.</p>
-                    </div>
-                    <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
-                        <i class="fas fa-handshake" style="font-size: 2.5rem; color: #3182CE; margin-bottom: 15px;"></i>
-                        <h3>Proximité</h3>
-                        <p>Équipe réactive via le <span class="dyn-phone">...</span>.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-        <span>Échanger avec nous</span>
-    </a>
-
-    <footer class="main-footer" style="background: #1A202C; color: white; padding: 40px 0; margin-top: 60px;">
+    <section class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1454165833767-027ffea9e77b?q=80&w=1200') center/cover; padding: 80px 0; color: white; text-align: center;">
         <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;">
-                <div>
-                    <h3>SIMEL S.E.S</h3>
-                    <p>Qualité, Sécurité, Innovation.</p>
-                </div>
-                <div>
-                    <h3>Contact rapide</h3>
-                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">Chargement...</span></p>
-                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">Chargement...</span></p>
+            <h1>Qui sommes-nous ?</h1>
+            <p style="max-width: 700px; margin: 20px auto;">Une entreprise béninoise dédiée à l'excellence technologique dans le domaine de l'énergie et de la sécurité.</p>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-size: 2.2rem; color: #2D3748;">Notre Équipe Dirigeante</h2>
+                <p style="color: #718096;">Les experts derrière le succès de SIMEL S.E.S</p>
+                <div style="width: 50px; height: 3px; background: #E53E3E; margin: 15px auto;"></div>
+            </div>
+
+            <div class="team-grid" id="team-display">
+                <div style="text-align: center; grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #E53E3E;"></i>
+                    <p>Chargement de l'équipe...</p>
                 </div>
             </div>
-            <div style="text-align: center; margin-top: 40px; opacity: 0.6;">&copy; 2025 SIMEL S.E.S - Tous droits réservés.</div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                &copy; 2025 SIMEL S.E.S. Tous droits réservés.
+            </div>
         </div>
     </footer>
 
     <script>
-        // Menu Mobile
-        const toggle = document.querySelector('.menu-toggle');
-        const menu = document.getElementById('main-menu');
-        toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
-
-        // Connexion Supabase
+        // --- CONFIGURATION SUPABASE ---
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM'; //
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function syncSettings() {
+        async function fetchTeam() {
+            const container = document.getElementById('team-display');
             try {
-                // On récupère la première ligne de la table settings
-                const { data, error } = await _supabase.from('settings').select('*').single();
+                // Récupération des données de la table 'team_members'
+                const { data, error } = await _supabase
+                    .from('team_members')
+                    .select('*')
+                    .order('created_at', { ascending: true });
 
-                if (data) {
-                    // Mise à jour des textes
-                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || '+229 00 00 00 00');
-                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || 'contact@simel-ses.com');
-                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address || 'Bénin');
+                if (error) throw error;
 
-                    // Mise à jour des liens cliquables
-                    const cleanNumber = (data.phone || '22900000000').replace(/\D/g, '');
-                    document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                        if (link.classList.contains('whatsapp-float')) {
-                            link.href = `https://wa.me/${cleanNumber}`;
-                        } else {
-                            link.href = `tel:${cleanNumber}`;
-                        }
+                if (data && data.length > 0) {
+                    container.innerHTML = ''; // On vide le spinner
+                    data.forEach(member => {
+                        container.innerHTML += `
+                            <article class="member-card">
+                                <img src="${member.photo_url || 'https://via.placeholder.com/180'}" class="member-photo" alt="${member.full_name}">
+                                <h3 class="member-name">${member.full_name}</h3>
+                                <p class="member-position">${member.position || 'Responsable'}</p>
+                            </article>`;
                     });
+                } else {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Aucun membre de l\'équipe enregistré.</p>';
                 }
-            } catch (err) { 
-                console.log("Erreur de synchronisation des données"); 
+            } catch (err) {
+                console.error("Erreur Equipe:", err);
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Erreur de connexion à la base de données.</p>';
             }
         }
-        window.onload = syncSettings;
+
+        // Lancement au chargement
+        window.addEventListener('load', fetchTeam);
     </script>
 </body>
 </html>
