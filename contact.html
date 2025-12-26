@@ -10,6 +10,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        :root {
+            --primary: #2D3748;
+            --accent: #E53E3E;
+            --white: #ffffff;
+        }
         .contact-container { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 40px; }
         .info-box { background: var(--white); padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .info-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
@@ -22,10 +27,10 @@
             width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; 
         }
         .submit-btn { 
-            background: var(--primary); color: white; border: none; padding: 15px 30px; 
+            background: var(--accent); color: white; border: none; padding: 15px 30px; 
             border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s;
         }
-        .submit-btn:hover { background: var(--accent); }
+        .submit-btn:hover { background: #c53030; }
         .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
 
         @media (max-width: 768px) { .contact-container { grid-template-columns: 1fr; } }
@@ -36,7 +41,7 @@
     <header class="main-header">
         <div class="container">
             <div class="header-top">
-                <a href="index.html" class="logo"><i class="fas fa-bolt"></i> SIMEL S.E.S</a>
+                <a href="index.html" class="logo"><i class="fas fa-bolt" style="color: var(--accent);"></i> SIMEL S.E.S</a>
                 <button class="menu-toggle"><i class="fas fa-bars"></i></button>
             </div>
             <nav class="main-nav">
@@ -46,8 +51,8 @@
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html" class="active">Contact</a></li>
                     <li>
-                        <a href="tel:+22900000000" class="cta-admin dyn-phone-link">
-                            <i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">...</span>
+                        <a href="#" class="cta-admin dyn-phone-link" style="background: var(--accent); color: white !important; padding: 8px 15px; border-radius: 50px;">
+                            <i class="fas fa-phone-alt"></i> <span class="dyn-phone">Chargement...</span>
                         </a>
                     </li>
                 </ul>
@@ -121,54 +126,67 @@
         </div>
     </main>
 
-    <footer class="main-footer">
+    <footer class="main-footer" style="background: var(--primary); color: white; padding: 40px 0; text-align: center;">
         <div class="container">
-            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S</div>
+            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S | Expertise Énergétique</div>
         </div>
     </footer>
 
     <script>
-        // CONFIGURATION
-        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM');
+        // CONFIGURATION SUPABASE
+        const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 1. Sync des infos (Tel, Email)
+        // 1. Synchronisation des informations de contact depuis la table 'settings'
         async function syncContactInfo() {
-            const { data } = await _supabase.from('settings').select('*').eq('id', 1).single();
-            if (data) {
-                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
-                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
-                document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
-                const clean = data.phone.replace(/\D/g, '');
-                document.querySelectorAll('.dyn-phone-link').forEach(l => l.href = `tel:${clean}`);
+            try {
+                const { data, error } = await _supabase.from('settings').select('*').limit(1).single();
+                if (data) {
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
+                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
+                    
+                    const clean = data.phone.replace(/\D/g, '');
+                    document.querySelectorAll('.dyn-phone-link').forEach(l => l.href = `tel:${clean}`);
+                }
+            } catch (err) {
+                console.error("Erreur sync contact:", err);
             }
         }
 
-        // 2. Envoi du Formulaire vers la table LEADS
+        // 2. Envoi du Formulaire vers la table 'leads'
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.innerText = "Envoi en cours...";
 
-            const { error } = await _supabase.from('leads').insert([{
-                client_name: document.getElementById('client_name').value,
-                client_phone: document.getElementById('client_phone').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value,
-                status: 'nouveau'
-            }]);
+            try {
+                const { error } = await _supabase.from('leads').insert([{
+                    client_name: document.getElementById('client_name').value,
+                    client_phone: document.getElementById('client_phone').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value,
+                    status: 'nouveau'
+                }]);
 
-            if (!error) {
-                alert("Merci ! Votre demande a été transmise à nos experts.");
-                e.target.reset();
-            } else {
-                alert("Erreur lors de l'envoi. Veuillez nous appeler directement.");
+                if (!error) {
+                    alert("Succès ! Votre demande a été transmise à l'équipe SIMEL S.E.S.");
+                    e.target.reset();
+                } else {
+                    throw error;
+                }
+            } catch (err) {
+                console.error("Erreur envoi lead:", err);
+                alert("Erreur de connexion. Veuillez nous contacter par téléphone.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Envoyer ma demande";
             }
-            btn.disabled = false;
-            btn.innerText = "Envoyer ma demande";
         });
 
-        // Menu mobile
+        // Menu mobile toggle
         document.querySelector('.menu-toggle').addEventListener('click', () => {
             document.getElementById('main-menu').classList.toggle('is-open');
         });
@@ -177,4 +195,3 @@
     </script>
 </body>
 </html>
-
