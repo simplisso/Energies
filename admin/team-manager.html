@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion Équipe | Admin SIMEL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Réutilise le style de ta page réalisations */
+        body { font-family: 'Poppins', sans-serif; background: #E2E8F0; padding: 30px; }
+        .form-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .member-card { background: white; padding: 15px; border-radius: 8px; text-align: center; }
+        .member-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; }
+        input, button { display: block; width: 100%; margin-bottom: 10px; padding: 10px; }
+        .btn-add { background: #38A169; color: white; border: none; cursor: pointer; font-weight: bold; }
+        .btn-del { background: #E53E3E; color: white; border: none; border-radius: 4px; padding: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Gestion des Responsables</h1>
+    
+    <div class="form-card">
+        <h3>Ajouter un membre</h3>
+        <input type="text" id="m-name" placeholder="Nom Complet">
+        <input type="text" id="m-post" placeholder="Poste / Fonction">
+        <input type="file" id="m-photo" accept="image/*">
+        <button onclick="addMember()" class="btn-add" id="btn-save">Enregistrer le responsable</button>
+    </div>
+
+    <div class="team-grid" id="team-list"></div>
+
+    <script>
+        const _supabase = supabase.createClient('https://owkprsgfbxaxkijcomln.supabase.co', 'TON_API_KEY');
+
+        async function loadTeam() {
+            const { data } = await _supabase.from('team_members').select('*').order('order_index');
+            const list = document.getElementById('team-list');
+            list.innerHTML = '';
+            data.forEach(m => {
+                list.innerHTML += `
+                    <div class="member-card">
+                        <img src="${m.photo_url || 'https://via.placeholder.com/100'}">
+                        <h4>${m.full_name}</h4>
+                        <p>${m.position}</p>
+                        <button onclick="deleteMember('${m.id}')" class="btn-del">Supprimer</button>
+                    </div>`;
+            });
+        }
+
+        async function addMember() {
+            const btn = document.getElementById('btn-save');
+            const file = document.getElementById('m-photo').files[0];
+            const name = document.getElementById('m-name').value;
+            const post = document.getElementById('m-post').value;
+
+            if(!file || !name) return alert("Nom et Photo requis");
+
+            btn.disabled = true;
+            btn.innerText = "Chargement...";
+
+            const fileName = `team_${Date.now()}`;
+            await _supabase.storage.from('REALISATIONS').upload(fileName, file);
+            const { data: urlData } = _supabase.storage.from('REALISATIONS').getPublicUrl(fileName);
+
+            await _supabase.from('team_members').insert([{
+                full_name: name,
+                position: post,
+                photo_url: urlData.publicUrl
+            }]);
+
+            location.reload();
+        }
+
+        async function deleteMember(id) {
+            if(confirm("Supprimer ?")) {
+                await _supabase.from('team_members').delete().eq('id', id);
+                loadTeam();
+            }
+        }
+        window.onload = loadTeam;
+    </script>
+</body>
+</html>
