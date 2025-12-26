@@ -3,16 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | SIMEL S.E.S</title>
+    <title>Contact | SIMEL S.E.S - Devis Gratuit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #2D3748; --accent: #E53E3E; --white: #ffffff; }
+        
+        /* Correction Affichage Menu */
+        .main-nav { display: flex; align-items: center; }
+        .nav-list { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
+        .nav-list li a { text-decoration: none; color: var(--primary); font-weight: 500; }
+        .nav-list li a.active { color: var(--accent); font-weight: bold; }
+
         .contact-container { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 40px; }
         .info-box { background: var(--white); padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .info-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
         .info-item i { color: var(--accent); font-size: 1.2rem; margin-top: 5px; }
+        
         .contact-form { background: var(--white); padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--primary); }
@@ -24,7 +32,16 @@
             border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s;
         }
         .submit-btn:hover { background: #c53030; }
-        @media (max-width: 768px) { .contact-container { grid-template-columns: 1fr; } }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; cursor: pointer; font-size: 1.5rem; border: none; background: none; }
+            .nav-list { 
+                display: none; flex-direction: column; position: absolute; top: 70px; left: 0; 
+                width: 100%; background: white; padding: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 1000;
+            }
+            .nav-list.is-open { display: flex; }
+            .contact-container { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -33,16 +50,47 @@
         <div class="container">
             <div class="header-top">
                 <a href="index.html" class="logo"><i class="fas fa-bolt" style="color: var(--accent);"></i> SIMEL S.E.S</a>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
+            <nav class="main-nav">
+                <ul id="main-menu" class="nav-list">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="expertises.html">Nos Expertises</a></li>
+                    <li><a href="a-propos.html">À Propos</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                    <li>
+                        <a href="#" class="cta-admin dyn-phone-link" style="background: var(--accent); color: white !important; padding: 8px 15px; border-radius: 50px;">
+                            <i class="fas fa-phone-alt"></i> <span class="dyn-phone">...</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </header>
+
+    <section style="background: var(--primary); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h1>Contactez nos Experts</h1>
+            <p>Une question ? Un projet ? Demandez votre devis gratuit dès aujourd'hui.</p>
+        </div>
+    </section>
 
     <main class="container" style="padding: 40px 0;">
         <div class="contact-container">
             <aside class="info-box">
-                <h2 style="margin-bottom: 20px;">Nos Coordonnées</h2>
-                <div class="info-item"><i class="fas fa-phone-alt"></i><div><strong>Téléphone</strong><p class="dyn-phone">Chargement...</p></div></div>
-                <div class="info-item"><i class="fas fa-envelope"></i><div><strong>Email</strong><p class="dyn-email">Chargement...</p></div></div>
+                <h2 style="margin-bottom: 20px; color: var(--primary);">Nos Coordonnées</h2>
+                <div class="info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div><strong>Téléphone</strong><p class="dyn-phone">Chargement...</p></div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div><strong>Email</strong><p class="dyn-email">Chargement...</p></div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div><strong>Adresse</strong><p class="dyn-address">Chargement...</p></div>
+                </div>
             </aside>
 
             <section class="contact-form">
@@ -51,7 +99,6 @@
                         <label>Nom Complet</label>
                         <input type="text" id="client_name" placeholder="Ex: Jean Dupont" required>
                     </div>
-
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div class="form-group">
                             <label>Email</label>
@@ -62,7 +109,6 @@
                             <input type="tel" id="client_phone" placeholder="+229..." required>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label>Service souhaité</label>
                         <select id="subject" required>
@@ -72,7 +118,6 @@
                             <option value="Sécurité">Sécurité Électronique</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label>Votre Message</label>
                         <textarea id="message" rows="5" placeholder="Décrivez votre besoin..." required></textarea>
@@ -84,43 +129,53 @@
     </main>
 
     <script>
+        // CONFIGURATION SUPABASE
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Sync des infos depuis settings
         async function syncContactInfo() {
-            const { data } = await _supabase.from('settings').select('*').limit(1).single();
-            if (data) {
-                document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
-                document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
-            }
+            try {
+                const { data } = await _supabase.from('settings').select('*').limit(1).single();
+                if (data) {
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
+                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
+                    const clean = data.phone.replace(/\D/g, '');
+                    document.querySelectorAll('.dyn-phone-link').forEach(l => l.href = `tel:${clean}`);
+                }
+            } catch (err) { console.error(err); }
         }
 
-        // Envoi du formulaire
+        // Envoi du formulaire vers la table 'leads'
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.innerText = "Envoi en cours...";
 
-            // On envoie les données avec les nouveaux noms de colonnes
             const { error } = await _supabase.from('leads').insert([{
                 client_name: document.getElementById('client_name').value,
-                client_email: document.getElementById('client_email').value, // Ajout de l'email
+                client_email: document.getElementById('client_email').value,
                 client_phone: document.getElementById('client_phone').value,
                 subject: document.getElementById('subject').value,
                 message: document.getElementById('message').value
             }]);
 
             if (!error) {
-                alert("Message envoyé avec succès !");
+                alert("Demande envoyée !");
                 e.target.reset();
             } else {
                 alert("Erreur : " + error.message);
             }
             btn.disabled = false;
             btn.innerText = "Envoyer ma demande";
+        });
+
+        // Script Menu Mobile
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('main-menu').classList.toggle('is-open');
         });
 
         window.onload = syncContactInfo;
