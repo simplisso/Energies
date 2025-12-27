@@ -21,26 +21,24 @@
         .sidebar-menu a:hover, .sidebar-menu a.active { color: white; background: rgba(255,255,255,0.05); border-left: 4px solid #E53E3E; }
         .sidebar-menu i { margin-right: 10px; width: 20px; }
         
-        /* Bouton Spécial Devis dans la Sidebar */
-        .btn-devis-sidebar { background: #E53E3E !important; color: white !important; margin: 10px 15px; border-radius: 8px; font-weight: bold; border: none !important; }
-        .btn-devis-sidebar:hover { background: #C53030 !important; transform: scale(1.02); }
+        /* Bouton Spécial Devis */
+        .btn-devis-sidebar { background: #E53E3E !important; color: white !important; margin: 15px; border-radius: 8px; font-weight: 700; text-align: center; border: none !important; box-shadow: 0 4px 10px rgba(229, 62, 62, 0.4); }
+        .btn-devis-sidebar:hover { background: #C53030 !important; transform: translateY(-2px); }
 
         /* MAIN CONTENT */
         .main-content { flex: 1; margin-left: 250px; padding: 40px; }
         .welcome-header { margin-bottom: 30px; }
         
         /* STATS CARDS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; }
         .stat-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
         .stat-info h3 { font-size: 0.9rem; color: #718096; text-transform: uppercase; }
         .stat-info .number { font-size: 1.8rem; font-weight: 700; color: #2D3748; }
 
-        /* COLORS */
         .bg-blue { background: #3182CE; }
         .bg-green { background: #38A169; }
         .bg-orange { background: #DD6B20; }
-        .bg-red { background: #E53E3E; }
         
         .recent-section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .recent-section h2 { margin-bottom: 20px; font-size: 1.2rem; }
@@ -56,8 +54,10 @@
             <nav class="sidebar-menu">
                 <a href="dashboard.html" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
                 
-                <a onclick="lancerNouveauDevis()" class="btn-devis-sidebar"><i class="fas fa-file-invoice"></i> CRÉER UN DEVIS</a>
-                
+                <a onclick="ouvrirGenerateurDevis()" class="btn-devis-sidebar">
+                    <i class="fas fa-plus-circle"></i> CRÉER UN DEVIS
+                </a>
+
                 <a href="annonces-list.html"><i class="fas fa-list"></i> Nos Services</a>
                 <a href="realisations-list.html"><i class="fas fa-images"></i> Nos Réalisations</a>
                 <a href="leads.html"><i class="fas fa-envelope"></i> Demandes</a>
@@ -70,7 +70,7 @@
         <main class="main-content">
             <div class="welcome-header">
                 <h1>Tableau de Bord</h1>
-                <p>Bienvenue Simplice, voici l'activité de <strong>SIMEL Énergie et Sécurité</strong></p>
+                <p>Bienvenue <strong>Simplice OLOUBI</strong>, voici l'activité de SIMEL S.E.S</p>
             </div>
 
             <div class="stats-grid">
@@ -91,14 +91,6 @@
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-icon bg-red"><i class="fas fa-file-invoice-dollar"></i></div>
-                    <div class="stat-info">
-                        <h3>Devis (Session)</h3>
-                        <div class="number" id="count-devis">0</div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
                     <div class="stat-icon bg-orange"><i class="fas fa-user-shield"></i></div>
                     <div class="stat-info">
                         <h3>Agents</h3>
@@ -109,11 +101,10 @@
 
             <div class="recent-section">
                 <h2>Statut du Système</h2>
-                <p id="sync-status"><i class="fas fa-check-circle" style="color:#38A169"></i> Connexion établie avec Supabase</p>
+                <p id="sync-status"><i class="fas fa-check-circle" style="color:#38A169"></i> Connecté à la base de données</p>
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid #edf2f7;">
                 <p style="color: #718096; font-size: 0.9rem;">
-                    Vous êtes connecté en tant qu'administrateur de <strong>SIMEL S.E.S</strong>. 
-                    Toutes les modifications sur les services et agents sont répercutées sur le site client.
+                    Toutes vos données sont synchronisées avec le site principal de <strong>SIMEL Énergie et Sécurité</strong>.
                 </p>
             </div>
         </main>
@@ -124,47 +115,35 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // FONCTION POUR LANCER LE DEVIS AVEC INFOS PRÉ-REMPLIES
-        function lancerNouveauDevis() {
-            // On pré-remplit les infos de ton entreprise pour ne plus avoir à le faire
-            localStorage.setItem("ent_nom", "SIMEL Énergie et Sécurité");
-            localStorage.setItem("ent_contact", "+229 XX XX XX XX"); // Mets ton vrai numéro ici
-            localStorage.setItem("ent_adresse", "Cotonou, Bénin");
-            localStorage.setItem("electricien", "Simplice OLOUBI");
+        // FONCTION DE REDIRECTION VERS TON GITHUB PAGES
+        function ouvrirGenerateurDevis() {
+            // Ton lien GitHub
+            const URL_SITE = "https://simplisso.github.io/devis-simel/accueil.html";
             
-            // On redirige vers l'accueil du devis
-            window.location.href = 'accueil.html';
+            // On prépare les infos par défaut
+            const params = new URLSearchParams({
+                ent: "SIMEL Énergie et Sécurité",
+                tel: "+229 01XXXXXXXX", // Mets ton vrai numéro ici
+                adr: "Cotonou, Bénin",
+                exp: "Simplice OLOUBI"
+            });
+
+            // Redirection
+            window.location.href = URL_SITE + "?" + params.toString();
         }
 
         async function updateStats() {
             try {
-                // 1. Compter les services
-                const { count: countServices } = await _supabase
-                    .from('portfolio_services')
-                    .select('*', { count: 'exact', head: true });
-                
-                // 2. Compter les leads
-                const { count: countLeads } = await _supabase
-                    .from('leads')
-                    .select('*', { count: 'exact', head: true });
+                const { count: s } = await _supabase.from('portfolio_services').select('*', { count: 'exact', head: true });
+                const { count: l } = await _supabase.from('leads').select('*', { count: 'exact', head: true });
+                const { count: a } = await _supabase.from('agents').select('*', { count: 'exact', head: true });
 
-                // 3. Compter les agents
-                const { count: countAgents } = await _supabase
-                    .from('agents')
-                    .select('*', { count: 'exact', head: true });
-
-                // Affichage
-                document.getElementById('count-services').innerText = countServices || 0;
-                document.getElementById('count-leads').innerText = countLeads || 0;
-                document.getElementById('count-agents').innerText = countAgents || 0;
-                
-                // Optionnel : Afficher le nombre de devis générés durant cette session
-                const devisProduits = localStorage.getItem("devis_final_produits");
-                if(devisProduits) document.getElementById('count-devis').innerText = "1";
-
-            } catch (error) {
-                console.error("Erreur stats:", error);
-                document.getElementById('sync-status').innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#E53E3E"></i> Erreur de synchronisation';
+                document.getElementById('count-services').innerText = s || 0;
+                document.getElementById('count-leads').innerText = l || 0;
+                document.getElementById('count-agents').innerText = a || 0;
+            } catch (err) {
+                console.error(err);
+                document.getElementById('sync-status').innerHTML = '<i class="fas fa-times-circle" style="color:red"></i> Erreur de connexion';
             }
         }
 
