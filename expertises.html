@@ -20,127 +20,185 @@
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
-            
             <nav class="main-nav">
                 <ul id="main-menu" class="nav-list">
                     <li><a href="index.html">Accueil</a></li>
                     <li><a href="expertises.html" class="active">Nos Expertises</a></li>
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="admin/login.html" style="color: #cbd5e0; font-size: 0.9rem;"><i class="fas fa-user-shield"></i> Admin</a></li>
-                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> Urgence : <span class="dyn-phone">Chargement...</span></a></li>
+                    <li><a href="admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section style="background: #2D3748; color: white; padding: 60px 0; text-align: center;">
+    <section class="page-hero" style="background-image: linear-gradient(rgba(15,23,42,.78), rgba(15,23,42,.7)), url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?q=80&w=1200');">
         <div class="container">
-            <h1>Nos Expertises Techniques</h1>
-            <p>Des solutions sur mesure pour particuliers et industriels au Bénin.</p>
+            <span class="eyebrow">Nos expertises</span>
+            <h1>Des solutions techniques sur mesure pour chaque site.</h1>
+            <p>SIMEL S.E.S conçoit, installe et maintient des systèmes énergétiques et de sécurité pensés pour la performance, la fiabilité et la sécurité.</p>
         </div>
     </section>
 
-    <main class="container" style="padding: 40px 0;">
-        <div class="annonces-grid">
-            
-            <article class="annonce-card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=500');"></div>
-                <div class="card-content">
-                    <h3>Énergie Solaire</h3>
-                    <p>Étude et installation de systèmes photovoltaïques (On-grid, Off-grid et Hybride). Gagnez en autonomie énergétique.</p>
-                </div>
+    <main class="container page-shell">
+        <section class="section-heading">
+            <span class="eyebrow eyebrow-dark">Domaines d’intervention</span>
+            <h2>Des services professionnels structurés autour de l’énergie, de la sécurité et de la performance.</h2>
+        </section>
+
+        <div class="services-grid expertise-grid">
+            <article class="service-card">
+                <div class="service-icon"><i class="fas fa-solar-panel"></i></div>
+                <h3>Énergie solaire</h3>
+                <p>Étude, dimensionnement et installation de systèmes photovoltaïques pour les ménages, entreprises et sites industriels.</p>
+                <ul class="feature-list">
+                    <li>On-grid / Off-grid / Hybride</li>
+                    <li>Maintenance et optimisation</li>
+                    <li>Autonomie énergétique</li>
+                </ul>
             </article>
 
-            <article class="annonce-card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1621905252507-b354bc2d18c4?w=500');"></div>
-                <div class="card-content">
-                    <h3>Électricité Industrielle</h3>
-                    <p>Câblage d'armoires électriques, maintenance de machines et installation de TGBT aux normes internationales.</p>
-                </div>
+            <article class="service-card">
+                <div class="service-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Électricité industrielle</h3>
+                <p>Installation, câblage, maintenance et mise en conformité des réseaux et équipements électriques de production.</p>
+                <ul class="feature-list">
+                    <li>Tableaux et TGBT</li>
+                    <li>Réseaux de distribution</li>
+                    <li>Maintenance préventive</li>
+                </ul>
             </article>
 
-            <article class="annonce-card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=500');"></div>
-                <div class="card-content">
-                    <h3>Sécurité Électronique</h3>
-                    <p>Vidéosurveillance IP, alarmes anti-intrusion et contrôle d'accès biométrique pour sécuriser vos biens.</p>
-                </div>
+            <article class="service-card">
+                <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Sécurité électronique</h3>
+                <p>Solutions de surveillance et de protection pour sécuriser vos biens, vos personnes et vos infrastructures.</p>
+                <ul class="feature-list">
+                    <li>Vidéosurveillance</li>
+                    <li>Alarmes et accès</li>
+                    <li>Contrôle d’accès</li>
+                </ul>
             </article>
 
-            <article class="annonce-card">
-                <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=500');"></div>
-                <div class="card-content">
-                    <h3>Froid & Climatisation</h3>
-                    <p>Pose et entretien de climatisations et chambres froides. Solutions thermiques efficaces et durables.</p>
-                </div>
+            <article class="service-card">
+                <div class="service-icon"><i class="fas fa-wind"></i></div>
+                <h3>Climatisation & froid</h3>
+                <p>Installation, maintenance et optimisation des systèmes de climatisation et de froid pour un confort durable.</p>
+                <ul class="feature-list">
+                    <li>Climatisation</li>
+                    <li>Chambres froides</li>
+                    <li>Entretien régulier</li>
+                </ul>
             </article>
-
         </div>
     </main>
 
+    <section class="process-section">
+        <div class="container">
+            <div class="section-heading centered">
+                <span class="eyebrow eyebrow-dark">Notre méthode</span>
+                <h2>Une exécution claire, sécurisée et orientée résultats.</h2>
+            </div>
+            <div class="process-grid">
+                <div class="process-card"><span>01</span><h3>Audit</h3><p>Diagnostic du besoin, des contraintes et des performances souhaitées.</p></div>
+                <div class="process-card"><span>02</span><h3>Conception</h3><p>Dimensionnement des équipements et planification rigoureuse des installations.</p></div>
+                <div class="process-card"><span>03</span><h3>Exécution</h3><p>Pose, câblage, intégration et mise en service selon nos standards techniques.</p></div>
+                <div class="process-card"><span>04</span><h3>Suivi</h3><p>Maintenance, optimisation et assistance après mise en service pour la performance durable.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-panel">
+        <div class="container cta-panel-inner">
+            <div>
+                <span class="eyebrow eyebrow-light">Besoin d’un devis ?</span>
+                <h2>Faites-nous part de votre projet et obtenez une réponse rapide.</h2>
+            </div>
+            <a href="https://simplisso.github.io/devis-simel/" target="_blank" rel="noopener" class="primary-cta">Nous contacter</a>
+        </div>
+    </section>
+
     <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
         <i class="fab fa-whatsapp"></i>
-        <span>Un devis gratuit ?</span>
+        <span>WhatsApp</span>
     </a>
 
-    <footer class="main-footer" style="background: #1A202C; color: white; padding: 40px 0; margin-top: 40px;">
+    <footer class="main-footer">
         <div class="container">
             <div class="footer-grid">
                 <div>
                     <h3>SIMEL S.E.S</h3>
-                    <p>Expertise et Qualité à Cotonou.</p>
+                    <p>L’expertise technique de référence pour le secteur de l’énergie et de la sécurité au Bénin.</p>
                 </div>
                 <div>
-                    <h3>Contact rapide</h3>
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Contact</h3>
                     <p><i class="fas fa-phone"></i> <span class="dyn-phone">Chargement...</span></p>
                     <p><i class="fas fa-envelope"></i> <span class="dyn-email">Chargement...</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">Chargement...</span></p>
                 </div>
             </div>
-            <div class="footer-bottom" style="text-align: center; margin-top: 30px; opacity: 0.7;">&copy; 2025 SIMEL S.E.S</div>
+            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S. Tous droits réservés.</div>
         </div>
     </footer>
 
     <script>
-        // Menu Mobile
-        const toggle = document.querySelector('.menu-toggle');
-        const menu = document.getElementById('main-menu');
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('is-open');
-        });
-
-        // Config Supabase
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const fallbackSettings = {
+            phone: '+229 97 00 00 00',
+            email: 'contact@simel-ses.com',
+            address: 'Cotonou, Bénin'
+        };
+
+        const toggle = document.querySelector('.menu-toggle');
+        const menu = document.getElementById('main-menu');
+        if (toggle && menu) {
+            toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
+        }
+
+        function applyFallbackSettings() {
+            document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = fallbackSettings.phone);
+            document.querySelectorAll('.dyn-email').forEach(el => el.textContent = fallbackSettings.email);
+            document.querySelectorAll('.dyn-address').forEach(el => el.textContent = fallbackSettings.address);
+            document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                const cleanNumber = fallbackSettings.phone.replace(/\D/g, '');
+                link.href = link.classList.contains('whatsapp-float') ? `https://wa.me/${cleanNumber}` : `tel:${cleanNumber}`;
+            });
+        }
 
         async function syncSettings() {
+            applyFallbackSettings();
             try {
-                // Récupération des données depuis la table 'settings'
-                const { data, error } = await _supabase.from('settings').select('*').single();
-
+                const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data } = await _supabase.from('settings').select('*').limit(1).single();
                 if (data) {
-                    // Mise à jour des numéros et emails
-                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || '+229 00 00 00 00');
-                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || 'contact@simel-ses.com');
-
-                    // Nettoyage du numéro pour les liens tel: et whatsapp
-                    const cleanNumber = (data.phone || '22900000000').replace(/\D/g, ''); 
-                    
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || fallbackSettings.phone);
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || fallbackSettings.email);
+                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address || fallbackSettings.address);
+                    const cleanNumber = (data.phone || fallbackSettings.phone).replace(/\D/g, '');
                     document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                        if (link.href.includes('wa.me') || link.classList.contains('whatsapp-float')) {
+                        if (link.classList.contains('whatsapp-float')) {
                             link.href = `https://wa.me/${cleanNumber}`;
                         } else {
                             link.href = `tel:${cleanNumber}`;
                         }
                     });
                 }
-            } catch (err) { 
-                console.log("Erreur de synchronisation des réglages."); 
+            } catch (err) {
+                console.log('Réglages non configurés.');
             }
         }
+
         window.onload = syncSettings;
     </script>
-
 </body>
 </html>

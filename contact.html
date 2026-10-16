@@ -3,53 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | SIMEL S.E.S - Devis Gratuit</title>
+    <title>Contact | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --primary: #2D3748; --accent: #E53E3E; --white: #ffffff; }
-        
-        /* Correction Affichage Menu */
-        .main-nav { display: flex; align-items: center; }
-        .nav-list { display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
-        .nav-list li a { text-decoration: none; color: var(--primary); font-weight: 500; }
-        .nav-list li a.active { color: var(--accent); font-weight: bold; }
-
-        .contact-container { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 40px; }
-        .info-box { background: var(--white); padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .info-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 25px; }
-        .info-item i { color: var(--accent); font-size: 1.2rem; margin-top: 5px; }
-        
-        .contact-form { background: var(--white); padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--primary); }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; 
-        }
-        .submit-btn { 
-            background: var(--accent); color: white; border: none; padding: 15px 30px; 
-            border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s;
-        }
-        .submit-btn:hover { background: #c53030; }
-
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; cursor: pointer; font-size: 1.5rem; border: none; background: none; }
-            .nav-list { 
-                display: none; flex-direction: column; position: absolute; top: 70px; left: 0; 
-                width: 100%; background: white; padding: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 1000;
-            }
-            .nav-list.is-open { display: flex; }
-            .contact-container { grid-template-columns: 1fr; }
-        }
-    </style>
 </head>
 <body>
 
     <header class="main-header">
         <div class="container">
             <div class="header-top">
-                <a href="index.html" class="logo"><i class="fas fa-bolt" style="color: var(--accent);"></i> SIMEL S.E.S</a>
+                <a href="index.html" class="logo"><i class="fas fa-bolt"></i> SIMEL S.E.S</a>
                 <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
             <nav class="main-nav">
@@ -58,48 +22,57 @@
                     <li><a href="expertises.html">Nos Expertises</a></li>
                     <li><a href="a-propos.html">À Propos</a></li>
                     <li><a href="contact.html" class="active">Contact</a></li>
-                    <li>
-                        <a href="#" class="cta-admin dyn-phone-link" style="background: var(--accent); color: white !important; padding: 8px 15px; border-radius: 50px;">
-                            <i class="fas fa-phone-alt"></i> <span class="dyn-phone">...</span>
-                        </a>
-                    </li>
+                    <li><a href="admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> <span class="dyn-phone">...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section style="background: var(--primary); color: white; padding: 60px 0; text-align: center;">
+    <section class="page-hero" style="background-image: linear-gradient(rgba(15,23,42,.78), rgba(15,23,42,.7)), url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1200');">
         <div class="container">
-            <h1>Contactez nos Experts</h1>
-            <p>Une question ? Un projet ? Demandez votre devis gratuit dès aujourd'hui.</p>
+            <span class="eyebrow">Contact</span>
+            <h1>Parlons de votre prochain projet.</h1>
+            <p>Demandez votre devis ou contactez nos experts pour une solution sur mesure en énergie et sécurité.</p>
         </div>
     </section>
 
-    <main class="container" style="padding: 40px 0;">
+    <main class="container page-shell">
         <div class="contact-container">
             <aside class="info-box">
-                <h2 style="margin-bottom: 20px; color: var(--primary);">Nos Coordonnées</h2>
+                <h2>Nos coordonnées</h2>
                 <div class="info-item">
                     <i class="fas fa-phone-alt"></i>
-                    <div><strong>Téléphone</strong><p class="dyn-phone">Chargement...</p></div>
+                    <div>
+                        <strong>Téléphone</strong>
+                        <p class="dyn-phone">Chargement...</p>
+                    </div>
                 </div>
                 <div class="info-item">
                     <i class="fas fa-envelope"></i>
-                    <div><strong>Email</strong><p class="dyn-email">Chargement...</p></div>
+                    <div>
+                        <strong>Email</strong>
+                        <p class="dyn-email">Chargement...</p>
+                    </div>
                 </div>
                 <div class="info-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <div><strong>Adresse</strong><p class="dyn-address">Chargement...</p></div>
+                    <div>
+                        <strong>Adresse</strong>
+                        <p class="dyn-address">Chargement...</p>
+                    </div>
                 </div>
+                <div class="info-badge contact-badge"><i class="fas fa-headset"></i> Support réactif</div>
             </aside>
 
             <section class="contact-form">
+                <h2>Demander un devis</h2>
                 <form id="contactForm">
                     <div class="form-group">
-                        <label>Nom Complet</label>
+                        <label>Nom complet</label>
                         <input type="text" id="client_name" placeholder="Ex: Jean Dupont" required>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Email</label>
                             <input type="email" id="client_email" placeholder="votre@email.com" required>
@@ -113,14 +86,15 @@
                         <label>Service souhaité</label>
                         <select id="subject" required>
                             <option value="">Sélectionnez un domaine</option>
-                            <option value="Solaire">Énergie Solaire</option>
-                            <option value="Electricité">Électricité Industrielle</option>
-                            <option value="Sécurité">Sécurité Électronique</option>
+                            <option value="Énergie solaire">Énergie solaire</option>
+                            <option value="Électricité industrielle">Électricité industrielle</option>
+                            <option value="Sécurité électronique">Sécurité électronique</option>
+                            <option value="Climatisation & froid">Climatisation & froid</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Votre Message</label>
-                        <textarea id="message" rows="5" placeholder="Décrivez votre besoin..." required></textarea>
+                        <label>Votre message</label>
+                        <textarea id="message" rows="5" placeholder="Décrivez votre besoin, votre site et vos contraintes..." required></textarea>
                     </div>
                     <button type="submit" id="submitBtn" class="submit-btn">Envoyer ma demande</button>
                 </form>
@@ -128,54 +102,108 @@
         </div>
     </main>
 
+    <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp</span>
+    </a>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>SIMEL S.E.S</h3>
+                    <p>Des solutions énergétiques et sécuritaires adaptées à chaque environnement.</p>
+                </div>
+                <div>
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="expertises.html">Nos Expertises</a></li>
+                        <li><a href="a-propos.html">À Propos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">...</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">...</span></p>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S. Tous droits réservés.</div>
+        </div>
+    </footer>
+
     <script>
-        // CONFIGURATION SUPABASE
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const fallbackSettings = {
+            phone: '+229 97 00 00 00',
+            email: 'contact@simel-ses.com',
+            address: 'Cotonou, Bénin'
+        };
 
-        // Sync des infos depuis settings
-        async function syncContactInfo() {
-            try {
-                const { data } = await _supabase.from('settings').select('*').limit(1).single();
-                if (data) {
-                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone);
-                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email);
-                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address);
-                    const clean = data.phone.replace(/\D/g, '');
-                    document.querySelectorAll('.dyn-phone-link').forEach(l => l.href = `tel:${clean}`);
-                }
-            } catch (err) { console.error(err); }
+        const toggle = document.getElementById('menuToggle');
+        const menu = document.getElementById('main-menu');
+        if (toggle && menu) {
+            toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
         }
 
-        // Envoi du formulaire vers la table 'leads'
+        function applyFallbackSettings() {
+            document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = fallbackSettings.phone);
+            document.querySelectorAll('.dyn-email').forEach(el => el.textContent = fallbackSettings.email);
+            document.querySelectorAll('.dyn-address').forEach(el => el.textContent = fallbackSettings.address);
+            document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                const cleanNumber = fallbackSettings.phone.replace(/\D/g, '');
+                link.href = link.classList.contains('whatsapp-float') ? `https://wa.me/${cleanNumber}` : `tel:${cleanNumber}`;
+            });
+        }
+
+        async function syncContactInfo() {
+            applyFallbackSettings();
+            try {
+                const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data } = await _supabase.from('settings').select('*').limit(1).single();
+                if (data) {
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || fallbackSettings.phone);
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || fallbackSettings.email);
+                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address || fallbackSettings.address);
+                    const clean = (data.phone || fallbackSettings.phone).replace(/\D/g, '');
+                    document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                        link.href = link.classList.contains('whatsapp-float') ? `https://wa.me/${clean}` : `tel:${clean}`;
+                    });
+                }
+            } catch (err) {
+                console.log('Réglages non configurés.');
+            }
+        }
+
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "Envoi en cours...";
+            btn.textContent = 'Envoi en cours...';
 
-            const { error } = await _supabase.from('leads').insert([{
-                client_name: document.getElementById('client_name').value,
-                client_email: document.getElementById('client_email').value,
-                client_phone: document.getElementById('client_phone').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
-            }]);
+            try {
+                const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { error } = await _supabase.from('leads').insert([{
+                    client_name: document.getElementById('client_name').value,
+                    client_email: document.getElementById('client_email').value,
+                    client_phone: document.getElementById('client_phone').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value
+                }]);
 
-            if (!error) {
-                alert("Demande envoyée !");
+                if (error) throw error;
+                alert('Votre demande a bien été envoyée.');
                 e.target.reset();
-            } else {
-                alert("Erreur : " + error.message);
+            } catch (err) {
+                alert('Une erreur est survenue. Merci de réessayer.');
+                console.error(err);
             }
-            btn.disabled = false;
-            btn.innerText = "Envoyer ma demande";
-        });
 
-        // Script Menu Mobile
-        document.getElementById('menuToggle').addEventListener('click', () => {
-            document.getElementById('main-menu').classList.toggle('is-open');
+            btn.disabled = false;
+            btn.textContent = 'Envoyer ma demande';
+            window.open('https://simplisso.github.io/devis-simel/', '_blank', 'noopener,noreferrer');
         });
 
         window.onload = syncContactInfo;

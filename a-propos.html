@@ -3,57 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>À Propos | SIMEL S.E.S - Expertise et Équipe</title>
+    <title>À Propos | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        /* Styles pour la section équipe */
-        .team-section {
-            padding: 80px 0;
-            background: #f7fafc;
-        }
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-            margin-top: 50px;
-        }
-        .member-card {
-            text-align: center;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-        .member-card:hover {
-            transform: translateY(-10px);
-        }
-        .member-photo {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 20px;
-            border: 4px solid #E53E3E;
-            padding: 5px;
-            background: white;
-        }
-        .member-name {
-            font-size: 1.4rem;
-            color: #2D3748;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-        .member-position {
-            color: #E53E3E;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-    </style>
 </head>
 <body>
 
@@ -63,6 +16,9 @@
                 <a href="index.html" class="logo">
                     <i class="fas fa-bolt"></i> SIMEL S.E.S
                 </a>
+                <button class="menu-toggle" aria-label="Ouvrir le menu">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             <nav class="main-nav">
                 <ul id="main-menu" class="nav-list">
@@ -70,81 +26,200 @@
                     <li><a href="expertises.html">Nos Expertises</a></li>
                     <li><a href="a-propos.html" class="active">À Propos</a></li>
                     <li><a href="contact.html">Contact</a></li>
+                    <li><a href="admin/login.html" class="admin-access"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="#" class="cta-admin dyn-phone-link"><i class="fas fa-phone-alt"></i> <span class="dyn-phone">Chargement...</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1454165833767-027ffea9e77b?q=80&w=1200') center/cover; padding: 80px 0; color: white; text-align: center;">
+    <section class="page-hero" style="background-image: linear-gradient(rgba(15,23,42,.78), rgba(15,23,42,.7)), url('https://images.unsplash.com/photo-1454165833767-027ffea9e77b?q=80&w=1200');">
         <div class="container">
-            <h1>Qui sommes-nous ?</h1>
-            <p style="max-width: 700px; margin: 20px auto;">Une entreprise béninoise dédiée à l'excellence technologique dans le domaine de l'énergie et de la sécurité.</p>
+            <span class="eyebrow">À propos</span>
+            <h1>Une société dédiée à la performance énergétique et sécuritaire.</h1>
+            <p>Nous concevons des solutions fiables et durables pour les particuliers, les entreprises et les industries qui veulent sécuriser leur énergie et mieux maîtriser leur environnement.</p>
         </div>
     </section>
 
-    <section class="team-section">
-        <div class="container">
-            <div style="text-align: center; margin-bottom: 50px;">
-                <h2 style="font-size: 2.2rem; color: #2D3748;">Notre Équipe Dirigeante</h2>
-                <p style="color: #718096;">Les experts derrière le succès de SIMEL S.E.S</p>
-                <div style="width: 50px; height: 3px; background: #E53E3E; margin: 15px auto;"></div>
+    <main class="container page-shell">
+        <section class="story-grid">
+            <div class="story-copy">
+                <span class="eyebrow eyebrow-dark">Qui sommes-nous ?</span>
+                <h2>SIMEL S.E.S accompagne les acteurs du Bénin dans leurs projets de transition énergétique.</h2>
+                <p>Basée au Bénin, SIMEL S.E.S intervient dans les domaines de l’électricité, de l’énergie solaire et de la sécurité électronique. Notre mission est de mettre à la disposition de nos clients des solutions performantes, sécurisées et compatibles avec leurs besoins.</p>
+                <p>Nous croyons en des installations robustes, une documentation claire et un accompagnement humain de la première étude jusqu’au suivi après mise en service.</p>
             </div>
+            <div class="story-panel">
+                <div class="info-badge"><i class="fas fa-award"></i> Expertise technique</div>
+                <div class="info-badge"><i class="fas fa-user-tie"></i> Accompagnement sur mesure</div>
+                <div class="info-badge"><i class="fas fa-clock"></i> Réactivité & fiabilité</div>
+            </div>
+        </section>
 
+        <section class="values-section">
+            <div class="section-heading centered">
+                <span class="eyebrow eyebrow-dark">Nos valeurs</span>
+                <h2>Des principes qui guident chaque intervention.</h2>
+            </div>
+            <div class="services-grid value-grid">
+                <article class="service-card">
+                    <div class="service-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Confiance</h3>
+                    <p>Nous construisons des relations durables fondées sur la transparence et la fiabilité.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Qualité</h3>
+                    <p>Chaque installation est pensée pour être robuste, sécurisée et durable dans le temps.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Performance</h3>
+                    <p>Nous privilégions des solutions efficaces qui optimisent les coûts et maximisent la valeur.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="team-section">
+            <div class="section-heading centered">
+                <span class="eyebrow eyebrow-dark">Notre équipe</span>
+                <h2>Des professionnels engagés pour la réussite de vos projets.</h2>
+            </div>
             <div class="team-grid" id="team-display">
-                <div style="text-align: center; grid-column: 1/-1;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #E53E3E;"></i>
-                    <p>Chargement de l'équipe...</p>
-                </div>
+                <div class="projects-loading"><i class="fas fa-circle-notch fa-spin"></i><p>Chargement de l’équipe...</p></div>
             </div>
+        </section>
+    </main>
+
+    <section class="cta-panel">
+        <div class="container cta-panel-inner">
+            <div>
+                <span class="eyebrow eyebrow-light">Vous avez un projet ?</span>
+                <h2>Discutons ensemble des meilleures solutions adaptées à votre site.</h2>
+            </div>
+            <a href="https://simplisso.github.io/devis-simel/" target="_blank" rel="noopener" class="primary-cta">Demander un devis</a>
         </div>
     </section>
+
+    <a href="#" class="whatsapp-float dyn-phone-link" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp</span>
+    </a>
 
     <footer class="main-footer">
         <div class="container">
-            <div class="footer-bottom">
-                &copy; 2025 SIMEL S.E.S. Tous droits réservés.
+            <div class="footer-grid">
+                <div>
+                    <h3>SIMEL S.E.S</h3>
+                    <p>Conseils, installation et suivi pour des solutions énergétiques et sécuritaires performantes.</p>
+                </div>
+                <div>
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="expertises.html">Nos Expertises</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> <span class="dyn-phone">Chargement...</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="dyn-email">Chargement...</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">Chargement...</span></p>
+                </div>
             </div>
+            <div class="footer-bottom">&copy; 2025 SIMEL S.E.S. Tous droits réservés.</div>
         </div>
     </footer>
 
     <script>
-        // --- CONFIGURATION SUPABASE ---
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM'; //
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
+        const fallbackSettings = {
+            phone: '+229 97 00 00 00',
+            email: 'contact@simel-ses.com',
+            address: 'Cotonou, Bénin'
+        };
+
+        const fallbackTeam = [
+            { full_name: 'Direction SIMEL', position: 'Management', photo_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800' },
+            { full_name: 'Équipe technique', position: 'Ingénierie', photo_url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800' },
+            { full_name: 'Support client', position: 'Service client', photo_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800' }
+        ];
+
+        const toggle = document.querySelector('.menu-toggle');
+        const menu = document.getElementById('main-menu');
+        if (toggle && menu) {
+            toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
+        }
+
+        function applyFallbackSettings() {
+            document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = fallbackSettings.phone);
+            document.querySelectorAll('.dyn-email').forEach(el => el.textContent = fallbackSettings.email);
+            document.querySelectorAll('.dyn-address').forEach(el => el.textContent = fallbackSettings.address);
+            document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                const cleanNumber = fallbackSettings.phone.replace(/\D/g, '');
+                link.href = link.classList.contains('whatsapp-float') ? `https://wa.me/${cleanNumber}` : `tel:${cleanNumber}`;
+            });
+        }
+
+        function renderFallbackTeam() {
+            const container = document.getElementById('team-display');
+            container.innerHTML = fallbackTeam.map(member => `
+                <article class="member-card">
+                    <img src="${member.photo_url}" class="member-photo" alt="${member.full_name}">
+                    <h3 class="member-name">${member.full_name}</h3>
+                    <p class="member-position">${member.position}</p>
+                </article>
+            `).join('');
+        }
 
         async function fetchTeam() {
             const container = document.getElementById('team-display');
             try {
-                // Récupération des données de la table 'team_members'
-                const { data, error } = await _supabase
-                    .from('team_members')
-                    .select('*')
-                    .order('created_at', { ascending: true });
-
+                const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data, error } = await _supabase.from('team_members').select('*').order('created_at', { ascending: true });
                 if (error) throw error;
-
                 if (data && data.length > 0) {
-                    container.innerHTML = ''; // On vide le spinner
-                    data.forEach(member => {
-                        container.innerHTML += `
-                            <article class="member-card">
-                                <img src="${member.photo_url || 'https://via.placeholder.com/180'}" class="member-photo" alt="${member.full_name}">
-                                <h3 class="member-name">${member.full_name}</h3>
-                                <p class="member-position">${member.position || 'Responsable'}</p>
-                            </article>`;
-                    });
+                    container.innerHTML = data.map(member => `
+                        <article class="member-card">
+                            <img src="${member.photo_url || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800'}" class="member-photo" alt="${member.full_name}">
+                            <h3 class="member-name">${member.full_name}</h3>
+                            <p class="member-position">${member.position || 'Responsable'}</p>
+                        </article>
+                    `).join('');
                 } else {
-                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Aucun membre de l\'équipe enregistré.</p>';
+                    renderFallbackTeam();
                 }
             } catch (err) {
-                console.error("Erreur Equipe:", err);
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Erreur de connexion à la base de données.</p>';
+                console.error('Erreur équipe:', err);
+                renderFallbackTeam();
             }
         }
 
-        // Lancement au chargement
-        window.addEventListener('load', fetchTeam);
+        async function syncSettings() {
+            applyFallbackSettings();
+            try {
+                const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data } = await _supabase.from('settings').select('*').limit(1).single();
+                if (data) {
+                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || fallbackSettings.phone);
+                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || fallbackSettings.email);
+                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address || fallbackSettings.address);
+                    const cleanNumber = (data.phone || fallbackSettings.phone).replace(/\D/g, '');
+                    document.querySelectorAll('.dyn-phone-link').forEach(link => {
+                        link.href = link.classList.contains('whatsapp-float') ? `https://wa.me/${cleanNumber}` : `tel:${cleanNumber}`;
+                    });
+                }
+            } catch (err) {
+                console.log('Réglages non configurés.');
+            }
+        }
+
+        window.onload = () => {
+            syncSettings();
+            fetchTeam();
+        };
     </script>
 </body>
 </html>
