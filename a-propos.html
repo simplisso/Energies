@@ -201,7 +201,7 @@
             applyFallbackSettings();
             try {
                 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                const { data } = await _supabase.from('settings').select('*').limit(1).single();
+                const { data } = await _supabase.from('settings').select('phone, email, address').limit(1).single();
                 if (data) {
                     document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || fallbackSettings.phone);
                     document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || fallbackSettings.email);

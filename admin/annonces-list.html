@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-admin-page>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Annonces | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
     <style>
         /* ==================================== */
         /* CSS GLOBAL ADMIN (Ton Style)        */
@@ -91,7 +92,9 @@
                 loadServices();
             }
         }
-        window.onload = loadServices;
+        window.onload = async () => {
+            if (await window.adminReady) loadServices();
+        };
     </script>
 </body>
 </html>

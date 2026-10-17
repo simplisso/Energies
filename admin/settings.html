@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-admin-page>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paramètres Généraux | Admin SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -237,12 +238,7 @@
 
         // 3. VÉRIFIER LA SESSION (SÉCURITÉ)
         async function checkAuth() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-            } else {
-                loadSettings();
-            }
+            if (await window.adminReady) loadSettings();
         }
 
         checkAuth();

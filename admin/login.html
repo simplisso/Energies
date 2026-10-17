@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Admin | SIMEL S.E.S</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
@@ -90,7 +91,7 @@
         // Utilise bien la ANON_KEY ici
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = window.adminSupabase;
 
         const loginForm = document.getElementById('loginForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -117,6 +118,16 @@
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Se connecter";
             } else {
+                const { data: isAdmin, error: accessError } = await _supabase.rpc('is_admin');
+                if (accessError || isAdmin !== true) {
+                    await _supabase.auth.signOut();
+                    errorMsg.innerText = "Ce compte n'est pas autorisé à accéder à l'administration.";
+                    errorMsg.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Se connecter";
+                    return;
+                }
+
                 // Redirection immédiate vers le dashboard
                 window.location.replace('dashboard.html');
             }
@@ -126,7 +137,14 @@
         async function checkSession() {
             const { data: { session } } = await _supabase.auth.getSession();
             if (session) {
-                window.location.replace('dashboard.html');
+                const { data: isAdmin, error } = await _supabase.rpc('is_admin');
+                if (!error && isAdmin === true) {
+                    window.location.replace('dashboard.html');
+                } else {
+                    await _supabase.auth.signOut();
+                    errorMsg.innerText = "Ce compte n'est pas autorisé à accéder à l'administration.";
+                    errorMsg.style.display = 'block';
+                }
             }
         }
         window.onload = checkSession;

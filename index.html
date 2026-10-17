@@ -423,7 +423,7 @@
             if (!_supabase) return;
 
             try {
-                const { data, error } = await _supabase.from('settings').select('*').single();
+                const { data, error } = await _supabase.from('settings').select('phone, email, address').single();
                 if (data) {
                     document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || fallbackSettings.phone);
                     document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || fallbackSettings.email);
