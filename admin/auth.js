@@ -6,6 +6,16 @@
         const style = document.createElement('style');
         style.textContent = 'html.admin-checking body { visibility: hidden; }';
         document.head.appendChild(style);
+
+        const layoutStyles = document.createElement('link');
+        layoutStyles.rel = 'stylesheet';
+        layoutStyles.href = 'layout.css';
+        document.head.appendChild(layoutStyles);
+
+        const layoutScript = document.createElement('script');
+        layoutScript.src = 'layout.js';
+        document.head.appendChild(layoutScript);
+
         document.documentElement.classList.add('admin-checking');
     }
 
