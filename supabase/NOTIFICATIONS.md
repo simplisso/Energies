@@ -2,9 +2,13 @@
 
 La fonction `functions/notify-lead/index.ts` envoie un e-mail après l'insertion d'une nouvelle demande. Elle doit être déclenchée par un webhook de base de données Supabase et vérifie le secret `x-lead-webhook-secret`.
 
-## Prérequis
+## Test sans domaine
 
-- Avoir un compte Resend et un domaine d'expédition vérifié.
+Pour un premier test, aucun domaine n'est nécessaire. Dans les secrets Supabase, utiliser `onboarding@resend.dev` comme `RESEND_FROM_EMAIL` et l'adresse du compte Resend comme `CONTACT_NOTIFICATION_EMAIL`. Resend limite son expéditeur de test à cette adresse vérifiée ; cet expéditeur ne convient pas à la production.
+
+## Envoi en production
+
+- Avoir un domaine d'expédition vérifié dans Resend.
 - Installer le [Supabase CLI](https://supabase.com/docs/guides/cli) et l’utiliser depuis la racine du dépôt.
 - Ne jamais ajouter les valeurs des secrets dans Git ni les envoyer dans une conversation.
 
