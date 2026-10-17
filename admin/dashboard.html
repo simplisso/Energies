@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Financier | SIMEL S.E.S</title>
+    <title>Tableau de bord | SIMEL S.E.S</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="auth.js"></script>
@@ -32,13 +32,19 @@
         .bg-orange { background: #DD6B20; } .bg-purple { background: #805AD5; }
 
         /* TABLEAU DES VENTES */
-        .sales-section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid #edf2f7; color: #718096; font-size: 0.9rem; }
-        td { padding: 12px; border-bottom: 1px solid #edf2f7; font-size: 0.9rem; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-        .badge-feda { background: #ebf8ff; color: #3182ce; }
-        .badge-admin { background: #f0fff4; color: #38a169; }
+        .dashboard-section { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .dashboard-table-wrap { overflow-x: auto; }
+        .dashboard-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .dashboard-table th { text-align: left; padding: 12px; border-bottom: 2px solid #edf2f7; color: #718096; font-size: 0.85rem; }
+        .dashboard-table td { padding: 12px; border-bottom: 1px solid #edf2f7; font-size: 0.9rem; }
+        .dashboard-link { color: #2b6cb0; font-weight: 600; text-decoration: none; }
+        .dashboard-link:hover { text-decoration: underline; }
+        .dashboard-message { padding: 22px 12px; color: #718096; text-align: center; }
+        @media (max-width: 600px) {
+            .main-content { padding: 24px 16px; }
+            .dashboard-section { padding: 18px 14px; }
+            .dashboard-table th, .dashboard-table td { padding: 10px 8px; }
+        }
     </style>
 </head>
 <body>
@@ -62,8 +68,8 @@
 
         <main class="main-content">
             <div style="margin-bottom: 30px;">
-                <h1>Tableau de Bord Financier</h1>
-                <p>Surveillance des devis et revenus FedaPay</p>
+                <h1>Tableau de bord</h1>
+                <p>Vue d’ensemble de votre activité</p>
             </div>
 
             <div class="stats-grid">
@@ -72,78 +78,112 @@
                     <div class="stat-info"><h3>Demandes</h3><div class="number" id="count-leads">0</div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon bg-purple"><i class="fas fa-file-invoice"></i></div>
-                    <div class="stat-info"><h3>Devis Générés</h3><div class="number" id="count-devis">0</div></div>
+                    <div class="stat-icon bg-purple"><i class="fas fa-bolt"></i></div>
+                    <div class="stat-info"><h3>Services</h3><div class="number" id="count-services">--</div></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon bg-green"><i class="fas fa-wallet"></i></div>
-                    <div class="stat-info"><h3>CA FedaPay</h3><div class="number" id="total-feda">0 F</div></div>
+                    <div class="stat-icon bg-green"><i class="fas fa-user-friends"></i></div>
+                    <div class="stat-info"><h3>Membres d’équipe</h3><div class="number" id="count-team">--</div></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-orange"><i class="fas fa-users"></i></div>
-                    <div class="stat-info"><h3>Agents</h3><div class="number" id="count-agents">0</div></div>
+                    <div class="stat-info"><h3>Agents</h3><div class="number" id="count-agents">--</div></div>
                 </div>
             </div>
 
-            <div class="sales-section">
-                <h2>Historique des Ventes & Devis</h2>
-                <table>
+            <section class="dashboard-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <h2>Dernières demandes</h2>
+                    <a class="dashboard-link" href="leads.html">Voir toutes les demandes <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+                <div id="dashboard-error" class="dashboard-message" role="status" hidden></div>
+                <div class="dashboard-table-wrap">
+                <table class="dashboard-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
+                            <th>Reçue le</th>
                             <th>Client</th>
-                            <th>Montant Devis</th>
-                            <th>Méthode</th>
-                            <th>Statut</th>
+                            <th>Sujet</th>
+                            <th>Téléphone</th>
                         </tr>
                     </thead>
-                    <tbody id="sales-table-body">
-                        </tbody>
+                    <tbody id="recent-leads"></tbody>
                 </table>
-            </div>
+                </div>
+            </section>
         </main>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://owkprsgfbxaxkijcomln.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = window.adminSupabase;
+
+        async function fetchCount(table) {
+            const { count, error } = await _supabase
+                .from(table)
+                .select('id', { count: 'exact', head: true });
+
+            if (error) throw error;
+            return count || 0;
+        }
+
+        function renderRecentLeads(leads) {
+            const tbody = document.getElementById('recent-leads');
+            tbody.replaceChildren();
+
+            if (leads.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 4;
+                cell.className = 'dashboard-message';
+                cell.textContent = 'Aucune demande reçue pour le moment.';
+                return;
+            }
+
+            leads.forEach(lead => {
+                const row = tbody.insertRow();
+                const values = [
+                    lead.created_at ? new Date(lead.created_at).toLocaleString('fr-FR') : '—',
+                    lead.client_name || 'Anonyme',
+                    lead.subject || 'Demande générale',
+                    lead.client_phone || '—'
+                ];
+
+                values.forEach(value => {
+                    row.insertCell().textContent = value;
+                });
+            });
+        }
 
         async function chargerDashboard() {
+            const errorMessage = document.getElementById('dashboard-error');
             try {
-                // 1. Compter les Leads
-                const { count: leads } = await _supabase.from('leads').select('*', { count: 'exact', head: true });
-                document.getElementById('count-leads').innerText = leads || 0;
+                const [leadsCount, servicesCount, teamCount, agentsCount] = await Promise.all([
+                    fetchCount('leads'),
+                    fetchCount('portfolio_services'),
+                    fetchCount('team_members'),
+                    fetchCount('agents')
+                ]);
 
-                // 2. Compter les Devis totaux
-                const { count: devisCount } = await _supabase.from('devis_logs').select('*', { count: 'exact', head: true });
-                document.getElementById('count-devis').innerText = devisCount || 0;
+                document.getElementById('count-leads').textContent = leadsCount;
+                document.getElementById('count-services').textContent = servicesCount;
+                document.getElementById('count-team').textContent = teamCount;
+                document.getElementById('count-agents').textContent = agentsCount;
 
-                // 3. Calculer CA FedaPay (Uniquement les lignes payées via FedaPay)
-                const { data: salesData } = await _supabase.from('devis_logs').select('*').order('created_at', { ascending: false });
-                
-                let caFeda = 0;
-                const tbody = document.getElementById('sales-table-body');
-                tbody.innerHTML = "";
+                const { data, error } = await _supabase
+                    .from('leads')
+                    .select('created_at, client_name, subject, client_phone')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
 
-                salesData.forEach(item => {
-                    if(item.payment_method === 'FedaPay') caFeda += 500; // Chaque vente FedaPay rapporte 500
-
-                    const date = new Date(item.created_at).toLocaleDateString('fr-FR');
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${date}</td>
-                            <td>${item.client_name}</td>
-                            <td>${item.total_amount.toLocaleString()} F</td>
-                            <td><span class="badge ${item.payment_method === 'FedaPay' ? 'badge-feda' : 'badge-admin'}">${item.payment_method}</span></td>
-                            <td><i class="fas fa-check-circle" style="color:#38A169"></i> Succès</td>
-                        </tr>
-                    `;
-                });
-
-                document.getElementById('total-feda').innerText = caFeda.toLocaleString() + " F";
-
-            } catch (err) { console.error(err); }
+                if (error) throw error;
+                renderRecentLeads(data || []);
+            } catch (error) {
+                console.error('Erreur de chargement du tableau de bord:', error);
+                errorMessage.hidden = false;
+                errorMessage.textContent = 'Impossible de charger les données. Réessayez plus tard.';
+            }
         }
 
         function ouvrirGenerateurDevis() {
