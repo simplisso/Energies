@@ -25,14 +25,29 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 5px; font-family: inherit; }
         .btn-save { background-color: #38A169; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        .form-actions { display: flex; gap: 10px; margin-top: 12px; }
+        .form-actions button { flex: 1; }
+        .btn-cancel { background: #718096; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .image-help { margin: 8px 0 14px; color: #718096; font-size: 0.85rem; }
+        .edit-image-preview { width: 110px; height: 72px; object-fit: cover; border-radius: 6px; margin: 8px 0; }
+        .table-actions { display: flex; gap: 8px; }
+        .btn-edit, .btn-delete { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 7px 10px; border-radius: 5px; cursor: pointer; }
+        .btn-edit { color: #2b6cb0; border: 1px solid #90cdf4; background: #ebf8ff; }
+        .btn-delete { color: #c53030; border: 1px solid #feb2b2; background: #fff5f5; font-size: 0.9rem; }
         
         /* Table */
-        .admin-table-container { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table-container { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow-x: auto; }
+        .admin-table { width: 100%; min-width: 560px; border-collapse: collapse; }
         .admin-table th { text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; color: #718096; font-size: 0.8rem; }
         .admin-table td { padding: 15px; border-bottom: 1px solid #edf2f7; }
         .thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; }
         .btn-delete { color: #E53E3E; border:none; background:none; cursor:pointer; font-size: 1.1rem; }
+        @media (max-width: 560px) {
+            .main-content { padding: 20px 14px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column; }
+            .admin-table-container { padding: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -63,12 +78,15 @@
                             <option value="Sécurité">Sécurité</option>
                         </select>
                         <input type="text" id="p-location" placeholder="Ville (ex: Cotonou)" required>
-                        <input type="file" id="p-image" accept="image/*" required>
+                        <input type="file" id="p-image" accept="image/*">
                     </div>
+                    <p id="image-help" class="image-help">Une image est nécessaire pour une nouvelle réalisation.</p>
+                    <img id="edit-image-preview" class="edit-image-preview" alt="Photo actuelle" hidden>
                     <textarea id="p-desc" placeholder="Courte description du travail effectué" rows="2"></textarea>
-                    <button type="submit" class="btn-save" id="btn-submit">
-                        <i class="fas fa-upload"></i> Enregistrer la réalisation
-                    </button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save" id="btn-submit"><i class="fas fa-upload"></i> Ajouter la réalisation</button>
+                        <button type="button" class="btn-cancel" id="cancel-edit" hidden>Annuler la modification</button>
+                    </div>
                 </form>
             </div>
 
@@ -95,82 +113,192 @@
 
         const form = document.getElementById('add-project-form');
         const btnSubmit = document.getElementById('btn-submit');
+        const imageInput = document.getElementById('p-image');
+        const imagePreview = document.getElementById('edit-image-preview');
+        const imageHelp = document.getElementById('image-help');
+        const cancelEditButton = document.getElementById('cancel-edit');
+        const tbody = document.getElementById('services-tbody');
+        let services = [];
+        let editingId = null;
+        let currentImageUrl = '';
 
         async function loadServices() {
-            const { data, error } = await _supabase.from('portfolio_services').select('*').order('created_at', { ascending: false });
-            const tbody = document.getElementById('services-tbody');
-            tbody.innerHTML = '';
-            if (data) {
-                data.forEach(item => {
-                    tbody.innerHTML += `<tr>
-                        <td><img src="${item.image_url}" class="thumb" onerror="this.src='https://via.placeholder.com/60'"></td>
-                        <td><strong>${item.title}</strong><br><small>${item.category}</small></td>
-                        <td>${item.location || '-'}</td>
-                        <td>
-                            <button onclick="deleteItem('${item.id}', '${item.image_url}')" class="btn-delete"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>`;
-                });
+            const { data, error } = await _supabase
+                .from('portfolio_services')
+                .select('id, title, category, location, description, image_url, created_at')
+                .order('created_at', { ascending: false });
+
+            tbody.replaceChildren();
+            if (error) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 4;
+                cell.textContent = 'Impossible de charger les réalisations.';
+                console.error('Erreur de chargement des réalisations:', error);
+                return;
             }
+
+            services = data || [];
+            if (services.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 4;
+                cell.textContent = 'Aucune réalisation pour le moment.';
+                return;
+            }
+
+            services.forEach(item => {
+                const row = tbody.insertRow();
+                const imageCell = row.insertCell();
+                if (item.image_url) {
+                    const image = document.createElement('img');
+                    image.src = item.image_url;
+                    image.alt = item.title ? `Photo de ${item.title}` : 'Réalisation SIMEL';
+                    image.className = 'thumb';
+                    image.addEventListener('error', () => {
+                        image.replaceWith(document.createTextNode('Aucune image'));
+                    }, { once: true });
+                    imageCell.appendChild(image);
+                } else {
+                    imageCell.textContent = 'Aucune image';
+                }
+
+                const titleCell = row.insertCell();
+                const title = document.createElement('strong');
+                title.textContent = item.title || 'Sans titre';
+                const category = document.createElement('small');
+                category.textContent = item.category || 'Réalisation';
+                titleCell.append(title, document.createElement('br'), category);
+                row.insertCell().textContent = item.location || '—';
+
+                const actionsCell = row.insertCell();
+                const actions = document.createElement('div');
+                actions.className = 'table-actions';
+                const editButton = document.createElement('button');
+                editButton.type = 'button';
+                editButton.className = 'btn-edit';
+                editButton.dataset.action = 'edit';
+                editButton.dataset.id = item.id;
+                editButton.setAttribute('aria-label', `Modifier ${item.title || 'la réalisation'}`);
+                editButton.innerHTML = '<i class="fas fa-pen" aria-hidden="true"></i><span>Modifier</span>';
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button';
+                deleteButton.className = 'btn-delete';
+                deleteButton.dataset.action = 'delete';
+                deleteButton.dataset.id = item.id;
+                deleteButton.setAttribute('aria-label', `Supprimer ${item.title || 'la réalisation'}`);
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt" aria-hidden="true"></i><span>Supprimer</span>';
+                actions.append(editButton, deleteButton);
+                actionsCell.appendChild(actions);
+            });
         }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function startEditing(id) {
+            const item = services.find(service => String(service.id) === id);
+            if (!item) return;
+
+            editingId = id;
+            currentImageUrl = item.image_url || '';
+            document.getElementById('p-title').value = item.title || '';
+            document.getElementById('p-category').value = item.category || 'Solaire';
+            document.getElementById('p-location').value = item.location || '';
+            document.getElementById('p-desc').value = item.description || '';
+            imageInput.value = '';
+            imagePreview.hidden = !currentImageUrl;
+            imagePreview.src = currentImageUrl;
+            imageHelp.textContent = currentImageUrl
+                ? 'Choisissez une nouvelle image uniquement si vous souhaitez remplacer la photo actuelle.'
+                : 'Cette réalisation n’a pas encore de photo. Vous pouvez en ajouter une maintenant.';
+            btnSubmit.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Enregistrer les modifications';
+            cancelEditButton.hidden = false;
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function cancelEditing() {
+            editingId = null;
+            currentImageUrl = '';
+            form.reset();
+            imagePreview.removeAttribute('src');
+            imagePreview.hidden = true;
+            imageHelp.textContent = 'Une image est nécessaire pour une nouvelle réalisation.';
+            btnSubmit.innerHTML = '<i class="fas fa-upload" aria-hidden="true"></i> Ajouter la réalisation';
+            cancelEditButton.hidden = true;
+        }
+
+        async function uploadImage(file) {
+            const safeName = file.name.replace(/[^A-Za-z0-9._-]/g, '_') || 'realisation';
+            const fileName = `${Date.now()}_${safeName}`;
+            const { error } = await _supabase.storage
+                .from('realisations')
+                .upload(fileName, file);
+
+            if (error) throw error;
+            return _supabase.storage.from('realisations').getPublicUrl(fileName).data.publicUrl;
+        }
+
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+            const file = imageInput.files[0];
+            if (!editingId && !file) {
+                alert('Ajoutez une photo pour cette nouvelle réalisation.');
+                imageInput.focus();
+                return;
+            }
+
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = "Téléchargement de l'image...";
-
-            const file = document.getElementById('p-image').files[0];
-            const title = document.getElementById('p-title').value;
-            const category = document.getElementById('p-category').value;
-            const location = document.getElementById('p-location').value;
-            const description = document.getElementById('p-desc').value;
-
             try {
-                // 1. Upload l'image dans le Storage
-                const fileName = `${Date.now()}_${file.name}`;
-                const { data: uploadData, error: uploadError } = await _supabase.storage
-                    .from('realisations')
-                    .upload(fileName, file);
+                btnSubmit.textContent = file ? 'Téléversement de la photo…' : 'Enregistrement…';
+                const imageUrl = file ? await uploadImage(file) : currentImageUrl;
+                const project = {
+                    title: document.getElementById('p-title').value.trim(),
+                    category: document.getElementById('p-category').value,
+                    location: document.getElementById('p-location').value.trim(),
+                    description: document.getElementById('p-desc').value.trim(),
+                    image_url: imageUrl
+                };
 
-                if (uploadError) throw uploadError;
+                const result = editingId
+                    ? await _supabase.from('portfolio_services').update(project).eq('id', editingId)
+                    : await _supabase.from('portfolio_services').insert([project]);
 
-                // 2. Récupérer l'URL publique de l'image
-                const { data: urlData } = _supabase.storage
-                    .from('realisations')
-                    .getPublicUrl(fileName);
-                
-                const imagePublicUrl = urlData.publicUrl;
-
-                // 3. Insérer les données dans la table
-                const { error: insertError } = await _supabase.from('portfolio_services').insert([{
-                    title,
-                    category,
-                    location,
-                    description,
-                    image_url: imagePublicUrl
-                }]);
-
-                if (insertError) throw insertError;
-
-                alert("Réalisation ajoutée avec succès !");
-                form.reset();
-                loadServices();
-
-            } catch (err) {
-                alert("Erreur : " + err.message);
+                if (result.error) throw result.error;
+                alert(editingId ? 'Réalisation mise à jour.' : 'Réalisation ajoutée.');
+                cancelEditing();
+                await loadServices();
+            } catch (error) {
+                alert('Impossible d’enregistrer la réalisation. Vérifiez les champs et réessayez.');
+                console.error('Erreur d’enregistrement de la réalisation:', error);
             } finally {
                 btnSubmit.disabled = false;
-                btnSubmit.innerHTML = '<i class="fas fa-upload"></i> Enregistrer la réalisation';
+                if (editingId) {
+                    btnSubmit.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Enregistrer les modifications';
+                } else {
+                    btnSubmit.innerHTML = '<i class="fas fa-upload" aria-hidden="true"></i> Ajouter la réalisation';
+                }
             }
         });
 
-        async function deleteItem(id, imageUrl) {
-            if(confirm("Voulez-vous supprimer cette réalisation ?")) {
-                // Optionnel : extraire le nom du fichier de l'URL pour supprimer du storage
-                await _supabase.from('portfolio_services').delete().eq('id', id);
-                loadServices();
+        cancelEditButton.addEventListener('click', cancelEditing);
+        tbody.addEventListener('click', async event => {
+            const button = event.target.closest('[data-action][data-id]');
+            if (!button) return;
+
+            if (button.dataset.action === 'edit') {
+                startEditing(button.dataset.id);
+                return;
             }
-        }
+
+            if (button.dataset.action === 'delete' && confirm('Voulez-vous supprimer cette réalisation ?')) {
+                const { error } = await _supabase.from('portfolio_services').delete().eq('id', button.dataset.id);
+                if (error) {
+                    alert('Impossible de supprimer cette réalisation.');
+                    console.error('Erreur de suppression:', error);
+                    return;
+                }
+                if (editingId === button.dataset.id) cancelEditing();
+                await loadServices();
+            }
+        });
 
         window.onload = async () => {
             if (await window.adminReady) loadServices();
