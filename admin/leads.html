@@ -89,6 +89,21 @@
 
         .lead-actions { display: flex; flex-direction: column; gap: 12px; }
 
+        .lead-filters { display: flex; gap: 12px; margin: 0 0 8px; }
+        .lead-filters input, .lead-filters select, .lead-status {
+            min-height: 42px;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            background: #fff;
+            color: #2d3748;
+            font: inherit;
+        }
+        .lead-filters input { flex: 1; min-width: 0; }
+        .lead-status { width: 100%; }
+        .lead-count { margin: 0 0 16px; color: #718096; font-size: 0.9rem; }
+        .lead-empty { padding: 36px 20px; color: #718096; text-align: center; }
+
         .btn-call { 
             background: var(--blue); color: white !important; text-decoration: none; 
             text-align: center; padding: 10px; border-radius: 6px; font-weight: bold; 
@@ -109,6 +124,10 @@
         @media (max-width: 1024px) {
             .lead-card { grid-template-columns: 1fr; gap: 15px; }
             .lead-actions { flex-direction: row; }
+        }
+        @media (max-width: 560px) {
+            .lead-filters { flex-direction: column; }
+            .lead-actions { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -132,7 +151,16 @@
         <main class="main-content">
             <div class="container">
                 <h1><i class="fas fa-envelope-open-text"></i> Demandes de Contact</h1>
-                
+                <div class="lead-filters">
+                    <input id="lead-search" type="search" placeholder="Rechercher un nom, e-mail, sujet…" aria-label="Rechercher une demande">
+                    <select id="lead-status-filter" aria-label="Filtrer par statut">
+                        <option value="">Tous les statuts</option>
+                        <option value="nouvelle">Nouvelle</option>
+                        <option value="contactée">Contactée</option>
+                        <option value="terminée">Terminée</option>
+                    </select>
+                </div>
+                <p id="lead-count" class="lead-count" role="status"></p>
                 <div id="leads-container" class="leads-grid">
                     <p style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin"></i> Chargement des messages...</p>
                 </div>
@@ -145,69 +173,164 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93a3Byc2dmYnhheGtpamNvbWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MzI1NjQsImV4cCI6MjA4MjEwODU2NH0.RvVHppQWTDqEFfBLrHJxSdC5cvb5BwuulpAxDi4TndM';
         const _supabase = window.adminSupabase;
 
+        const leadStatuses = {
+            nouvelle: 'Nouvelle',
+            'contactée': 'Contactée',
+            'terminée': 'Terminée'
+        };
+        let allLeads = [];
+
+        function normalizeLeadStatus(status) {
+            return status === 'nouveau' || !Object.hasOwn(leadStatuses, status) ? 'nouvelle' : status;
+        }
+
+        function renderLeads() {
+            const container = document.getElementById('leads-container');
+            const query = document.getElementById('lead-search').value.trim().toLocaleLowerCase('fr');
+            const selectedStatus = document.getElementById('lead-status-filter').value;
+            const filteredLeads = allLeads.filter(lead => {
+                const status = normalizeLeadStatus(lead.status);
+                const searchableText = [lead.client_name, lead.client_email, lead.client_phone, lead.subject, lead.message]
+                    .filter(Boolean)
+                    .join(' ')
+                    .toLocaleLowerCase('fr');
+                return (!selectedStatus || status === selectedStatus) && searchableText.includes(query);
+            });
+
+            document.getElementById('lead-count').textContent = `${filteredLeads.length} demande${filteredLeads.length === 1 ? '' : 's'} sur ${allLeads.length}`;
+            container.replaceChildren();
+
+            if (filteredLeads.length === 0) {
+                const empty = document.createElement('p');
+                empty.className = 'lead-empty';
+                empty.textContent = allLeads.length ? 'Aucune demande ne correspond aux filtres.' : 'Aucune demande reçue pour le moment.';
+                container.appendChild(empty);
+                return;
+            }
+
+            filteredLeads.forEach(lead => {
+                const card = document.createElement('article');
+                card.className = 'lead-card';
+
+                const info = document.createElement('div');
+                info.className = 'lead-info';
+                const name = document.createElement('h3');
+                name.textContent = lead.client_name || 'Anonyme';
+                const phone = document.createElement('p');
+                phone.textContent = `Téléphone : ${lead.client_phone || 'Non renseigné'}`;
+                const email = document.createElement('p');
+                email.textContent = `E-mail : ${lead.client_email || 'Non renseigné'}`;
+                info.append(name, phone, email);
+
+                const content = document.createElement('div');
+                content.className = 'lead-content';
+                const subject = document.createElement('strong');
+                subject.textContent = `Sujet : ${lead.subject || 'Demande générale'}`;
+                const message = document.createElement('p');
+                message.textContent = lead.message || 'Aucun message';
+                const received = document.createElement('small');
+                received.textContent = `Reçue le : ${new Date(lead.created_at).toLocaleString('fr-FR')}`;
+                content.append(subject, message, received);
+
+                const actions = document.createElement('div');
+                actions.className = 'lead-actions';
+                const cleanPhone = (lead.client_phone || '').replace(/[^\d+]/g, '');
+                if (cleanPhone) {
+                    const call = document.createElement('a');
+                    call.className = 'btn-call';
+                    call.href = `tel:${cleanPhone}`;
+                    call.textContent = 'Appeler';
+                    actions.appendChild(call);
+                }
+
+                const status = document.createElement('select');
+                status.className = 'lead-status';
+                status.dataset.leadStatus = lead.id;
+                status.setAttribute('aria-label', `Statut de ${lead.client_name || 'la demande'}`);
+                Object.entries(leadStatuses).forEach(([value, label]) => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = label;
+                    option.selected = normalizeLeadStatus(lead.status) === value;
+                    status.appendChild(option);
+                });
+                actions.appendChild(status);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button';
+                deleteButton.className = 'btn-delete';
+                deleteButton.dataset.deleteLead = lead.id;
+                deleteButton.textContent = 'Supprimer';
+                actions.appendChild(deleteButton);
+
+                card.append(info, content, actions);
+                container.appendChild(card);
+            });
+        }
+
         async function loadLeads() {
             const container = document.getElementById('leads-container');
-            
             const { data, error } = await _supabase
                 .from('leads')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
-                container.innerHTML = `<p style="color:red; text-align:center;">Erreur : ${error.message}</p>`;
+                container.textContent = 'Impossible de charger les demandes.';
+                console.error('Erreur de chargement des demandes:', error);
                 return;
             }
 
-            if (data.length === 0) {
-                container.innerHTML = `<p style="text-align:center; padding: 40px; color: #718096;">Aucune demande reçue pour le moment.</p>`;
+            allLeads = data || [];
+            renderLeads();
+        }
+
+        async function updateLeadStatus(id, status) {
+            if (!Object.hasOwn(leadStatuses, status)) return;
+
+            const { error } = await _supabase
+                .from('leads')
+                .update({ status })
+                .eq('id', id);
+
+            if (error) {
+                alert('Impossible de mettre à jour le statut.');
+                console.error('Erreur de mise à jour du statut:', error);
                 return;
             }
 
-            container.innerHTML = '';
-            data.forEach(lead => {
-                const rawPhone = lead.client_phone || '';
-                const cleanPhone = rawPhone.replace(/\s+/g, '');
-
-                const callAction = cleanPhone 
-                    ? `<a href="tel:${cleanPhone}" class="btn-call"><i class="fas fa-phone"></i> Appeler</a>`
-                    : `<button class="btn-call disabled"><i class="fas fa-phone-slash"></i> Non renseigné</button>`;
-
-                container.innerHTML += `
-                    <div class="lead-card">
-                        <div class="lead-info">
-                            <h3>${lead.client_name || 'Anonyme'}</h3>
-                            <p><i class="fas fa-phone"></i> ${rawPhone || 'Non renseigné'}</p>
-                            <p><i class="fas fa-envelope"></i> ${lead.client_email || 'Non renseigné'}</p>
-                        </div>
-                        <div class="lead-content">
-                            <strong>Sujet : ${lead.subject || 'Demande Générale'}</strong>
-                            <p>"${lead.message || 'Aucun message'}"</p>
-                            <small>Reçu le : ${new Date(lead.created_at).toLocaleString('fr-FR')}</small>
-                        </div>
-                        <div class="lead-actions">
-                            ${callAction}
-                            <button onclick="deleteLead('${lead.id}')" class="btn-delete">
-                                <i class="fas fa-trash"></i> Supprimer
-                            </button>
-                        </div>
-                    </div>`;
-            });
+            allLeads = allLeads.map(lead => String(lead.id) === id ? { ...lead, status } : lead);
+            renderLeads();
         }
 
         async function deleteLead(id) {
-            if (confirm("Voulez-vous vraiment supprimer définitivement ce message ?")) {
-                const { error } = await _supabase
-                    .from('leads')
-                    .delete()
-                    .eq('id', id);
+            if (!confirm('Voulez-vous vraiment supprimer définitivement cette demande ?')) return;
 
-                if (error) {
-                    alert("Erreur lors de la suppression : " + error.message);
-                } else {
-                    loadLeads();
-                }
+            const { error } = await _supabase
+                .from('leads')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert('Impossible de supprimer cette demande.');
+                console.error('Erreur de suppression:', error);
+                return;
             }
+
+            allLeads = allLeads.filter(lead => String(lead.id) !== id);
+            renderLeads();
         }
+
+        document.getElementById('lead-search').addEventListener('input', renderLeads);
+        document.getElementById('lead-status-filter').addEventListener('change', renderLeads);
+        document.getElementById('leads-container').addEventListener('change', event => {
+            const select = event.target.closest('[data-lead-status]');
+            if (select) updateLeadStatus(select.dataset.leadStatus, select.value);
+        });
+        document.getElementById('leads-container').addEventListener('click', event => {
+            const button = event.target.closest('[data-delete-lead]');
+            if (button) deleteLead(button.dataset.deleteLead);
+        });
 
         window.onload = async () => {
             if (await window.adminReady) loadLeads();
