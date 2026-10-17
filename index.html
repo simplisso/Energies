@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIMEL S.E.S | Accueil - Expertise Énergétique au Bénin</title>
+    <meta name="description" content="SIMEL S.E.S accompagne entreprises, institutions et particuliers dans leurs projets électriques, solaires et de sécurité au Bénin.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -128,26 +129,12 @@
             </div>
 
             <div class="hero-card">
-                <div class="mini-kicker">Performance garantie</div>
-                <h3>Une énergie qui soutient votre croissance</h3>
-                <div class="metric-grid">
-                    <div>
-                        <strong>+150</strong>
-                        <span>projets livrés</span>
-                    </div>
-                    <div>
-                        <strong>24/7</strong>
-                        <span>support disponible</span>
-                    </div>
-                    <div>
-                        <strong>99%</strong>
-                        <span>satisfaction client</span>
-                    </div>
-                </div>
-                <div class="hero-list">
-                    <div><i class="fas fa-solar-panel"></i> Énergie solaire</div>
-                    <div><i class="fas fa-bolt"></i> Électricité industrielle</div>
-                    <div><i class="fas fa-shield-alt"></i> Sécurité électronique</div>
+                <div class="mini-kicker">Votre partenaire au Bénin</div>
+                <h3>Un accompagnement technique, de l’étude au suivi.</h3>
+                <div class="hero-facts">
+                    <div><span>Zone d’intervention</span><strong>Bénin</strong></div>
+                    <div><span>Horaires d’ouverture</span><strong id="hero-opening-hours">Contactez-nous</strong></div>
+                    <div><span>Nos métiers</span><strong>Solaire · Électricité · Sécurité</strong></div>
                 </div>
             </div>
         </div>
@@ -279,6 +266,10 @@
                 <div>
                     <h3>SIMEL S.E.S</h3>
                     <p>L'expertise technique au service de votre confort et de votre sécurité énergétique au Bénin.</p>
+                    <div class="footer-social" aria-label="Réseaux sociaux">
+                        <a id="facebook-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook" hidden><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a id="instagram-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram" hidden><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                    </div>
                 </div>
                 <div>
                     <h3>Navigation</h3>
@@ -293,10 +284,11 @@
                     <p><i class="fas fa-phone"></i> <span class="dyn-phone">...</span></p>
                     <p><i class="fas fa-envelope"></i> <span class="dyn-email">...</span></p>
                     <p><i class="fas fa-map-marker-alt"></i> <span class="dyn-address">...</span></p>
+                    <p><i class="fas fa-clock"></i> <span id="footer-opening-hours">Contactez-nous pour connaître nos horaires.</span></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                &copy; 2025 SIMEL S.E.S. Expertise Électrique & Solaire.
+                &copy; <span id="current-year"></span> SIMEL S.E.S. Expertise Électrique & Solaire.
             </div>
         </div>
     </footer>
@@ -308,32 +300,12 @@
         const fallbackSettings = {
             phone: '+229 97 00 00 00',
             email: 'contact@simel-ses.com',
-            address: 'Cotonou, Bénin'
+            address: 'Cotonou, Bénin',
+            whatsapp: '',
+            opening_hours: '',
+            facebook_url: '',
+            instagram_url: ''
         };
-
-        const fallbackProjects = [
-            {
-                title: 'Installation solaire commerciale',
-                category: 'Solaire',
-                location: 'Cotonou',
-                description: 'Système photovoltaïque sur toiture pour optimiser la production d’électricité et réduire la dépendance au réseau.',
-                image_url: 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=1200'
-            },
-            {
-                title: 'Câblage électrique industriel',
-                category: 'Industrie',
-                location: 'Parakou',
-                description: 'Mise en conformité d’une installation électrique avec amélioration de la sécurité et des performances.',
-                image_url: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=1200'
-            },
-            {
-                title: 'Sécurisation d’un site',
-                category: 'Sécurité',
-                location: 'Porto-Novo',
-                description: 'Installation de vidéosurveillance, alarmes et contrôle d’accès pour un environnement plus sécurisé.',
-                image_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200'
-            }
-        ];
 
         let _supabase = null;
         try {
@@ -342,33 +314,49 @@
             console.warn('Supabase indisponible. Utilisation du contenu local.', err);
         }
 
-        function applyFallbackSettings() {
-            document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = fallbackSettings.phone);
-            document.querySelectorAll('.dyn-email').forEach(el => el.textContent = fallbackSettings.email);
-            document.querySelectorAll('.dyn-address').forEach(el => el.textContent = fallbackSettings.address);
+        function applySettings(settings) {
+            document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = settings.phone || fallbackSettings.phone);
+            document.querySelectorAll('.dyn-email').forEach(el => el.textContent = settings.email || fallbackSettings.email);
+            document.querySelectorAll('.dyn-address').forEach(el => el.textContent = settings.address || fallbackSettings.address);
+            const publicNumber = (settings.whatsapp || settings.phone || fallbackSettings.phone).replace(/\D/g, '');
             document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                const cleanNumber = fallbackSettings.phone.replace(/\D/g, '');
                 if (link.classList.contains('whatsapp-float')) {
-                    link.href = `https://wa.me/${cleanNumber}`;
+                    link.href = `https://wa.me/${publicNumber}`;
+                    link.setAttribute('aria-label', `Contacter SIMEL sur WhatsApp au ${settings.whatsapp || settings.phone || fallbackSettings.phone}`);
                 } else {
-                    link.href = `tel:${cleanNumber}`;
+                    const phoneNumber = (settings.phone || fallbackSettings.phone).replace(/[^\d+]/g, '');
+                    link.href = `tel:${phoneNumber}`;
+                }
+            });
+
+            const openingHours = settings.opening_hours || 'Contactez-nous pour connaître nos horaires.';
+            document.getElementById('hero-opening-hours').textContent = settings.opening_hours || 'Sur rendez-vous';
+            document.getElementById('footer-opening-hours').textContent = openingHours;
+
+            [['facebook-link', settings.facebook_url], ['instagram-link', settings.instagram_url]].forEach(([id, value]) => {
+                const link = document.getElementById(id);
+                try {
+                    const url = new URL(value);
+                    if (url.protocol !== 'https:') throw new Error('Invalid social URL');
+                    link.href = url.href;
+                    link.hidden = false;
+                } catch {
+                    link.hidden = true;
+                    link.removeAttribute('href');
                 }
             });
         }
 
-        function renderFallbackProjects() {
+        applySettings(fallbackSettings);
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        function renderProjectsMessage(message) {
             const container = document.getElementById('projects-container');
-            container.innerHTML = fallbackProjects.map(project => `
-                <article class="annonce-card">
-                    <div class="card-image" style="background-image: url('${project.image_url}');"></div>
-                    <div class="card-content">
-                        <span class="card-category">${project.category}</span>
-                        <h3>${project.title}</h3>
-                        <div class="card-location"><i class="fas fa-map-marker-alt"></i> ${project.location}</div>
-                        <p class="card-description">${project.description}</p>
-                    </div>
-                </article>
-            `).join('');
+            const status = document.createElement('p');
+            status.className = 'projects-loading';
+            status.setAttribute('role', 'status');
+            status.textContent = message;
+            container.replaceChildren(status);
         }
 
         // Menu Mobile Toggle
@@ -378,65 +366,105 @@
             toggle.addEventListener('click', () => menu.classList.toggle('is-open'));
         }
 
-        async function loadProjects() {
+        function renderProjects(projects) {
             const container = document.getElementById('projects-container');
+            container.replaceChildren();
+
+            if (projects.length === 0) {
+                renderProjectsMessage('Les réalisations seront bientôt présentées ici.');
+                return;
+            }
+
+            projects.forEach(project => {
+                const card = document.createElement('article');
+                card.className = 'annonce-card';
+
+                let imageUrl = '';
+                try {
+                    const candidate = new URL(project.image_url);
+                    if (candidate.protocol === 'https:') imageUrl = candidate.href;
+                } catch {
+                    imageUrl = '';
+                }
+
+                if (imageUrl) {
+                    const image = document.createElement('img');
+                    image.className = 'card-image';
+                    image.src = imageUrl;
+                    image.alt = project.title || 'Réalisation SIMEL S.E.S';
+                    image.loading = 'lazy';
+                    image.decoding = 'async';
+                    image.addEventListener('error', () => {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'card-image card-image-placeholder';
+                        placeholder.setAttribute('aria-hidden', 'true');
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-bolt';
+                        placeholder.appendChild(icon);
+                        image.replaceWith(placeholder);
+                    }, { once: true });
+                    card.appendChild(image);
+                } else {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'card-image card-image-placeholder';
+                    placeholder.setAttribute('aria-hidden', 'true');
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-bolt';
+                    placeholder.appendChild(icon);
+                    card.appendChild(placeholder);
+                }
+
+                const content = document.createElement('div');
+                content.className = 'card-content';
+                const category = document.createElement('span');
+                category.className = 'card-category';
+                category.textContent = project.category || 'Réalisation';
+                const title = document.createElement('h3');
+                title.textContent = project.title || 'Réalisation SIMEL S.E.S';
+                const location = document.createElement('div');
+                location.className = 'card-location';
+                location.textContent = project.location || 'Bénin';
+                const description = document.createElement('p');
+                description.className = 'card-description';
+                description.textContent = project.description || 'Projet réalisé par les équipes de SIMEL S.E.S.';
+                content.append(category, title, location, description);
+                card.appendChild(content);
+                container.appendChild(card);
+            });
+        }
+
+        async function loadProjects() {
             if (!_supabase) {
-                renderFallbackProjects();
+                renderProjectsMessage('Les réalisations sont temporairement indisponibles.');
                 return;
             }
 
             try {
                 const { data, error } = await _supabase
                     .from('portfolio_services')
-                    .select('*')
+                    .select('title, category, location, description, image_url')
                     .order('created_at', { ascending: false })
                     .limit(3);
 
                 if (error) throw error;
-
-                if (data && data.length > 0) {
-                    container.innerHTML = data.map(project => {
-                        const imgUrl = project.image_url || 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?w=400';
-                        return `
-                            <article class="annonce-card">
-                                <div class="card-image" style="background-image: url('${imgUrl}');"></div>
-                                <div class="card-content">
-                                    <span class="card-category">${project.category || 'Réalisation'}</span>
-                                    <h3>${project.title}</h3>
-                                    <div class="card-location"><i class="fas fa-map-marker-alt"></i> ${project.location || 'Bénin'}</div>
-                                    <p class="card-description">${project.description || 'Projet réalisé avec succès par les équipes de SIMEL S.E.S.'}</p>
-                                </div>
-                            </article>`;
-                    }).join('');
-                } else {
-                    renderFallbackProjects();
-                }
+                renderProjects(data || []);
             } catch (err) {
                 console.error('Erreur projets:', err);
-                renderFallbackProjects();
+                renderProjectsMessage('Les réalisations sont temporairement indisponibles.');
             }
         }
 
         async function syncSettings() {
-            applyFallbackSettings();
+            applySettings(fallbackSettings);
 
             if (!_supabase) return;
 
             try {
-                const { data, error } = await _supabase.from('settings').select('phone, email, address').single();
+                const { data, error } = await _supabase.from('settings')
+                    .select('phone, email, address, whatsapp, opening_hours, facebook_url, instagram_url')
+                    .single();
                 if (data) {
-                    document.querySelectorAll('.dyn-phone').forEach(el => el.textContent = data.phone || fallbackSettings.phone);
-                    document.querySelectorAll('.dyn-email').forEach(el => el.textContent = data.email || fallbackSettings.email);
-                    document.querySelectorAll('.dyn-address').forEach(el => el.textContent = data.address || fallbackSettings.address);
-
-                    const cleanNumber = (data.phone || fallbackSettings.phone).replace(/\D/g, '');
-                    document.querySelectorAll('.dyn-phone-link').forEach(link => {
-                        if (link.classList.contains('whatsapp-float')) {
-                            link.href = `https://wa.me/${cleanNumber}`;
-                        } else {
-                            link.href = `tel:${cleanNumber}`;
-                        }
-                    });
+                    applySettings({ ...fallbackSettings, ...data });
                 }
             } catch (err) {
                 console.log("Les réglages n'ont pas encore été configurés dans la table 'settings'.");
@@ -444,7 +472,6 @@
         }
 
         window.onload = () => {
-            applyFallbackSettings();
             syncSettings();
             loadProjects();
         };
