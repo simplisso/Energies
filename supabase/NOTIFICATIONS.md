@@ -5,24 +5,33 @@ La fonction `functions/notify-lead/index.ts` envoie un e-mail après l'insertion
 ## Prérequis
 
 - Avoir un compte Resend et un domaine d'expédition vérifié.
-- Avoir le Supabase CLI installé, être connecté et avoir lié le projet `owkprsgfbxaxkijcomln`.
+- Installer le [Supabase CLI](https://supabase.com/docs/guides/cli) et l’utiliser depuis la racine du dépôt.
 - Ne jamais ajouter les valeurs des secrets dans Git ni les envoyer dans une conversation.
 
 ## Déploiement
 
-Définir ces secrets dans Supabase :
+1. Se connecter au CLI et lier le projet :
+
+```sh
+supabase login
+supabase link --project-ref owkprsgfbxaxkijcomln
+```
+
+Le CLI demande un jeton Supabase dans le terminal. Ne le partage pas dans une conversation.
+
+2. Dans Supabase, ouvrir **Project Settings → Edge Functions → Secrets** et ajouter :
 
 - `RESEND_API_KEY` : clé API Resend.
 - `CONTACT_NOTIFICATION_EMAIL` : adresse qui recevra les demandes.
 - `RESEND_FROM_EMAIL` : adresse d'expédition vérifiée dans Resend.
-- `LEAD_WEBHOOK_SECRET` : secret aléatoire partagé avec le webhook. Générer une valeur avec `openssl rand -hex 32`.
+- `LEAD_WEBHOOK_SECRET` : secret aléatoire partagé avec le webhook. Générer localement une valeur avec `openssl rand -hex 32`.
 
-Déployer la fonction sans la vérification JWT intégrée, car l'appel provient du webhook de base de données :
+3. Déployer la fonction sans vérification JWT intégrée : elle vérifie elle-même le secret partagé du webhook.
 
 ```sh
-supabase functions deploy notify-lead --no-verify-jwt
+supabase functions deploy notify-lead
 ```
 
-Dans Supabase, ouvrir **Database → Webhooks**, créer un webhook sur `public.leads`, événement **INSERT**, méthode **POST**, et utiliser l'URL de la fonction `notify-lead` du projet. Ajouter l'en-tête `x-lead-webhook-secret` avec la même valeur que `LEAD_WEBHOOK_SECRET`.
+4. Ouvrir **Database → Webhooks**, créer un webhook sur `public.leads`, événement **INSERT**, méthode **POST**, et utiliser l'URL de la fonction `notify-lead`. Ajouter l'en-tête `x-lead-webhook-secret` avec la même valeur que `LEAD_WEBHOOK_SECRET`.
 
 La fonction ignore les autres événements et exige ce secret avant de contacter Resend.
