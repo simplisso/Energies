@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^node -e 'const fs=require\\(\"fs\"\\);const s=fs\\.readFileSync\\(\"supabase/site-settings-leads\\.sql\",\"utf8\"\\);for\\(const field of \\[\"whatsapp\",\"opening_hours\",\"facebook_url\",\"instagram_url\",\"status\"\\]\\)\\{if\\(s\\.includes\\(field\\)==false\\)throw Error\\(\"Missing migration field \"\\+field\\)\\}if\\(s\\.includes\\(\"GRANT SELECT \\(phone, email, address, whatsapp, opening_hours, facebook_url, instagram_url\\)\"\\)==false\\)throw Error\\(\"Public settings grants are missing\"\\);console\\.log\\(\"Migration covers all requested settings, lead status, and public-field grants\\.\"\\);'$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
